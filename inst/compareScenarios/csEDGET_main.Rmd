@@ -35,13 +35,12 @@ subparagraph: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  echo = FALSE,
-  error = TRUE,
-  message = FALSE,
-  warning = params$warning,
-  fig.width = params$figWidth, 
-  fig.height = params$figHeight)
+knitr::opts_chunk$set(echo = FALSE,
+                      error = TRUE,
+                      message = FALSE,
+                      warning = params$warning,
+                      fig.width = params$figWidth, 
+                      fig.height = params$figHeight)
 ```
 
 
@@ -52,7 +51,6 @@ knitr::opts_chunk$set(
 # If the following line is not included, successive calls to compareScenarios2()
 # may cause "Undefined control sequence" errors in LaTeX.
 try(unloadNamespace("kableExtra"), silent = TRUE)
-
 library(gridExtra)
 options(tidyverse.quiet = TRUE)
 library(tidyverse)

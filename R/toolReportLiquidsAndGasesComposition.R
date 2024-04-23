@@ -6,7 +6,7 @@
 #'
 #' @returns Final energy for liquids and gases split into fossil|bio|hydrogen
 #' @author Johanna Hoppe
-#' @importFrom gdxdt readGDX
+#' @importFrom gdx readGDX
 #' @importFrom rmndt magpie2dt
 #' @import data.table
 #' @export

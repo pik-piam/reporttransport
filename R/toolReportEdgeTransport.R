@@ -42,7 +42,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".","EDGE-T"), data =
   #########################################################################
   ## Load data for reporting if data is not supplied in function call
   #########################################################################
-  browser()
+
   if (is.null(data)) {
     data <- list()
     # load files needed for all

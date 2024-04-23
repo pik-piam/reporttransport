@@ -1,7 +1,6 @@
 # Endogenous Cost Analytics
 
 ```{r}
-
 data <- as.data.table(data)
 plotData <- data[grepl("(Policy mask.*|rawEndogenousCost.*|updatedEndogenousCost.*"), variable]
 
@@ -17,5 +16,4 @@ ggplot(plotData, aes(x = period, y = value, group = variable, color = variable))
        y = "value",
        color = "variable") +
   theme_minimal()
-
 ```

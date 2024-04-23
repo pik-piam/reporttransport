@@ -16,7 +16,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Johanna Hoppe Your family name \email{johanna.hoppe@pik-potsdam.de}
+\strong{Maintainer}: Johanna Hoppe \email{johanna.hoppe@pik-potsdam.de}
 
 }
 \keyword{internal}
