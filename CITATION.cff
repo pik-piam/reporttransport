@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using the metadata from this file.
+type: software
+title: 'reporttransport: Reporting package for edgeTransport'
+version: 0.0.2
+date-released: '2024-04-23'
+abstract: This package contains edgeTransport-specific routines to report model results.
+  The main functionality is to generate transport reporting variables in MIF format
+  from a given edgeTransport model run folder or REMIND input data.
+authors:
+- family-names: Your family name
+  given-names: Johanna Hoppe
+  email: johanna.hoppe@pik-potsdam.de
+license: LGPL-3.0
+repository-code: https://github.com/pik-piam/reporttransport
+
