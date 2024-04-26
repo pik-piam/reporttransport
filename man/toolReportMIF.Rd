@@ -15,22 +15,22 @@ toolReportMIF(
 )
 }
 \arguments{
-\item{vars}{xx}
+\item{vars}{Variables to be aggregated and converted into MIF format}
 
-\item{GDPMER}{xx}
+\item{GDPMER}{GDP on market exchange rate basis to be used as weight for regional aggregation}
 
-\item{helpers}{xx}
+\item{helpers}{List of helpers}
 
-\item{scenario}{xx}
+\item{scenario}{Scenario name in MIF entry}
 
-\item{model}{xx}
+\item{model}{Model name in MIF entry}
 
-\item{gdx}{xx}
+\item{gdx}{GDX file containing further regional aggregation levels}
 
-\item{reportExtendedTransportData}{xx}
+\item{reportExtendedTransportData}{Switch to enable the extended transport variable set}
 }
 \value{
-xxx
+Variables provided in different aggregation levels in MIF format
 }
 \description{
 Variables like energy intensity and capital costs are linked to the

@@ -16,6 +16,9 @@
 
 aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
 
+  rownum <- sum <- toKeep <- sum <- weight <- variableName <- variable <- cols <- value <-
+    ..after <- . <- ..cols <- ..keep <- ..keepCols <- fuel <- sector <- technology <- subsectorL1 <- NULL
+
   filterVarsToAggregate <- function(aggrvars, cols, aggrOrder, keep = NULL) {
     # Select entries that feature the aggregation level
     last <- cols[length(cols)]

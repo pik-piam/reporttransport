@@ -25,6 +25,8 @@ toolReportREMINDinputDataVarSet <- function(fleetESdemand, fleetFEdemand, fleetE
                                             initialIncoCosts, annualMileage, timeValueCosts, demScen, SSPscen,                          # nolint: object_name_linter
                                             transportPolScen, helpers) {
 
+  DEM_scenario <- GDP_scenario <- EDGE_scenario <- value <- sumES <- variable <- univocalName <- ESdemand <- NULL
+
   prepareForREMIND <- function(dt, demScen, SSPscen, transportPolScen) {                                                                # nolint: object_name_linter
     cols <- names(copy(dt))
     cols <- cols[!cols %in% c("region", "period", "value")]

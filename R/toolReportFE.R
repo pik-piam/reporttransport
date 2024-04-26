@@ -19,6 +19,8 @@
 
 toolReportFE <- function(fleetEnergyIntensity, fleetESdemand, loadFactor, hybridElecShare, helpers) {
 
+  value <- unit <- variable <- technology <- energyIntensity <- ESdemand <- . <- univocalName <- NULL
+
   fleetEnergyIntensity <- copy(fleetEnergyIntensity)[, c("variable", "unit") := NULL]
   setnames(fleetEnergyIntensity, "value", "energyIntensity")
   fleetESdemand <- copy(fleetESdemand)[, c("variable", "unit") := NULL]

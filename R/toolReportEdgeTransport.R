@@ -27,18 +27,21 @@
 #' @param reportExtendedTransportData Switch for activating the reporting of detailed transport data im MIF format
 #'                                    needed to create transportCompareScenarios
 #' @param reportAnalytics Switch for activating reporting of model analytics data
-#' @param reportREMINDinputdata Switch for activating reporting of REMIND input data
+#' @param reportREMINDinputData Switch for activating reporting of REMIND input data
 #' @param storeData Switch for activating data storage and creating the transport.MIF file
 #'
 #' @returns The function either returns the REMINDinputData if reportREMINDinputdata is
 #'          enabled or the transport data in MIF format
 #' @author Johanna Hoppe
+#' @importFrom quitte write.mif
 #' @import data.table
 #' @export
 
 toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, reportTransportData = TRUE,
                                     reportExtendedTransportData = FALSE, reportAnalytics = FALSE,
                                     reportREMINDinputData = FALSE, storeData = TRUE) {
+
+  variable <- NULL
 
   # If you want to change timeResReporting to timesteps outside the modeleled timesteps,
   # please add an interpolation step

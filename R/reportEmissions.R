@@ -6,15 +6,18 @@
 #' @param gdxPath Path to REMIND fulldata.gdx containing emission factors
 #' @param prefix Prefix that specifies the emissions we are referring to in the variable name
 #'               (either tailpipe or demand)
-#' @param helpers
+#' @param helpers List of helpers
 #'
 #' @returns Emissions data for provided values in dtFE
 #' @author Johanna Hoppe
-#' @importFrom gdxrrw rgdx
+#' @importFrom gdxrrw rgdx rgdx.scalar rgdx.param
 #' @import data.table
 #' @export
 
-toolReportEmissions <- function(dtFE, gdxPath, prefix, helpers) {
+reportEmissions <- function(dtFE, gdxPath, prefix, helpers) {
+
+  emissionFactor <- period <- value <- to <- variable <- unit <- emissionType <- from <-
+    univocalName <- technology <- NULL
 
   # Get emission factors from REMIND gdx
   GtCtoGtCO2 <- rgdx.scalar(gdxPath, "sm_c_2_co2", ts = FALSE)                                                           # nolint: object_name_linter

@@ -10,6 +10,8 @@
 
 toolReportBaseVarSet <- function(data, timeResReporting) {
 
+  subsectorL3 <- variable <- period <- NULL
+
   # aggregate costs---------------------------------------------------------------------------
   aggregatedCosts <- toolReportAggregatedCosts(data$combinedCAPEXandOPEX)
   aggregatedCosts <- merge(aggregatedCosts, data$helpers$decisionTree,

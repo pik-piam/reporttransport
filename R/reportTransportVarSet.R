@@ -11,6 +11,8 @@
 
 reportTransportVarSet <- function(data, baseVarSet, timeResReporting) {
 
+  fuel <- variable <- value <- constrYear <- period <- technology <- . <- ESdemand <- unit <- NULL
+
   # Switch from mixed time resolution to the reporting time resolution for all vars------------------------
   data$ESdemandFVsalesLevel <- data$ESdemandFVsalesLevel[period %in% timeResReporting]
   data$fleetSizeAndComposition <- lapply(data$fleetSizeAndComposition,
@@ -20,7 +22,7 @@ reportTransportVarSet <- function(data, baseVarSet, timeResReporting) {
 
   # Report liquids and gases split----------------------------------------------------------------------
   varsFEcomposition <- baseVarSet$ext$fleetFEdemand[technology %in% c("Liquids", "Gases")]
-  mixedCarrierSplit <- toolReportLiquidsAndGasesComposition(dtFE = varsFEcomposition,
+  mixedCarrierSplit <- reportLiquidsAndGasesComposition(dtFE = varsFEcomposition,
                                                             gdxPath = data$gdxPath,
                                                             timeResReporting = timeResReporting,
                                                             helpers = data$helpers)
@@ -38,11 +40,11 @@ reportTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   # For the demand emissions only the fuel from the fossil production route is taken into account ´
   FEfossil <- fleetFEdemandsplittedCarriers[technology %in% c("Liquids", "Gases") & fuel == "Fossil"]     # nolint: object_name_linter
   FEfossil <- FEfossil[, .(value = sum(value)), by = eval(byCols)]                                        # nolint: object_name_linter
-  fleetEmissionsTailpipe <- toolReportEmissions(dtFE = FEtailpipe,
+  fleetEmissionsTailpipe <- reportEmissions(dtFE = FEtailpipe,
                                                 gdxPath = data$gdxPath,
                                                 prefix = "Tailpipe",
                                                 helpers = data$helpers)
-  fleetEmissionsDemand <- toolReportEmissions(dtFE = FEfossil,
+  fleetEmissionsDemand <- reportEmissions(dtFE = FEfossil,
                                               gdxPath = data$gdxPath,
                                               prefix = "Demand",
                                               helpers = data$helpers)

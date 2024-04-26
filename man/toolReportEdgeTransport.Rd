@@ -26,9 +26,9 @@ needed to create transportCompareScenarios}
 
 \item{reportAnalytics}{Switch for activating reporting of model analytics data}
 
-\item{storeData}{Switch for activating data storage and creating the transport.MIF file}
+\item{reportREMINDinputData}{Switch for activating reporting of REMIND input data}
 
-\item{reportREMINDinputdata}{Switch for activating reporting of REMIND input data}
+\item{storeData}{Switch for activating data storage and creating the transport.MIF file}
 }
 \value{
 The function either returns the REMINDinputData if reportREMINDinputdata is

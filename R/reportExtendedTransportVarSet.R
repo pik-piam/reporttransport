@@ -1,7 +1,8 @@
 #'Report extended detailed transport variable set
 #'
 #' @param data List that contains the model results to report the extended detailed transport variable set
-#' @param vehiclesConstrYears
+#' @param baseVarSet List that contains the basic variables
+#' @param timeResReporting Time resolution for variable reporting
 #'
 #' @returns Extended detailed transport output variable set
 #' @author Johanna Hoppe
@@ -10,6 +11,8 @@
 #' @export
 
 reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
+
+  constrYear <- variable <- period <- . <- value <- NULL
 
   # Switch from mixed time resolution to the reporting time resolution for all vars------------
   loadFactor <- copy(data$loadFactor)[period %in% timeResReporting]

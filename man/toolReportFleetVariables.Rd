@@ -14,7 +14,7 @@ toolReportFleetVariables(salesData, vehiclesConstrYears, helpers)
 \item{helpers}{list of helpers}
 }
 \value{
-xx
+Variable in relation to the vehicle fleet
 }
 \description{
 Variables like energy intensity and capital costs are linked to the

@@ -7,12 +7,12 @@
 toolReportUE(FEdemand, helpers)
 }
 \arguments{
-\item{FEdemand}{xx}
+\item{FEdemand}{Finale energy demand}
 
-\item{helpers}{xx}
+\item{helpers}{List with helpers}
 }
 \value{
-xx
+Useful energy demand
 }
 \description{
 Report variables in relation to the vehicle fleet.

@@ -10,6 +10,8 @@
 
 toolReportUE <- function(FEdemand, helpers) {                                                                               # nolint: object_name_linter
 
+  value <- variable <- UEefficiency <- univocalName <- NULL
+
   # Note that this is a really rough assumptions (as the aircarft burning hydrogen is getting the same efficiency than
   # a fuel cell electric truck)
   MappUE <- data.table(technology = c("Electricity", "Hydrogen", "Liquids", "Gases"),                                       # nolint: object_name_linter

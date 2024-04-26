@@ -16,10 +16,15 @@
 #'
 #' @returns Variables provided in different aggregation levels in MIF format
 #' @author Johanna Hoppe
+#' @importFrom quitte aggregate_map as.quitte
+#' @importFrom remind2 toolRegionSubsets
 #' @import data.table
 #' @export
 
 toolReportMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  reportExtendedTransportData = FALSE) {       # nolint: object_name_linter
+
+  rownum <- name <- fuel <- aggrReg <- variable <- model <- scenario <- reportName <- ..colsToRename <-
+    ..colsUnchanged <- region <- univocalName <- technology <- NULL
 
   applyReportingNames <- function(vars, mapNames) {
 

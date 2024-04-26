@@ -2,26 +2,25 @@
 % Please edit documentation in R/aggregateVariables.R
 \name{aggregateVariables}
 \alias{aggregateVariables}
-\title{Report variables in relation to the vehicle fleet.}
+\title{Aggregate variables}
 \usage{
 aggregateVariables(vars, mapAggregation, weight = NULL)
 }
 \arguments{
-\item{vars}{xx}
+\item{vars}{Data.table with variables to aggregate in modified quitte style format}
 
-\item{mapAggregation}{xx}
+\item{mapAggregation}{Map containing levels for aggregation in addition to the levels of the decision tree}
 
-\item{weight}{xx}
+\item{weight}{Weight to aggregate variables}
 }
 \value{
-xx
+Data.table with aggregated variables
 }
 \description{
-Variables like energy intensity and capital costs are linked to the
-construction year of a vehicle.
-As energy intensity and capital costs change over time for new sales, the composition
-of the fleet from vehicles of different construction years needs to be taken into account
-to report these variables.
+This function aggregates a large set of variables according to the edge transport decision tree and
+additional aggregation levels that are set manually.
+The aggregation is applied to all variables simultaneously. Additional transport specific columns are
+transferred into the variable column entry
 }
 \author{
 Johanna Hoppe
