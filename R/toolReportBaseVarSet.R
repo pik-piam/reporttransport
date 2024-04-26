@@ -8,7 +8,7 @@
 #' @import data.table
 #' @export
 
-toolReportBaseVarSet <- function(data, timeResReporting){
+toolReportBaseVarSet <- function(data, timeResReporting) {
 
   # aggregate costs---------------------------------------------------------------------------
   aggregatedCosts <- toolReportAggregatedCosts(data$combinedCAPEXandOPEX)
@@ -37,17 +37,14 @@ toolReportBaseVarSet <- function(data, timeResReporting){
   fleetCost <- fleetCost[period %in% timeResReporting]
 
   # Calculate final energy---------------------------------------------------------------------
-  fleetFEdemand <- toolReportFE(fleetEnergyIntensity = fleetData$fleetEnergyIntensity, fleetESdemand = fleetESdemand, loadFactor = loadFactor,
-                                hybridElecShare = data$hybridElecShare, helpers = data$helpers)
-  outputVarsExt <- list(
-    fleetESdemand = fleetESdemand,
-    fleetFEdemand = fleetFEdemand
-  )
-  outputVarsInt <- list(
-    fleetEnergyIntensity = fleetData$fleetEnergyIntensity,
-    fleetCost = fleetCost
-  )
+  fleetFEdemand <- toolReportFE(fleetEnergyIntensity = fleetData$fleetEnergyIntensity, fleetESdemand = fleetESdemand,
+                                loadFactor = loadFactor, hybridElecShare = data$hybridElecShare, helpers = data$helpers)
 
+  # Split extensive and intensive variables ---------------------------------------------------
+  outputVarsExt <- list(fleetESdemand = fleetESdemand,
+                        fleetFEdemand = fleetFEdemand)
+  outputVarsInt <- list(fleetEnergyIntensity = fleetData$fleetEnergyIntensity,
+                        fleetCost = fleetCost)
   outputVars <- list(ext = outputVarsExt,
                      int = outputVarsInt)
 

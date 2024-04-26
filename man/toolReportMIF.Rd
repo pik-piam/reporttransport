@@ -15,7 +15,22 @@ toolReportMIF(
 )
 }
 \arguments{
-\item{helpers}{}
+\item{vars}{xx}
+
+\item{GDPMER}{xx}
+
+\item{helpers}{xx}
+
+\item{scenario}{xx}
+
+\item{model}{xx}
+
+\item{gdx}{xx}
+
+\item{reportExtendedTransportData}{xx}
+}
+\value{
+xxx
 }
 \description{
 Variables like energy intensity and capital costs are linked to the

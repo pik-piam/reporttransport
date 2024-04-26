@@ -13,7 +13,8 @@ toolReportEmissions(dtFE, gdxPath, prefix, helpers)
 
 \item{gdxPath}{Path to REMIND fulldata.gdx containing emission factors}
 
-\item{prefix}{Prefix that specifies the emissions we are referring to in the variable name (either tailpipe or demand)}
+\item{prefix}{Prefix that specifies the emissions we are referring to in the variable name
+(either tailpipe or demand)}
 
 \item{helpers}{}
 }

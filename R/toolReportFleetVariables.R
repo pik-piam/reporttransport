@@ -10,8 +10,9 @@
 #' @param vehiclesConstrYears vehicle numbers and their construction years for the respective years
 #' @param helpers list of helpers
 #'
-#' @returns
+#' @returns Variable in relation to the vehicle fleet
 #' @author Johanna Hoppe
+#' @importFrom rmndt approx_dt
 #' @import data.table
 #' @export
 
@@ -19,7 +20,7 @@
 toolReportFleetVariables <- function(salesData, vehiclesConstrYears, helpers) {
 
   # Calculate vehicle shares of different construction years for each period---------------------
-  vehiclesConstrYears<- copy(vehiclesConstrYears)
+  vehiclesConstrYears <- copy(vehiclesConstrYears)
   cols <- names(vehiclesConstrYears)
   vehiclesConstrYears <- vehiclesConstrYears[, sum := sum(value),
                                              by = eval(cols[!cols %in% c("constrYear", "variable", "value")])]

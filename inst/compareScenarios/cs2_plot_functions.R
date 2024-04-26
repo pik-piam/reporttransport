@@ -1,14 +1,14 @@
-lineplot = function(varname, data){
-  p=ggplot(data, aes(x = as.character(period), y = value,group = scenario, color = scenario))+
-    geom_line(size = 1)+
-    facet_wrap(~data$variable, nrow = 4, scales = "free")+
-    scale_x_discrete(breaks = c(1990,2010,2030,2050,2100))+
-    labs(x = "", y = paste0(varname," [", unique(data$unit),"]"), title = paste0(varname))
+lineplot <- function(varname, data) {
+  p <- ggplot(data, aes(x = as.character(period), y = value, group = scenario, color = scenario)) +
+    geom_line(size = 1) +
+    facet_wrap(~ data$variable, nrow = 4, scales = "free") +
+    scale_x_discrete(breaks = c(1990, 2010, 2030, 2050, 2100)) +
+    labs(x = "", y = paste0(varname, " [", unique(data$unit), "]"), title = paste0(varname))
   return(p)
 }
 
 mipBarYearDataMod <- function(x, colour = NULL, ylab = NULL, xlab = NULL, title = NULL,
-                              scenario_markers = TRUE) { #nolint
+                              scenario_markers = TRUE) { # nolint
   scenarioMarkers <- scenario_markers
   x <- as.quitte(x)
 
@@ -147,8 +147,7 @@ mipBarYearDataMod <- function(x, colour = NULL, ylab = NULL, xlab = NULL, title 
 showMultiLinePlotsByVariable_orig_ETP <- function(
   data, vars, xVar, scales = "free_y",
   showHistorical = FALSE,
-  showETPorig = FALSE)
- {
+  showETPorig = FALSE) {
 
   data <- as.quitte(data)
   yearsByVariable <- c(2010, 2030, 2050)
@@ -163,51 +162,51 @@ showMultiLinePlotsByVariable_orig_ETP <- function(
   stopifnot(is.character(histRefModel) && !is.null(names(histRefModel)))
   stopifnot(xVar %in% names(histRefModel))
 
-  #load and wrangle original ETP data
-  ETPorig <- readSource("IEA_ETP", subtype = "transport", convert = F)
+  # load and wrangle original ETP data
+  ETPorig <- readSource("IEA_ETP", subtype = "transport", convert = FALSE)
   ETPorig <- as.quitte(ETPorig)
   Mapping_IEA_ETP <- fread(system.file("extdata", "Mapping_IEA_ETP.csv", package = "edgeTrpLib"), header = TRUE)
-  setnames(Mapping_IEA_ETP,"IEA_ETP","variable")
+  setnames(Mapping_IEA_ETP, "IEA_ETP", "variable")
   ETPorig <- merge(ETPorig, Mapping_IEA_ETP[, -c("Comment")], all.x = TRUE)
   ETPorig <- as.data.table(ETPorig)
-  ETPorig[, value := value*Conversion][, Conversion := NULL][, unit := NULL]
-  ETPorig <- ETPorig[,.(value = sum(value)), by = .(REMIND, region, period, Unit_REMIND, scenario)]
-  setnames(ETPorig, c("REMIND","Unit_REMIND"), c("variable","unit"))
+  ETPorig[, value := value * Conversion][, Conversion := NULL][, unit := NULL]
+  ETPorig <- ETPorig[, .(value = sum(value)), by = .(REMIND, region, period, Unit_REMIND, scenario)]
+  setnames(ETPorig, c("REMIND", "Unit_REMIND"), c("variable", "unit"))
   ETPorig[, model := paste0("IEA ETP ", scenario)][, scenario := NULL]
 
-  GDP_country = {
-    x <- calcOutput("GDP", aggregate = F)
+  GDP_country <- {
+    x <- calcOutput("GDP", aggregate = FALSE)
     x
   }
-  POP_country = {
-    x <- calcOutput("Population", aggregate = F)
+  POP_country <- {
+    x <- calcOutput("Population", aggregate = FALSE)
     x
   }
 
 
   GDP_country <- as.data.table(as.quitte(GDP_country))
-  GDP_country <- GDP_country[, scenario := gsub("gdp_","", variable)][, variable := NULL][, model := NULL][, conversion := 1e3]
+  GDP_country <- GDP_country[, scenario := gsub("gdp_", "", variable)][, variable := NULL][, model := NULL][, conversion := 1e3]
   POP_country <- as.data.table(as.quitte(POP_country))
-  POP_country[, scenario := gsub("pop_","", variable)][, variable := NULL][, model := NULL][, conversion := 1e6]
-  #Change unit from million US$2005/yr to kUS$2005/yr
-  GDP_country[, value := value*conversion][, conversion := NULL][, unit := NULL]
-  #Change unit from million to one
-  POP_country[, value := value*conversion][, conversion := NULL][, unit := NULL]
+  POP_country[, scenario := gsub("pop_", "", variable)][, variable := NULL][, model := NULL][, conversion := 1e6]
+  # Change unit from million US$2005/yr to kUS$2005/yr
+  GDP_country[, value := value * conversion][, conversion := NULL][, unit := NULL]
+  # Change unit from million to one
+  POP_country[, value := value * conversion][, conversion := NULL][, unit := NULL]
 
-  setnames(GDP_country, c("region","value"), c("ISO","gdp"))
-  setnames(POP_country, c("region","value"), c("ISO","pop"))
+  setnames(GDP_country, c("region", "value"), c("ISO", "gdp"))
+  setnames(POP_country, c("region", "value"), c("ISO", "pop"))
 
   Map_ETP <- data.table(
-    ETPreg = c("Brazil","China","India", "Mexico", "Russia", "South Africa", "United States"),
-    ISO = c("BRA","CHN","IND", "MEX", "RUS", "ZAF", "USA")
+    ETPreg = c("Brazil", "China", "India", "Mexico", "Russia", "South Africa", "United States"),
+    ISO = c("BRA", "CHN", "IND", "MEX", "RUS", "ZAF", "USA")
   )
 
   GDP_country <- merge(GDP_country, Map_ETP, all.y = TRUE)
   POP_country <- merge(POP_country, Map_ETP, all.y = TRUE)
 
   GDP <- copy(GDP_country)
-  GDP <- merge(GDP, POP_country, by = c("ISO","ETPreg","period","scenario"))
-  GDP[ , gdp := gdp/pop][, value := gdp][, pop := NULL]
+  GDP <- merge(GDP, POP_country, by = c("ISO", "ETPreg", "period", "scenario"))
+  GDP[, gdp := gdp / pop][, value := gdp][, pop := NULL]
   GDP_B2DS <- copy(GDP)
   GDP_B2DS[, variable := "GDP|PPP pCap"][, model := "IEA ETP B2DS"]
   GDP_RTS <- copy(GDP)
@@ -218,23 +217,23 @@ showMultiLinePlotsByVariable_orig_ETP <- function(
   GDP[, ISO := NULL][, unit := "kUS$2005/yr"]
   setnames(GDP, c("ETPreg"), c("region"))
 
-  ETPorig <- merge(ETPorig, GDP_country, by.x = c("region","period"), by.y = c("ETPreg","period"), allow.cartesian = TRUE)
+  ETPorig <- merge(ETPorig, GDP_country, by.x = c("region", "period"), by.y = c("ETPreg", "period"), allow.cartesian = TRUE)
   ETPorig <- ETPorig[!is.na(value)]
-  ETPorig <- merge(ETPorig, POP_country, by.x =c("region","period","scenario", "ISO"), by.y = c("ETPreg","period", "scenario", "ISO"))
-  #Calculate pCap values
-  ETPorig[, value := value/pop]
-  #Calculate GDP|PPP in kUSD2005 pCap
-  ETPorig[, gdp := gdp/pop][, pop := NULL]
+  ETPorig <- merge(ETPorig, POP_country, by.x = c("region", "period", "scenario", "ISO"), by.y = c("ETPreg", "period", "scenario", "ISO"))
+  # Calculate pCap values
+  ETPorig[, value := value / pop]
+  # Calculate GDP|PPP in kUSD2005 pCap
+  ETPorig[, gdp := gdp / pop][, pop := NULL]
   ETPorig[, variable := paste0(variable, " ", "pCap")]
 
-  #Exclude disaggregated ETP data
+  # Exclude disaggregated ETP data
   data <- data[!grepl("IEA ETP", model)]
   data <- rbind(ETPorig[, ISO := NULL], GDP, data)
 
-  #filter for stated variables
+  # filter for stated variables
   dy <- data %>%
     filter(.data$variable %in% vars)
-  #filter fo x variable GDP|PPP
+  # filter fo x variable GDP|PPP
   dx <- data %>%
     filter(.data$variable %in% xVar) %>%
     filter(.data$scenario != "historical" | .data$model == histRefModel[xVar])
@@ -456,6 +455,3 @@ showLinePlotsByVariable <- function(
 
   return(invisible(NULL))
 }
-
-
-

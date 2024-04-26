@@ -17,7 +17,7 @@
 #' @import data.table
 #' @export
 
-toolReportFE <- function(fleetEnergyIntensity, fleetESdemand, loadFactor, hybridElecShare, helpers){
+toolReportFE <- function(fleetEnergyIntensity, fleetESdemand, loadFactor, hybridElecShare, helpers) {
 
   fleetEnergyIntensity <- copy(fleetEnergyIntensity)[, c("variable", "unit") := NULL]
   setnames(fleetEnergyIntensity, "value", "energyIntensity")
@@ -25,17 +25,20 @@ toolReportFE <- function(fleetEnergyIntensity, fleetESdemand, loadFactor, hybrid
   setnames(fleetESdemand, "value", "ESdemand")
   loadFactor <- copy(loadFactor)[, c("variable", "unit") := NULL]
   setnames(loadFactor, "value", "loadFactor")
-  fleetFEdemand <- merge(fleetESdemand, fleetEnergyIntensity, by = intersect(names(fleetESdemand), names(fleetEnergyIntensity)))
+  fleetFEdemand <- merge(fleetESdemand, fleetEnergyIntensity,
+                         by = intersect(names(fleetESdemand), names(fleetEnergyIntensity)))
   fleetFEdemand <- merge(fleetFEdemand, loadFactor, by = intersect(names(fleetFEdemand), names(loadFactor)))
   fleetFEdemand[, value := (energyIntensity / loadFactor) * ESdemand * 1e-3][, unit := "EJ/yr"][, variable := "FE"]
   # There is no final energy type "hybrid electric". So hybrids need to be split in liquids and electricity
-  fleetFEdemand <- rbind(fleetFEdemand, copy(fleetFEdemand[technology == "Hybrid electric"])[, value := value * hybridElecShare][, technology := "BEV"])
+  hybridElectricFE <- copy(fleetFEdemand[technology == "Hybrid electric"])
+  hybridElectricFE[, value := value * hybridElecShare][, technology := "BEV"]
+  fleetFEdemand <- rbind(fleetFEdemand, hybridElectricFE)
   fleetFEdemand[technology == "Hybrid electric", value := value * (1 - hybridElecShare)]
   fleetFEdemand[technology == "Hybrid electric", technology := "Liquids"]
   fleetFEdemand[technology %in% c("BEV", "Electric"), technology := "Electricity"]
   fleetFEdemand[technology == "FCEV", technology := "Hydrogen"]
   cols <- names(fleetFEdemand)
-  cols <- cols[!cols %in% c("value","loadFactor", "energyIntensity", "ESdemand")]
+  cols <- cols[!cols %in% c("value", "loadFactor", "energyIntensity", "ESdemand")]
   fleetFEdemand <- fleetFEdemand[, .(value = sum(value)), by = cols]
   fleetFEdemand[univocalName %in% c("Cycle", "Walk"), value := 0]
 

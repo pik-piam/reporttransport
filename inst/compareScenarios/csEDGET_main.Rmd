@@ -39,7 +39,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       error = TRUE,
                       message = FALSE,
                       warning = params$warning,
-                      fig.width = params$figWidth, 
+                      fig.width = params$figWidth,
                       fig.height = params$figHeight)
 ```
 
@@ -182,8 +182,8 @@ histRefModel <- c(
 ```{r calcuate pCap variables}
 # For all variables in following table, add a new variable to data with the name
 # "OldName pCap". Calculate its value by
-#     OldValue * conversionFactor 
-# and set its unit to newUnit. 
+#     OldValue * conversionFactor
+# and set its unit to newUnit.
 # The new variable "OldName pCap" will be available in the plot sections.
 pCapVariables <- tribble(
   ~variable, ~newUnit, ~conversionFactor,
@@ -217,18 +217,18 @@ pCapVariables <- tribble(
   "ES|Transport|Freight|Road|Gases", "pkm/yr", 1e9,
   "ES|Transport|Freight|Road|Liquids", "pkm/yr", 1e9)
 
-data %>% 
+data %>%
   filter(variable == "Population") %>%
-  filter(scenario != "historical" | model == histRefModel["Population"]) %>% 
-  select(scenario, region, period, value) %>% 
+  filter(scenario != "historical" | model == histRefModel["Population"]) %>%
+  select(scenario, region, period, value) %>%
   mutate(
     population = value * 1e6, # unit originally is million, now is 1
-    value = NULL) -> 
+    value = NULL) ->
   dataPop
 
-data %>% 
-  inner_join(pCapVariables, 'variable') %>% 
-  left_join(dataPop, c('scenario', 'region', 'period')) %>% 
+data %>%
+  inner_join(pCapVariables, "variable") %>%
+  left_join(dataPop, c("scenario", "region", "period")) %>%
   mutate(
     value = value / population * conversionFactor,
     variable = paste0(variable, " pCap"),
@@ -236,7 +236,7 @@ data %>%
     newUnit = NULL, conversionFactor = NULL, population = NULL) ->
   dataPCap
 
-data %>% 
+data %>%
   bind_rows(dataPCap) ->
   data
 ```
@@ -244,23 +244,23 @@ data %>%
 
 ```{r add gdp column}
 # Create a new column gdp with the value of GDP|PPP pCap (kUS$2005).
-data %>% 
-  filter(variable == "GDP|PPP pCap") %>% 
-  filter(scenario != "historical" | model == histRefModel["GDP|PPP pCap"]) %>% 
-  select(scenario, region, period, value) %>% 
-  rename(gdp = value) ->   
+data %>%
+  filter(variable == "GDP|PPP pCap") %>%
+  filter(scenario != "historical" | model == histRefModel["GDP|PPP pCap"]) %>%
+  select(scenario, region, period, value) %>%
+  rename(gdp = value) ->
   dataGDP
-data %>% 
-  left_join(dataGDP, c('scenario', 'region', 'period')) ->
+data %>%
+  left_join(dataGDP, c("scenario", "region", "period")) ->
   data
 ```
 
 
 ```{r calcuate pGDP variables}
 # For all variables in following table, add a new variable to data with the name
-# "OldName pGDP". Calculate its value by 
-#     OldValue / (GDP|PPP pCap) * conversionFactor 
-# and set its unit to newUnit. 
+# "OldName pGDP". Calculate its value by
+#     OldValue / (GDP|PPP pCap) * conversionFactor
+# and set its unit to newUnit.
 # The new variable "OldName pGDP" will be available in the plot sections.
 pGdpVariables <- tribble(
   ~variable, ~newUnit, ~conversionFactor,
@@ -269,15 +269,15 @@ pGdpVariables <- tribble(
   "FE|Transport", "MJ/US$2005", 1e3,
   "FE|Buildings", "MJ/US$2005", 1e3,
   "FE|Industry", "MJ/US$2005", 1e3)
-data %>% 
-  inner_join(pGdpVariables, 'variable') %>% 
+data %>%
+  inner_join(pGdpVariables, "variable") %>%
   mutate(
     value = value / gdp * conversionFactor,
     variable = paste0(variable, " pGDP"),
     unit = newUnit,
     newUnit = NULL, conversionFactor = NULL) ->
   dataPGdp
-data %>% 
+data %>%
   bind_rows(dataPGdp) ->
   data
 ```
@@ -294,14 +294,14 @@ options(mip.histRefModel = histRefModel)
 ```
 
 ```{r define plot functions}
-source("cs2_plot_functions.R", local=TRUE)
+source("cs2_plot_functions.R", local = TRUE)
 ```
 
 
 ```{r sectionPaths, include=FALSE}
 if (length(params$sections) == 1 && params$sections == "all") {
-  dir() %>% 
-    str_subset("^csEDGET_[0-9]{2}.+//.Rmd$") %>% 
+  dir() %>%
+    str_subset("^csEDGET_[0-9]{2}.+//.Rmd$") %>%
     sort() ->
     sectionPaths
 } else {

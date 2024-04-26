@@ -14,7 +14,7 @@ reportTransportVarSet(data, baseVarSet, timeResReporting)
 \item{timeResReporting}{Timesteps to be reported}
 }
 \value{
-detailed transport output variable set
+Detailed transport output variable set
 }
 \description{
 Report detailed transport variable set

@@ -2,25 +2,20 @@
 % Please edit documentation in R/reportExtendedTransportVarSet.R
 \name{reportExtendedVarSet}
 \alias{reportExtendedVarSet}
-\title{Report variables in relation to the vehicle fleet.}
+\title{Report extended detailed transport variable set}
 \usage{
-reportExtendedVarSet(
-  data,
-  timeResReporting,
-  reportTransportData = TRUE,
-  reportExtendedTransportData = FALSE,
-  reportAnalytics = FALSE
-)
+reportExtendedVarSet(data, timeResReporting)
 }
 \arguments{
-\item{helpers}{}
+\item{data}{List that contains the model results to report the extended detailed transport variable set}
+
+\item{vehiclesConstrYears}{}
+}
+\value{
+Extended detailed transport output variable set
 }
 \description{
-Variables like energy intensity and capital costs are linked to the
-construction year of a vehicle.
-As energy intensity and capital costs change over time for new sales, the composition
-of the fleet from vehicles of different construction years needs to be taken into account
-to report these variables.
+Report extended detailed transport variable set
 }
 \author{
 Johanna Hoppe

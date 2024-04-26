@@ -9,7 +9,8 @@ toolReportLiquidsAndGasesComposition(dtFE, gdxPath, timeResReporting, helpers)
 \arguments{
 \item{dtFE}{Final energy data for liquids and gases}
 
-\item{gdxPath}{Path to REMIND gdx, which contains the share of the various production routes for liquid and gaseous energy carriers}
+\item{gdxPath}{Path to REMIND gdx, which contains the share of the various production routes
+for liquid and gaseous energy carriers}
 
 \item{helpers}{List of helpers}
 }

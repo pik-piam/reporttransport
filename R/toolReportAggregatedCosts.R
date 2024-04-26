@@ -8,14 +8,15 @@
 #' @import data.table
 #' @export
 
-toolReportAggregatedCosts <- function(combinedCAPEXandOPEX){
+toolReportAggregatedCosts <- function(combinedCAPEXandOPEX) {
 
   combinedCAPEXandOPEX <- copy(combinedCAPEXandOPEX)
   combinedCAPEXandOPEX[grepl("Capital.*", variable), type := "Capital costs sales"]
   combinedCAPEXandOPEX[grepl("Operating.*", variable), type := "Operating costs (total non-fuel)"]
   combinedCAPEXandOPEX[grepl("Fuel.*", variable), type := "Fuel costs"]
   if (anyNA(combinedCAPEXandOPEX) == TRUE) stop("Some cost mixedCarrierTypes did not receive an aggregated
-                                                level and would get lost in the aggregation. Please check toolAggregateCosts()")
+                                                level and would get lost in the aggregation.
+                                                Please check toolAggregateCosts()")
   combinedCAPEXandOPEX[, variable := NULL]
   setnames(combinedCAPEXandOPEX, "type", "variable")
   cols <- names(combinedCAPEXandOPEX)

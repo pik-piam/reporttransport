@@ -6,16 +6,20 @@
 #'of the fleet from vehicles of different construction years needs to be taken into account
 #'to report these variables.
 #'
-#' @param salesData
-#' @param vehiclesConstrYears
-#' @param helpers
+#' @param vars Variables to be aggregated and converted into MIF format
+#' @param GDPMER GDP on market exchange rate basis to be used as weight for regional aggregation
+#' @param helpers List of helpers
+#' @param scenario Scenario name in MIF entry
+#' @param model Model name in MIF entry
+#' @param gdx GDX file containing further regional aggregation levels
+#' @param reportExtendedTransportData Switch to enable the extended transport variable set
 #'
-#' @returns
+#' @returns Variables provided in different aggregation levels in MIF format
 #' @author Johanna Hoppe
 #' @import data.table
 #' @export
 
-toolReportMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  reportExtendedTransportData = FALSE) {
+toolReportMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  reportExtendedTransportData = FALSE) {       # nolint: object_name_linter
 
   applyReportingNames <- function(vars, mapNames) {
 
@@ -31,8 +35,7 @@ toolReportMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  reportEx
 
       return(dt$name)
     }
-
-    colsUnchanged <- c("region", "period", "variable", "univocalName", "technology", "fuel", "unit", "value")
+    colsUnchanged <- c("region", "period", "variable", "univocalName", "unit", "value")
     colOrder <- names(vars)
     colsToRename <- colOrder[!colOrder %in% colsUnchanged]
     dt <- vars[, ..colsToRename]
@@ -42,43 +45,38 @@ toolReportMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  reportEx
     return(varsNew)
   }
 
-  # Use ES demand as weight to aggregate over modes
+  # Use ES demand as weight to aggregate over modes-------------------------------------------
   varsToMIFext <- rbindlist(vars$ext, fill = TRUE, use.names = TRUE)
   varsToMIFint <- vars$int[!names(vars) %in% c("FEsplitShares")]
   noAggregationvars <- vars$int[["FEsplitShares"]]
   varsToMIFint <- rbindlist(varsToMIFint, fill = TRUE, use.names = TRUE)
 
-  # Apply variable naming convention
+  # Apply variable naming convention----------------------------------------------------------
   varsToMIFext <- applyReportingNames(varsToMIFext, helpers$reportingNames)
   varsToMIFint[, fuel := NA]
   varsToMIFint <- applyReportingNames(varsToMIFint, helpers$reportingNames)
 
-  if (!is.null(vars$updatedEndogenousCosts)) {
-    varsToMIFanalytics <- list(vars$updatedEndogenousCosts, vars$policyMask, vars$rawEndogenousCost)
-    varsToMIFanalytics <- lapply(varsToMIFanalytics, rename, helpers$reportingNames)
-    varsToMIFanalytics <- lapply(varsToMIFanalytics,
-                                 function(x){x[, variable := paste0(variable, "|", vehicleType, "|", technology)]
-                                             x[, c("region", "period", "variable", "value", "unit")]})
-  }
-  toMIFext <- aggregate(varsToMIFext, helpers$reportingAggregation)
+  # Aggregate variables-----------------------------------------------------------------------
+  toMIFext <- aggregateVariables(varsToMIFext, helpers$reportingAggregation)
   weight <- varsToMIFext[variable == "ES"]
-  toMIFint <- aggregate(varsToMIFint, helpers$reportingAggregation, weight)
+  toMIFint <- aggregateVariables(varsToMIFint, helpers$reportingAggregation, weight)
   toMIFint <- rbind(noAggregationvars, toMIFint, fill = TRUE, use.names = TRUE)
 
-  # Regional aggregation
+  # Regional aggregation----------------------------------------------------------------------
   ## Aggregation to world is always supplied
   mapWorld <- unique(toMIFext[, c("region")])[, aggrReg := "World"]
   worldDataExt <- as.data.table(aggregate_map(toMIFext, mapWorld, by = "region"))
   weight <- copy(GDPMER)
   setnames(weight, "value", "weight_val_col")
-  worldDataInt <- as.data.table(aggregate_map(toMIFint, mapWorld, by = "region", weights = weight, weight_item_col = "region"))
+  worldDataInt <- as.data.table(aggregate_map(toMIFint, mapWorld, by = "region",
+                                              weights = weight, weight_item_col = "region"))
 
   ## if regionSubsetList != NULL -> gdx provides 21 region resolution
   regionSubsetList <- toolRegionSubsets(gdx)
 
-  if (!is.null(regionSubsetList)){
-  # ADD EU-27 region aggregation
-    if("EUR" %in% names(regionSubsetList)){
+  if (!is.null(regionSubsetList)) {
+    # ADD EU-27 region aggregation
+    if ("EUR" %in% names(regionSubsetList)) {
       regionSubsetList <- c(regionSubsetList, list(
         "EU27" = c("ENC", "EWN", "ECS", "ESC", "ECE", "FRA", "DEU", "ESW")
       ))
@@ -86,20 +84,23 @@ toolReportMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  reportEx
     # Create Mapping for region Aggregation out of region SubsetList
     namesReg <- names(regionSubsetList)
     regSubsetAggregation <- data.table()
-    for (i in 1:length(namesReg)){
+    for (i in seq_along(namesReg)) {
       tmp <- data.table(region = regionSubsetList[[i]], aggrReg = namesReg[i])
       regSubsetAggregation <- rbind(regSubsetAggregation, tmp)
     }
-    subsetDataExt <- as.data.table(aggregate_map(toMIFext[region %in% unique(regSubsetAggregation$region)], regSubsetAggregation, by = "region"))
+    subsetDataExt <- as.data.table(aggregate_map(toMIFext[region %in% unique(regSubsetAggregation$region)],
+                                                 regSubsetAggregation, by = "region"))
     weight <- copy(GDPMER)
     setnames(weight, "value", "weight_val_col")
-    subsetDataDataInt <- as.data.table(aggregate_map(toMIFint[region %in% unique(regSubsetAggregation$region)], regSubsetAggregation, by = "region",
-                                       weights = weight, weight_item_col = "region"))
+    subsetDataDataInt <- as.data.table(aggregate_map(toMIFint[region %in% unique(regSubsetAggregation$region)],
+                                                     regSubsetAggregation, by = "region",
+                                                     weights = weight, weight_item_col = "region"))
 
     # EUR and EU27 aggregation is always provided in the 21 region resolution
     toMIFint <- rbind(toMIFint, subsetDataDataInt[region %in% c("EUR", "EU27")])
     toMIFext <- rbind(toMIFext, subsetDataExt[region %in% c("EUR", "EU27")])
   }
+
   # World aggregation is always added
   toMIFint <- rbind(toMIFint, worldDataInt)
   toMIFext <- rbind(toMIFext, worldDataExt)
@@ -111,6 +112,14 @@ toolReportMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  reportEx
   }
 
   toMIF <- rbind(toMIFint, toMIFext)
+
+  if (!is.null(vars$analytic)) {
+    analyticVars <- rbindlist(vars$analytic, use.names = TRUE)
+    analyticVars[, variable := paste0(univocalName, "|", technology, "|", variable)]
+    analyticVars <- analyticVars[, c("region", "variable", "unit", "period", "value")]
+    toMIF <- rbind(analyticVars, toMIF)
+  }
+
   toMIF[, model := model][, scenario := scenario]
   toMIF <- as.quitte(toMIF)
 

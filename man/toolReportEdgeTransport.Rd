@@ -31,7 +31,8 @@ needed to create transportCompareScenarios}
 \item{reportREMINDinputdata}{Switch for activating reporting of REMIND input data}
 }
 \value{
-The function either returns the REMINDinputData if reportREMINDinputdata is enabled or the transport data in MIF format
+The function either returns the REMINDinputData if reportREMINDinputdata is
+         enabled or the transport data in MIF format
 }
 \description{
 This function reports the transport model results of an iterative or standalone run.
@@ -39,17 +40,21 @@ If not handed over in the function call, it first loads the transport model resu
 Then it calculates the output variables and brings the data into the right format.
 A basic output variables set is always calculated that is needed for all reporting packages.
 With the help of switches, different reporting packages can be generated:
-- reportTransportData activates the reduced reporting of transport variables in MIF format to be attached to a REMIND.mif.
+- reportTransportData activates the reduced reporting of transport variables in MIF format to be attached to
+ a REMIND.mif.
  It includes the variables needed to create REMIND compareScenarios2 and report results for projects
 - reportTransportData + reportExtendedTransportData activates further the extended reporting of transport variables
  and if storeData is activated as well, triggers the generation of a seperate transport.MIF.
- It includes the reduced reporting and additional transport variables for a detailed analysis of the transport sector
- using transportCompareScenarios provided in the edgeTransport package
-- reportTransportData + reportExtendedTransportData + reportAnalytics activates further the generation of additional variables
- for the analysis of the model behavior such as the inconvenience costs over iterations. They can be analyzed in the analytics
- sheet in compareScenariosTransport. It can be used in combination or without reportExtendedTransportData.
-- reportREMINDinputData activates the reporting of REMIND input data from a standalone run. This mode is used in the REMIND input data
- generation with all other switches turned off. It can be also used in combination with the other switches.
+ It includes the reduced reporting and additional transport variables for a detailed analysis of the transport
+ sector using transportCompareScenarios provided in the edgeTransport package
+- reportTransportData + reportExtendedTransportData + reportAnalytics activates further the generation of
+ additional variables
+ for the analysis of the model behavior such as the inconvenience costs over iterations. They can be analyzed
+ in the analytics sheet in compareScenariosTransport. It can be used in combination or without
+ reportExtendedTransportData.
+- reportREMINDinputData activates the reporting of REMIND input data from a standalone run. This mode is used
+ in the REMIND input data generation with all other switches turned off. It can be also used in combination
+ with the other switches.
 }
 \author{
 Johanna Hoppe

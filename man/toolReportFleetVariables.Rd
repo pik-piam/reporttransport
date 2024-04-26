@@ -13,6 +13,9 @@ toolReportFleetVariables(salesData, vehiclesConstrYears, helpers)
 
 \item{helpers}{list of helpers}
 }
+\value{
+xx
+}
 \description{
 Variables like energy intensity and capital costs are linked to the
 construction year of a vehicle.

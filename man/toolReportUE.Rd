@@ -7,16 +7,15 @@
 toolReportUE(FEdemand, helpers)
 }
 \arguments{
-\item{helpers}{}
+\item{FEdemand}{xx}
 
-\item{salesData}{}
+\item{helpers}{xx}
+}
+\value{
+xx
 }
 \description{
-Variables like energy intensity and capital costs are linked to the 
-construction year of a vehicle.
-As energy intensity and capital costs change over time for new sales, the composition 
-of the fleet from vehicles of different construction years needs to be taken into account 
-to report these variables.
+Report variables in relation to the vehicle fleet.
 }
 \author{
 Johanna Hoppe

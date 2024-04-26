@@ -7,7 +7,14 @@
 aggregateVariables(vars, mapAggregation, weight = NULL)
 }
 \arguments{
-\item{helpers}{}
+\item{vars}{xx}
+
+\item{mapAggregation}{xx}
+
+\item{weight}{xx}
+}
+\value{
+xx
 }
 \description{
 Variables like energy intensity and capital costs are linked to the

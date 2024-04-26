@@ -2,19 +2,20 @@
 % Please edit documentation in R/reportAnalyticsVarSet.R
 \name{reportAnalyticsVarSet}
 \alias{reportAnalyticsVarSet}
-\title{Report variables in relation to the vehicle fleet.}
+\title{Report analytics variable set}
 \usage{
-reportAnalyticsVarSet()
+reportAnalyticsVarSet(data, timeResReporting)
 }
 \arguments{
-\item{helpers}{}
+\item{data}{List that contains the model results to report the analytics variable set}
+
+\item{timeResReporting}{Timesteps to be reported}
+}
+\value{
+Analytics variable set
 }
 \description{
-Variables like energy intensity and capital costs are linked to the
-construction year of a vehicle.
-As energy intensity and capital costs change over time for new sales, the composition
-of the fleet from vehicles of different construction years needs to be taken into account
-to report these variables.
+Report analytics variable set
 }
 \author{
 Johanna Hoppe

@@ -1,24 +1,26 @@
 #'Report the split of liquids and gases into fossil|bio|hydrogen
 #'
 #' @param dtFE Final energy data for liquids and gases
-#' @param gdxPath Path to REMIND gdx, which contains the share of the various production routes for liquid and gaseous energy carriers
+#' @param gdxPath Path to REMIND gdx, which contains the share of the various production routes
+#'                for liquid and gaseous energy carriers
 #' @param helpers List of helpers
 #'
 #' @returns Final energy for liquids and gases split into fossil|bio|hydrogen
 #' @author Johanna Hoppe
 #' @importFrom gdx readGDX
-#' @importFrom rmndt magpie2dt
+#' @importFrom rmndt magpie2dt approx_dt
 #' @import data.table
 #' @export
 
 toolReportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting, helpers) {
 
-  calcSplit <- function(REMINDsegment, dataREMIND, splitOverall, timeResReporting) {
+  calcSplit <- function(REMINDsegment, dataREMIND, splitOverall, timeResReporting) {                                     # nolint: object_name_linter
 
     # Final energy carrier types liquids and gases consist of the following secondary energy carrier types in REMIND
     mixedCarrierTypes <- c("seliqfos", "seliqbio", "seliqsyn", "segafos", "segabio", "segasyn")
-    # Final energy carrier type liquids used in LDVs is listed under "fepet" in REMIND and liquids used for other modes (except for bunkers)
-    # are listed under "fedie". The emissions from these energy carrier types fall under the effort sharing regulation(ES).
+    # Final energy carrier type liquids used in LDVs is listed under "fepet" in REMIND and liquids used for other
+    # modes (except for bunkers) are listed under "fedie". The emissions from these energy carrier types fall
+    # under the effort sharing regulation(ES).
     # For gases there is no differentiation between LDVs and other modes + there are not used in bunkers at all
     dataREMIND <- switch(
       REMINDsegment,
@@ -34,11 +36,14 @@ toolReportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting
     dataREMIND <- merge(dummy, dataREMIND, by = intersect(names(dataREMIND), names(dummy)), all = TRUE)
     dataREMIND[is.na(value), value := 0]
 
-    dataLiquids <- merge(dataREMIND[from %in% mixedCarrierTypes[grepl(".*liq.*", mixedCarrierTypes)]], splitOverall$liqBioToSyn, by = c("region", "period"))
-    dataGases <- merge(dataREMIND[from %in% mixedCarrierTypes[grepl(".*ga.*", mixedCarrierTypes)]], splitOverall$gasesBioToSyn, by = c("region", "period"))
+    dataLiquids <- merge(dataREMIND[from %in% mixedCarrierTypes[grepl(".*liq.*", mixedCarrierTypes)]],
+                         splitOverall$liqBioToSyn, by = c("region", "period"))
+    dataGases <- merge(dataREMIND[from %in% mixedCarrierTypes[grepl(".*ga.*", mixedCarrierTypes)]],
+                       splitOverall$gasesBioToSyn, by = c("region", "period"))
 
     # calc shares liquids (synfuels -> Liquids|Hydrogen)
-    # the fossil share is kept constant, the remaining amount is distributed according to the biotosynshareoverall and the synToBioShareOverall
+    # the fossil share is kept constant, the remaining amount is distributed according to the
+    # biotosynshareoverall and the synToBioShareOverall
     # e.g. 500 -> 300 is disrtributed to fossil (in accordance to fossil share)
     # remaining 200 is distributed liked this: bio -> 200 * biotosynshareoverall, syn <- 200 * synToBioShareOverall
     dataLiquids[, Fossil := value[from == "seliqfos"] / sum(value), by = c("region", "period")]
@@ -48,31 +53,38 @@ toolReportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting
                 * synToBioShareOverall, by = c("region", "period")]
     cols <- c("region", "period", "Fossil", "Hydrogen", "Biomass")
     sharesLiquids <- unique(dataLiquids[, ..cols])
-    sharesLiquids <- melt(sharesLiquids, id.vars = c("region", "period"), variable.name = "fuel")[, variable := paste0("Share|Liquids|", fuel)][, technology := "Liquids"]
+    sharesLiquids <- melt(sharesLiquids, id.vars = c("region", "period"), variable.name = "fuel")
+    sharesLiquids[, variable := paste0("Share|Liquids|", fuel)][, technology := "Liquids"]
 
     # calc shares gases i.a. (syngases -> Gases|Hydrogen)
     if (nrow(dataGases) > 0) {
-      dataGases[, Fossil := ifelse(!sum(value) == 0, value[from == "segafos"] / sum(value), 0), by = c("region", "period")]
+      dataGases[, Fossil := ifelse(!sum(value) == 0, value[from == "segafos"] / sum(value), 0),
+                by = c("region", "period")]
       dataGases[, Biomass := ifelse(!sum(value) == 0, sum(value[from %in% c("segabio", "segasyn")]) / sum(value)
                                     *  bioToSynShareOverall, 0), by = c("region", "period")]
       dataGases[, Hydrogen := ifelse(!sum(value) == 0, sum(value[from %in% c("segabio", "segasyn")]) / sum(value)
                                      * synToBioShareOverall, 0), by = c("region", "period")]
       sharesGases <- unique(dataGases[, ..cols])
-      sharesGases <- melt(sharesGases, id.vars = c("region", "period"), variable.name = "fuel")[, variable := paste0("Share|Gases|", fuel)][, technology := "Gases"]
+      sharesGases <- melt(sharesGases, id.vars = c("region", "period"), variable.name = "fuel")
+      sharesGases[, variable := paste0("Share|Gases|", fuel)][, technology := "Gases"]
       shares <- rbind(sharesLiquids, sharesGases)
 
-    } else {shares <- sharesLiquids}
+    } else {
+      shares <- sharesLiquids
+    }
 
     # apply low time resolution
     shares <- approx_dt(shares, timeResReporting, "period", "value", extrapolate = TRUE)
     shares[, sum := sum(value), by = c("region", "period", "technology")]
 
-    if (anyNA(shares) | nrow(shares[(sum < 0.9999 | sum > 1.0001) & sum != 0])) stop("Something went wrong with the mixed carrier splitting. Please check calcSplit()")
+    if (anyNA(shares) | nrow(shares[(sum < 0.9999 | sum > 1.0001) & sum != 0])) {
+      stop("Something went wrong with the mixed carrier splitting. Please check calcSplit()")
+    }
     shares[, c("sum") := NULL]
     return(shares)
   }
 
-  applySplit <- function(REMINDsegment, FEdata, mixedCarrierSplits, helpers) {
+  applySplit <- function(REMINDsegment, FEdata, mixedCarrierSplits, helpers) {                                            # nolint: object_name_linter
 
     # map EDGE-T categories on segements
     modes <- list(
@@ -87,7 +99,8 @@ toolReportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting
     mixedCarrierSplits[, variable := NULL]
     setnames(mixedCarrierSplits, "value", "share")
 
-    splittedFEdata <- merge(splittedFEdata, mixedCarrierSplits, by = c("region", "period", "technology"), allow.cartesian = TRUE, all.x = TRUE)
+    splittedFEdata <- merge(splittedFEdata, mixedCarrierSplits, by = c("region", "period", "technology"),
+                            allow.cartesian = TRUE, all.x = TRUE)
     splittedFEdata[, value := value * share]
     splittedFEdata[, c("share") := NULL]
 
@@ -99,35 +112,43 @@ toolReportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting
   # for reading a variable from a gdxPath some transformation steps are necessary to get a data.table
   # therefore readgdx from gdxdt is used
   demFeSector <- magpie2dt(readGDX(gdxPath, "vm_demFeSector", field = "l", restore_zeros = FALSE))
-  setnames(demFeSector, c("all_regi", "all_enty", "all_enty1", "emi_sectors", "all_emiMkt", "ttot"), c("region", "from", "to", "emiSectors", "type", "period"))
+  setnames(demFeSector, c("all_regi", "all_enty", "all_enty1", "emi_sectors", "all_emiMkt", "ttot"),
+           c("region", "from", "to", "emiSectors", "type", "period"))
   # Select transport sector
   demFeSector <- demFeSector[emiSectors == "trans"]
   # "vm_demFeSector" contains reasonable data from 2005 onward (before REMIND is not running the optimization)
   demFeSector <-  demFeSector[period >= 2005]
 
   # For now, REMIND cannot really differentiate which segment in transport is getting how much bio/syn fuels.
-  # Therefore we keep the share of bio to synfuels constant in each segment and equal to to the share in transport overall.
+  # Therefore we keep the share of bio to synfuels constant in each segment and equal to to the share in transport
+  # overall.
   # The fossil share is kept for each segment and the remaining FE is splitted accordingly.
-  # Both syn und bio share needs to be calculated, as both can be 0 or either one of them (soo 1 - the other does not work)
+  # Both syn und bio share needs to be calculated, as both can be 0 or either one of them
+  # (so 1 - the other does not work)
   liqBioToSyn <- demFeSector[to %in% c("fepet", "fedie") & from %in% c("seliqsyn", "seliqbio")]
   liqBioToSyn <- liqBioToSyn[, sumbio := sum(value[from == "seliqbio"]), by = c("region", "period")]
   liqBioToSyn <- liqBioToSyn[, sumsyn := sum(value[from == "seliqsyn"]), by = c("region", "period")]
   liqBioToSyn <- liqBioToSyn[, sum := sum(value), by = c("region", "period")]
-  liqBioToSyn <- liqBioToSyn[, bioToSynShareOverall := ifelse(!sum(value) == 0, sumbio / sum, 0), by = c("region", "period")]
-  liqBioToSyn <- liqBioToSyn[, synToBioShareOverall := ifelse(!sum(value) == 0, sumsyn / sum, 0), by = c("region", "period")]
+  liqBioToSyn <- liqBioToSyn[, bioToSynShareOverall := ifelse(!sum(value) == 0, sumbio / sum, 0),
+                             by = c("region", "period")]
+  liqBioToSyn <- liqBioToSyn[, synToBioShareOverall := ifelse(!sum(value) == 0, sumsyn / sum, 0),
+                             by = c("region", "period")]
   liqBioToSyn <- unique(liqBioToSyn[, .(region, period, bioToSynShareOverall, synToBioShareOverall)])
   gasesBioToSyn <- demFeSector[to == "fegat" & from %in% c("segasyn", "segabio")]
   gasesBioToSyn <- gasesBioToSyn[, sumbio := sum(value[from == "segabio"]), by = c("region", "period")]
   gasesBioToSyn <- gasesBioToSyn[, sumsyn := sum(value[from == "segasyn"]), by = c("region", "period")]
   gasesBioToSyn <- gasesBioToSyn[, sum := sum(value), by = c("region", "period")]
-  gasesBioToSyn <- gasesBioToSyn[, bioToSynShareOverall := ifelse(!sum(value) == 0, sumbio / sum, 0), by = c("region", "period")]
-  gasesBioToSyn <- gasesBioToSyn[, synToBioShareOverall := ifelse(!sum(value) == 0, sumsyn / sum, 0), by = c("region", "period")]
+  gasesBioToSyn <- gasesBioToSyn[, bioToSynShareOverall := ifelse(!sum(value) == 0, sumbio / sum, 0),
+                                 by = c("region", "period")]
+  gasesBioToSyn <- gasesBioToSyn[, synToBioShareOverall := ifelse(!sum(value) == 0, sumsyn / sum, 0),
+                                 by = c("region", "period")]
   gasesBioToSyn <- unique(gasesBioToSyn[, .(region, period, bioToSynShareOverall, synToBioShareOverall)])
 
   splitTransportOverall <- list(liqBioToSyn = liqBioToSyn, gasesBioToSyn = gasesBioToSyn)
 
-  REMINDsegments <- c("LDVs", "nonLDVs", "bunker")
-  splitShares <- sapply(REMINDsegments, calcSplit, demFeSector, splitTransportOverall, timeResReporting, simplify = FALSE, USE.NAMES = TRUE)
+  REMINDsegments <- c("LDVs", "nonLDVs", "bunker")                                                                     # nolint: object_name_linter
+  splitShares <- sapply(REMINDsegments, calcSplit, demFeSector, splitTransportOverall, timeResReporting,               # nolint: undesirable_function_linter
+                        simplify = FALSE, USE.NAMES = TRUE)
 
   # Make sure that only Liquids are supplied
   dtFE <- copy(dtFE)
