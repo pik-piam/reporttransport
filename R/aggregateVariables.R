@@ -136,7 +136,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   }
 
   exclude <- c("Sales", "Vintages", "Stock")
-  varsForFurtherAggregation <- vars[variable %in% exclude]
+  varsForFurtherAggregation <- vars[!variable %in% exclude]
 
   # Aggregate sectors with bunkers --------------------------------------------------------------------
   aggrvars <- copy(varsForFurtherAggregation)

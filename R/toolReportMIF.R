@@ -23,8 +23,7 @@
 
 toolReportMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  reportExtendedTransportData = FALSE) {       # nolint: object_name_linter
 
-  rownum <- name <- fuel <- aggrReg <- variable <- model <- scenario <- reportName <- ..colsToRename <-
-    ..colsUnchanged <- region <- univocalName <- technology <- NULL
+  rownum <- name <- fuel <- aggrReg <- variable <- reportName <- region <- univocalName <- technology <- NULL
 
   applyReportingNames <- function(vars, mapNames) {
 
