@@ -16,8 +16,8 @@
 
 aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
 
-  rownum <- sum <- toKeep <- sum <- weight <- variableName <- variable <- cols <- value <-
-    ..after <- . <- ..cols <- ..keep <- ..keepCols <- fuel <- sector <- technology <- subsectorL1 <- NULL
+  rownum <- sum <- toKeep <- sum <- variableName <- variable <- cols <- value <-
+    . <- fuel <- sector <- technology <- subsectorL1 <- NULL
 
   filterVarsToAggregate <- function(aggrvars, cols, aggrOrder, keep = NULL) {
     # Select entries that feature the aggregation level
@@ -138,23 +138,38 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   exclude <- c("Sales", "Vintages", "Stock")
   varsForFurtherAggregation <- vars[!variable %in% exclude]
 
-  # Aggregate sectors with bunkers --------------------------------------------------------------------
+  # Aggregate Pass with bunkers --------------------------------------------------------------------
   aggrvars <- copy(varsForFurtherAggregation)
-  aggrvars[grepl(".*Pass.*", sector), sector := "|Pass with bunkers"]
-  aggrvars[grepl(".*Freight.*", sector), sector := "|Freight with bunkers"]
-  byCols <- c("region", "sector", "variable", "unit", "period")
+  aggrvars <- aggrvars[grepl(".*Pass.*", sector)]
+  byCols <- c("region", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
-  aggrvars[, variable := paste0(variable, "|Transport", sector)][, sector := NULL]
+  aggrvars[, variable := paste0(variable, "|Transport|Pass with bunkers")]
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
   # Aggregate sectors with bunkers keeping technology level
   aggrvars <- copy(varsForFurtherAggregation)
   # Active modes need to be excluded as they dont have a technology
   aggrvars <- aggrvars[!is.na(technology)]
-  aggrvars[grepl(".*Pass.*", sector), sector := "|Pass with bunkers"]
-  aggrvars[grepl(".*Freight.*", sector), sector := "|Freight with bunkers"]
-  byCols <- c("region",  "sector", "technology", "variable", "unit", "period")
+  aggrvars <- aggrvars[grepl(".*Pass.*", sector)]
+  byCols <- c("region",  "technology", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
-  aggrvars[, variable := paste0(variable, "|Transport", sector, technology)][, c("sector", "technology") := NULL]
+  aggrvars[, variable := paste0(variable, "|Transport|Pass with bunkers", technology)][, c("technology") := NULL]
+  aggregatedvars <- rbind(aggregatedvars, aggrvars)
+
+  # Aggregate Freight with bunkers --------------------------------------------------------------------
+  aggrvars <- copy(varsForFurtherAggregation)
+  aggrvars <- aggrvars[grepl(".*Freight.*", sector)]
+  byCols <- c("region", "variable", "unit", "period")
+  aggrvars <- aggregateLevel(aggrvars, byCols, weight)
+  aggrvars[, variable := paste0(variable, "|Transport|Freight with bunkers")]
+  aggregatedvars <- rbind(aggregatedvars, aggrvars)
+  # Aggregate sectors with bunkers keeping technology level
+  aggrvars <- copy(varsForFurtherAggregation)
+  # Active modes need to be excluded as they dont have a technology
+  aggrvars <- aggrvars[!is.na(technology)]
+  aggrvars <- aggrvars[grepl(".*Freight.*", sector)]
+  byCols <- c("region",  "technology", "variable", "unit", "period")
+  aggrvars <- aggregateLevel(aggrvars, byCols, weight)
+  aggrvars[, variable := paste0(variable, "|Transport|Freight with bunkers", technology)][, c("technology") := NULL]
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
 
   # Aggregate transport overall without bunkers --------------------------------------------------------------------

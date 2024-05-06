@@ -15,7 +15,7 @@
 
 reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting, helpers) {
 
-  all <- value <- fossil <- biomass <- hydrogen <- variable <- type <- from <- bioToSynShareOverall <-
+  all <- value <- Fossil <- Biomass <- Hydrogen <- variable <- type <- from <- bioToSynShareOverall <-
     synToBioShareOverall <- ..cols <- fuel <- technology <- univocalName <- share <- emiSectors <- period <-
     to <- from <- sumbio <- sumsyn <- . <- region <- unit <- NULL
 
@@ -51,23 +51,23 @@ reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting, he
     # biotosynshareoverall and the synToBioShareOverall
     # e.g. 500 -> 300 is disrtributed to fossil (in accordance to fossil share)
     # remaining 200 is distributed liked this: bio -> 200 * biotosynshareoverall, syn <- 200 * synToBioShareOverall
-    dataLiquids[, fossil := value[from == "seliqfos"] / sum(value), by = c("region", "period")]
-    dataLiquids[, biomass := sum(value[from %in% c("seliqbio", "seliqsyn")]) /
+    dataLiquids[, Fossil := value[from == "seliqfos"] / sum(value), by = c("region", "period")]
+    dataLiquids[, Biomass := sum(value[from %in% c("seliqbio", "seliqsyn")]) /
                   sum(value) * bioToSynShareOverall, by = c("region", "period")]
-    dataLiquids[, hydrogen := sum(value[from %in% c("seliqbio", "seliqsyn")]) / sum(value)
+    dataLiquids[, Hydrogen := sum(value[from %in% c("seliqbio", "seliqsyn")]) / sum(value)
                 * synToBioShareOverall, by = c("region", "period")]
-    cols <- c("region", "period", "fossil", "hydrogen", "biomass")
+    cols <- c("region", "period", "Fossil", "Hydrogen", "Biomass")
     sharesLiquids <- unique(dataLiquids[, ..cols])
     sharesLiquids <- melt(sharesLiquids, id.vars = c("region", "period"), variable.name = "fuel")
     sharesLiquids[, variable := paste0("Share|Liquids|", fuel)][, technology := "Liquids"]
 
     # calc shares gases i.a. (syngases -> Gases|hydrogen)
     if (nrow(dataGases) > 0) {
-      dataGases[, fossil := ifelse(!sum(value) == 0, value[from == "segafos"] / sum(value), 0),
+      dataGases[, Fossil := ifelse(!sum(value) == 0, value[from == "segafos"] / sum(value), 0),
                 by = c("region", "period")]
-      dataGases[, biomass := ifelse(!sum(value) == 0, sum(value[from %in% c("segabio", "segasyn")]) / sum(value)
+      dataGases[, Biomass := ifelse(!sum(value) == 0, sum(value[from %in% c("segabio", "segasyn")]) / sum(value)
                                     *  bioToSynShareOverall, 0), by = c("region", "period")]
-      dataGases[, hydrogen := ifelse(!sum(value) == 0, sum(value[from %in% c("segabio", "segasyn")]) / sum(value)
+      dataGases[, Hydrogen := ifelse(!sum(value) == 0, sum(value[from %in% c("segabio", "segasyn")]) / sum(value)
                                      * synToBioShareOverall, 0), by = c("region", "period")]
       sharesGases <- unique(dataGases[, ..cols])
       sharesGases <- melt(sharesGases, id.vars = c("region", "period"), variable.name = "fuel")

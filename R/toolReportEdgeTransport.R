@@ -5,41 +5,41 @@
 #'Then it calculates the output variables and brings the data into the right format.
 #'A basic output variables set is always calculated that is needed for all reporting packages.
 #'With the help of switches, different reporting packages can be generated:
-#'- reportTransportData activates the reduced reporting of transport variables in MIF format to be attached to
+#'- isTransportReported activates the reduced reporting of transport variables in MIF format to be attached to
 #'  a REMIND.mif.
 #'  It includes the variables needed to create REMIND compareScenarios2 and report results for projects
-#'- reportTransportData + reportExtendedTransportData activates further the extended reporting of transport variables
-#'  and if storeData is activated as well, triggers the generation of a seperate transport.MIF.
+#'- isTransportReported + isTransportExtendedReported activates further the extended reporting of transport variables
+#'  and if isStored is activated as well, triggers the generation of a seperate transport.MIF.
 #'  It includes the reduced reporting and additional transport variables for a detailed analysis of the transport
 #'  sector using transportCompareScenarios provided in the edgeTransport package
-#'- reportTransportData + reportExtendedTransportData + reportAnalytics activates further the generation of
+#'- isTransportReported + isTransportExtendedReported + isAnalyticsReported activates further the generation of
 #'  additional variables
 #'  for the analysis of the model behavior such as the inconvenience costs over iterations. They can be analyzed
 #'  in the analytics sheet in compareScenariosTransport. It can be used in combination or without
-#'  reportExtendedTransportData.
-#'- reportREMINDinputData activates the reporting of REMIND input data from a standalone run. This mode is used
+#'  isTransportExtendedReported.
+#'- isREMINDinputReported activates the reporting of REMIND input data from a standalone run. This mode is used
 #'  in the REMIND input data generation with all other switches turned off. It can be also used in combination
 #'  with the other switches.
 #'
 #' @param folderPath Path to the EDGE-Transport output folder of an iterative or standalone run
 #' @param data List of model results. If not handed over, the data is loaded from the RDS files in the output folder
-#' @param reportTransportData Switch for activating the reporting of transport data in MIF format
-#' @param reportExtendedTransportData Switch for activating the reporting of detailed transport data im MIF format
+#' @param isTransportReported Switch for activating the reporting of transport data in MIF format
+#' @param isTransportExtendedReported Switch for activating the reporting of detailed transport data im MIF format
 #'                                    needed to create transportCompareScenarios
-#' @param reportAnalytics Switch for activating reporting of model analytics data
-#' @param reportREMINDinputData Switch for activating reporting of REMIND input data
-#' @param storeData Switch for activating data storage and creating the transport.MIF file
+#' @param isAnalyticsReported Switch for activating reporting of model analytics data
+#' @param isREMINDinputReported Switch for activating reporting of REMIND input data
+#' @param isStored Switch for activating data storage and creating the transport.MIF file
 #'
-#' @returns The function either returns the REMINDinputData if reportREMINDinputdata is
+#' @returns The function either returns the REMINDinputData if isREMINDinputReported is
 #'          enabled or the transport data in MIF format
 #' @author Johanna Hoppe
 #' @importFrom quitte write.mif
 #' @import data.table
 #' @export
 
-toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, reportTransportData = TRUE,
-                                    reportExtendedTransportData = FALSE, reportAnalytics = FALSE,
-                                    reportREMINDinputData = FALSE, storeData = TRUE) {
+toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, isTransportReported = TRUE,
+                                    isTransportExtendedReported = FALSE, isAnalyticsReported = FALSE,
+                                    isREMINDinputReported = FALSE, isStored = TRUE) {
 
   variable <- NULL
 
@@ -66,7 +66,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
     data$ESdemandFVsalesLevel <- readRDS(file.path(folderPath, "4_Output", "ESdemandFVsalesLevel.RDS"))
 
     # load files for standard and extended transport reporting
-    if (reportTransportData) {
+    if (isTransportReported) {
       data$upfrontCAPEXtrackedFleet <- readRDS(file.path(folderPath, "2_InputDataPolicy",
                                                          "upfrontCAPEXtrackedFleet.RDS"))
       gdxPath <- list.files(path = folderPath, pattern = "\\.gdx$", full.names = TRUE)
@@ -80,7 +80,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
       }
       data$gdxPath <- gdxPath
     }
-    if (reportAnalytics) {
+    if (isAnalyticsReported) {
       # load files for analytic purposes
       fleetFilesIterations <- list.files(path = file.path(folderPath, "4_Output"),
                                          pattern = "fleetVehNumbersIteration.*", full.names = TRUE)
@@ -90,7 +90,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
                                                   full.names = TRUE)
       data$endogenousCostsIterations <- lapply(endogenousCostFilesIterations, readRDS)
     }
-    if (reportREMINDinputData) {
+    if (isREMINDinputReported) {
       # load files for REMIND input data only reporting
       data$annualMileage <- readRDS(file.path(folderPath, "1_InputDataRaw", "annualMileage.RDS"))
       data$timeValueCosts <- readRDS(file.path(folderPath, "1_InputDataRaw", "timeValueCosts.RDS"))
@@ -108,7 +108,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
   baseVarSet <- toolReportBaseVarSet(data = data, timeResReporting = timeResReporting)
   outputVars <- baseVarSet
 
-  if (reportTransportData) {
+  if (isTransportReported) {
     transportVarSet <- reportTransportVarSet(data = data,
                                              baseVarSet = baseVarSet,
                                              timeResReporting = timeResReporting)
@@ -119,14 +119,14 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
     outputVars[["ext"]][["fleetFEdemand"]] <- NULL
     outputVars$ext <- append(outputVars$ext, transportVarSet$ext)
     outputVars$int <- append(outputVars$int, transportVarSet$int)
-    if (reportExtendedTransportData) {
+    if (isTransportExtendedReported) {
       extendedTransportVarSet <- reportExtendedTransportVarSet(data = data,
                                                                baseVarSet = baseVarSet,
                                                                timeResReporting = timeResReporting)
       outputVars$ext <- append(outputVars$ext, extendedTransportVarSet$ext)
       outputVars$int <- append(outputVars$int, extendedTransportVarSet$int)
     }
-    if (reportAnalytics) {
+    if (isAnalyticsReported) {
       analyticsVarSet <- reportAnalyticsVarSet(data = data, timeResReporting = timeResReporting)
       outputVars$analytic <- analyticsVarSet
     }
@@ -135,23 +135,23 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
   #########################################################################
   ## Transfer output variables to MIF format
   #########################################################################
-  if (reportTransportData) {
-    reporting <- toolReportMIF(vars = outputVars,
-                               GDPMER = data$GDPMER,
-                               helpers = data$helpers,
-                               scenario = paste0(data$transportPolScen, " ", data$SSPscen),
-                               model = "EDGE-T",
-                               gdx = data$gdxPath,
-                               reportExtendedTransportData = reportExtendedTransportData)
+  if (isTransportReported) {
+    reporting <- convertToMIF(vars = outputVars,
+                              GDPMER = data$GDPMER,
+                              helpers = data$helpers,
+                              scenario = paste0(data$transportPolScen, " ", data$SSPscen),
+                              model = "EDGE-T",
+                              gdx = data$gdxPath,
+                              isTransportExtendedReported = isTransportExtendedReported)
 
-    if (storeData) write.mif(reporting, file.path(folderPath, "Transport.mif"))
+    if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))
   }
 
   #########################################################################
   ## Report REMIND input data
   #########################################################################
-  if (reportREMINDinputData) {                                                                  # nolint: object_name_linter
-    REMINDinputData <- toolReportREMINDinputDataVarSet(baseVarSet$ext$fleetESdemand,            # nolint: object_name_linter
+  if (isREMINDinputReported) {                                                                  # nolint: object_name_linter
+    REMINDinputData <- toolReportREMINDinputVarSet(baseVarSet$ext$fleetESdemand,            # nolint: object_name_linter
                                                        baseVarSet$ext$fleetFEdemand,
                                                        baseVarSet$int$fleetEnergyIntensity,
                                                        baseVarSet$int$fleetCost[variable == "Capital costs"],
@@ -166,7 +166,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
                                                        data$transportPolScen,
                                                        data$helpers)
     reporting <- REMINDinputData
-    if (storeData) toolStoreData(outputFolder = folderPath, REMINDinputData = REMINDinputData)
+    if (isStored) storeData(outputFolder = folderPath, REMINDinputData = REMINDinputData)
   }
 
   return(reporting)

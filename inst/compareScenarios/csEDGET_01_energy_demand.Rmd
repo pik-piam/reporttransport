@@ -321,7 +321,7 @@ walk(c("FE|Transport|Pass|Aviation", items[1:5], "FE|Transport|Pass|Road|LDV", i
 
 ### Freight
 ```{r}
-totWithBunkersers <- "FE|Transport|Freight edge"
+totWithBunkersers <- "FE|Transport|Freight with bunkers"
 totWithoutBunkers <- "FE|Transport|Freight"
 items <- c("FE|Transport|Bunkers|Freight|International Shipping",
            "FE|Transport|Freight|Domestic Shipping",

@@ -11,9 +11,7 @@
 #' @import data.table
 #' @export
 
-toolStoreData <- function(outputFolder, outputRaw = NULL, ...) {
-
-  gdxPath <- NULL
+storeData <- function(outputFolder, outputRaw = NULL, ...) {
 
   allocateFile <- function(varName) {
     subfolder <- NULL

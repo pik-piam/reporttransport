@@ -1,10 +1,4 @@
-#'Report variables in relation to the vehicle fleet.
-#'
-#'Variables like energy intensity and capital costs are linked to the
-#'construction year of a vehicle.
-#'As energy intensity and capital costs change over time for new sales, the composition
-#'of the fleet from vehicles of different construction years needs to be taken into account
-#'to report these variables.
+#'Convert variables into model intercomparison format MIF
 #'
 #' @param vars Variables to be aggregated and converted into MIF format
 #' @param GDPMER GDP on market exchange rate basis to be used as weight for regional aggregation
@@ -12,7 +6,7 @@
 #' @param scenario Scenario name in MIF entry
 #' @param model Model name in MIF entry
 #' @param gdx GDX file containing further regional aggregation levels
-#' @param reportExtendedTransportData Switch to enable the extended transport variable set
+#' @param isTransportExtendedReported Switch to enable the extended transport variable set
 #'
 #' @returns Variables provided in different aggregation levels in MIF format
 #' @author Johanna Hoppe
@@ -21,7 +15,7 @@
 #' @import data.table
 #' @export
 
-toolReportMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  reportExtendedTransportData = FALSE) {       # nolint: object_name_linter
+convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTransportExtendedReported = FALSE) {       # nolint: object_name_linter
 
   rownum <- name <- fuel <- aggrReg <- variable <- reportName <- region <- univocalName <- technology <- NULL
 
@@ -110,7 +104,7 @@ toolReportMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  reportEx
   toMIFext <- rbind(toMIFext, worldDataExt)
 
   # Other subset region are only provided in the extended reporting
-  if (reportExtendedTransportData == TRUE) {
+  if (isTransportExtendedReported == TRUE) {
     toMIFint <- rbind(toMIFint, subsetDataDataInt[!region %in% c("EUR", "EU27")])
     toMIFext <- rbind(toMIFext, subsetDataExt[!region %in% c("EUR", "EU27")])
   }
