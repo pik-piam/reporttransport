@@ -16,6 +16,7 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
 
   # Switch from mixed time resolution to the reporting time resolution for all vars------------
   loadFactor <- copy(data$loadFactor)[period %in% timeResReporting]
+  baseVarSet$ext$fleetFEdemand <- baseVarSet$ext$fleetFEdemand[period %in% timeResReporting]
 
   # Report useful energy-----------------------------------------------------------------------
   fleetUEdemand <- toolReportUE(FEdemand = baseVarSet$ext$fleetFEdemand,

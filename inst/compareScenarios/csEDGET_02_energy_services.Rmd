@@ -10,8 +10,8 @@ items <- c("ES|Transport|Bunkers|Pass|International Aviation",
            "ES|Transport|Pass|Road|Bus",
            "ES|Transport|Pass|Road|LDV|Four Wheelers",
            "ES|Transport|Pass|Road|LDV|Two Wheelers",
-           "ES|Transport|Pass|Road|Non-Motorized|Walking",
-           "ES|Transport|Pass|Road|Non-Motorized|Cycling")
+           "ES|Transport|Pass|Non-motorized|Walk",
+           "ES|Transport|Pass|Non-motorized|Cycle")
 showAreaAndBarPlots(data, items, totWithBunkers,  orderVars = "user")
 showAreaAndBarPlots(data, items[2 : 9], totWithoutBunkers, orderVars = "user")
 showAreaAndBarPlots(data, items, totWithBunkers, fill = TRUE, orderVars = "user")

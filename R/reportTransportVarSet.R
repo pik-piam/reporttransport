@@ -19,6 +19,9 @@ reportTransportVarSet <- function(data, baseVarSet, timeResReporting) {
                                          FUN = function(x) x <- x[period %in% timeResReporting])
   data$enIntensity <- data$enIntensity[period %in% timeResReporting]
   data$upfrontCAPEXtrackedFleet <- data$upfrontCAPEXtrackedFleet[period %in% timeResReporting]
+  baseVarSet$ext$fleetFEdemand <- baseVarSet$ext$fleetFEdemand[period %in% timeResReporting]
+  baseVarSet$ext$fleetESdemand <- baseVarSet$ext$fleetESdemand[period %in% timeResReporting]
+  baseVarSet$int$fleetCost <- baseVarSet$int$fleetCost[period %in% timeResReporting]
 
   # Report liquids and gases split----------------------------------------------------------------------
   varsFEcomposition <- baseVarSet$ext$fleetFEdemand[technology %in% c("Liquids", "Gases")]

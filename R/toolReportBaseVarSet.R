@@ -31,16 +31,9 @@ toolReportBaseVarSet <- function(data, timeResReporting) {
                       data$fleetSizeAndComposition$fleetVehNumbersConstrYears, data$helpers)
   fleetCost <- rbind(fleetData$fleetCapCosts, aggregatedCosts[!variable == "Capital costs sales"])
 
-  # Switch from mixed time resolution to the reporting time resolution for all vars------------
-  # (this needs to happen after the reporting of the fleet data)
-  fleetESdemand <- fleetESdemand[period %in% timeResReporting]
-  fleetData <- lapply(fleetData, FUN = function(x) x <- x[period %in% timeResReporting])
-  loadFactor <- copy(data$loadFactor)[period %in% timeResReporting]
-  fleetCost <- fleetCost[period %in% timeResReporting]
-
   # Calculate final energy---------------------------------------------------------------------
   fleetFEdemand <- toolReportFE(fleetEnergyIntensity = fleetData$fleetEnergyIntensity, fleetESdemand = fleetESdemand,
-                                loadFactor = loadFactor, hybridElecShare = data$hybridElecShare, helpers = data$helpers)
+                                loadFactor = data$loadFactor, hybridElecShare = data$hybridElecShare, helpers = data$helpers)
 
   # Split extensive and intensive variables ---------------------------------------------------
   outputVarsExt <- list(fleetESdemand = fleetESdemand,

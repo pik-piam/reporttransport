@@ -7,11 +7,11 @@
 toolReportEdgeTransport(
   folderPath = file.path(".", "EDGE-T"),
   data = NULL,
-  reportTransportData = TRUE,
-  reportExtendedTransportData = FALSE,
-  reportAnalytics = FALSE,
-  reportREMINDinputData = FALSE,
-  storeData = TRUE
+  isTransportReported = TRUE,
+  isTransportExtendedReported = FALSE,
+  isAnalyticsReported = FALSE,
+  isREMINDinputReported = FALSE,
+  isStored = TRUE
 )
 }
 \arguments{
@@ -19,19 +19,19 @@ toolReportEdgeTransport(
 
 \item{data}{List of model results. If not handed over, the data is loaded from the RDS files in the output folder}
 
-\item{reportTransportData}{Switch for activating the reporting of transport data in MIF format}
+\item{isTransportReported}{Switch for activating the reporting of transport data in MIF format}
 
-\item{reportExtendedTransportData}{Switch for activating the reporting of detailed transport data im MIF format
+\item{isTransportExtendedReported}{Switch for activating the reporting of detailed transport data im MIF format
 needed to create transportCompareScenarios}
 
-\item{reportAnalytics}{Switch for activating reporting of model analytics data}
+\item{isAnalyticsReported}{Switch for activating reporting of model analytics data}
 
-\item{reportREMINDinputData}{Switch for activating reporting of REMIND input data}
+\item{isREMINDinputReported}{Switch for activating reporting of REMIND input data}
 
-\item{storeData}{Switch for activating data storage and creating the transport.MIF file}
+\item{isStored}{Switch for activating data storage and creating the transport.MIF file}
 }
 \value{
-The function either returns the REMINDinputData if reportREMINDinputdata is
+The function either returns the REMINDinputData if isREMINDinputReported is
          enabled or the transport data in MIF format
 }
 \description{
@@ -40,19 +40,19 @@ If not handed over in the function call, it first loads the transport model resu
 Then it calculates the output variables and brings the data into the right format.
 A basic output variables set is always calculated that is needed for all reporting packages.
 With the help of switches, different reporting packages can be generated:
-- reportTransportData activates the reduced reporting of transport variables in MIF format to be attached to
+- isTransportReported activates the reduced reporting of transport variables in MIF format to be attached to
  a REMIND.mif.
  It includes the variables needed to create REMIND compareScenarios2 and report results for projects
-- reportTransportData + reportExtendedTransportData activates further the extended reporting of transport variables
- and if storeData is activated as well, triggers the generation of a seperate transport.MIF.
+- isTransportReported + isTransportExtendedReported activates further the extended reporting of transport variables
+ and if isStored is activated as well, triggers the generation of a seperate transport.MIF.
  It includes the reduced reporting and additional transport variables for a detailed analysis of the transport
  sector using transportCompareScenarios provided in the edgeTransport package
-- reportTransportData + reportExtendedTransportData + reportAnalytics activates further the generation of
+- isTransportReported + isTransportExtendedReported + isAnalyticsReported activates further the generation of
  additional variables
  for the analysis of the model behavior such as the inconvenience costs over iterations. They can be analyzed
  in the analytics sheet in compareScenariosTransport. It can be used in combination or without
- reportExtendedTransportData.
-- reportREMINDinputData activates the reporting of REMIND input data from a standalone run. This mode is used
+ isTransportExtendedReported.
+- isREMINDinputReported activates the reporting of REMIND input data from a standalone run. This mode is used
  in the REMIND input data generation with all other switches turned off. It can be also used in combination
  with the other switches.
 }

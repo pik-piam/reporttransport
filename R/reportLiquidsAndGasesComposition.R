@@ -16,8 +16,8 @@
 reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting, helpers) {
 
   all <- value <- Fossil <- Biomass <- Hydrogen <- variable <- type <- from <- bioToSynShareOverall <-
-    synToBioShareOverall <- ..cols <- fuel <- technology <- univocalName <- share <- emiSectors <- period <-
-    to <- from <- sumbio <- sumsyn <- . <- region <- unit <- NULL
+    synToBioShareOverall <- fuel <- technology <- univocalName <- share <- emiSectors <- period <-
+      to <- from <- sumbio <- sumsyn <- . <- region <- unit <- NULL
 
   calcSplit <- function(REMINDsegment, dataREMIND, splitOverall, timeResReporting) {                                     # nolint: object_name_linter
 

@@ -78,8 +78,6 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-
-
 ## Busses
 ```{r}
 tot <- "Stock|Transport|Bus"
@@ -90,7 +88,6 @@ items <- c("Stock|Transport|Bus|Electric",
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
-
 
 ## Truck stock by size
 ```{r}

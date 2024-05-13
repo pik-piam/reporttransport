@@ -49,7 +49,7 @@ reportEmissions <- function(dtFE, gdxPath, prefix, helpers) {
   emi <- merge(dtFE, emissionFactors, by = c("to", "region", "period"), all.x = TRUE)
   emi[is.na(emissionFactor), emissionFactor := 0]
   ## calculate emissions and attribute variable and unit names
-  emi[, value := value * emissionFactor][, variable := paste0("Emi|CO2|", prefix)][, unit := "Mt CO2/yr"]
+  emi[, value := value * emissionFactor][, variable := paste0("Emi|CO2|Energy|", prefix)][, unit := "Mt CO2/yr"]
   emi[, c("to", "emissionFactor") := NULL]
 
   return(emi)

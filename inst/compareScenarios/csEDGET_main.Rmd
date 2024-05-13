@@ -17,9 +17,9 @@ output:
     number_sections: yes
 geometry: "a4paper,landscape,left = 0.5cm,right = 0.5cm,top = 0.5cm,bottom = 0.5cm,footnotesep=0.0cm,footskip = 0.1cm"
 params:
-  mifScen: ""
+  mifScen: "C:/Users/johannah/Documents/EDGE-Transport/2024-05-08_20.18.47SSP2EU-Mix2-SSP2EU/Transport.mif"
   mifScenNames: !r c()
-  mifHist: ""
+  mifHist: "C:/Users/johannah/Documents/EDGE-Transport/HistoricalData/historical_21.mif"
   yearsScen: !r c(seq(2005, 2060, 5), seq(2070, 2100, 10))
   yearsHist: !r c(seq(2010, 2020, 1), seq(2025, 2100, 5))
   yearsBarPlot: !r c(2010, 2030, 2050, 2100)
@@ -42,7 +42,6 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.width = params$figWidth,
                       fig.height = params$figHeight)
 ```
-
 
 ```{r libraries, include=FALSE}
 # kableExtra must not be loaded before the call of library(kableExtra) below,
@@ -241,7 +240,6 @@ data %>%
   data
 ```
 
-
 ```{r add gdp column}
 # Create a new column gdp with the value of GDP|PPP pCap (kUS$2005).
 data %>%
@@ -254,7 +252,6 @@ data %>%
   left_join(dataGDP, c("scenario", "region", "period")) ->
   data
 ```
-
 
 ```{r calcuate pGDP variables}
 # For all variables in following table, add a new variable to data with the name
@@ -296,7 +293,6 @@ options(mip.histRefModel = histRefModel)
 ```{r define plot functions}
 source("cs2_plot_functions.R", local = TRUE)
 ```
-
 
 ```{r sectionPaths, include=FALSE}
 if (length(params$sections) == 1 && params$sections == "all") {

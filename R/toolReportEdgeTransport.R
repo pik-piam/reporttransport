@@ -82,11 +82,11 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
     }
     if (isAnalyticsReported) {
       # load files for analytic purposes
-      fleetFilesIterations <- list.files(path = file.path(folderPath, "4_Output"),
+      fleetFilesIterations <- list.files(path    = file.path(folderPath, "4_Output"),
                                          pattern = "fleetVehNumbersIteration.*", full.names = TRUE)
       data$fleetVehNumbersIterations <- lapply(fleetFilesIterations, readRDS)
-      endogenousCostFilesIterations <- list.files(path = file.path(folderPath, "4_Output"),
-                                                  pattern = "endogenousCostsIteration.*",
+      endogenousCostFilesIterations <- list.files(path       = file.path(folderPath, "4_Output"),
+                                                  pattern    = "endogenousCostsIteration.*",
                                                   full.names = TRUE)
       data$endogenousCostsIterations <- lapply(endogenousCostFilesIterations, readRDS)
     }
@@ -109,8 +109,8 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
   outputVars <- baseVarSet
 
   if (isTransportReported) {
-    transportVarSet <- reportTransportVarSet(data = data,
-                                             baseVarSet = baseVarSet,
+    transportVarSet <- reportTransportVarSet(data             = data,
+                                             baseVarSet       = baseVarSet,
                                              timeResReporting = timeResReporting)
     # New memory adress to modify output vars
     outputVars <- copy(outputVars)
@@ -120,8 +120,8 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
     outputVars$ext <- append(outputVars$ext, transportVarSet$ext)
     outputVars$int <- append(outputVars$int, transportVarSet$int)
     if (isTransportExtendedReported) {
-      extendedTransportVarSet <- reportExtendedTransportVarSet(data = data,
-                                                               baseVarSet = baseVarSet,
+      extendedTransportVarSet <- reportExtendedTransportVarSet(data             = data,
+                                                               baseVarSet       = baseVarSet,
                                                                timeResReporting = timeResReporting)
       outputVars$ext <- append(outputVars$ext, extendedTransportVarSet$ext)
       outputVars$int <- append(outputVars$int, extendedTransportVarSet$int)
@@ -136,12 +136,12 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
   ## Transfer output variables to MIF format
   #########################################################################
   if (isTransportReported) {
-    reporting <- convertToMIF(vars = outputVars,
-                              GDPMER = data$GDPMER,
-                              helpers = data$helpers,
-                              scenario = paste0(data$transportPolScen, " ", data$SSPscen),
-                              model = "EDGE-T",
-                              gdx = data$gdxPath,
+    reporting <- convertToMIF(vars                        = outputVars,
+                              GDPMER                      = data$GDPMER,
+                              helpers                     = data$helpers,
+                              scenario                    = paste0(data$transportPolScen, " ", data$SSPscen),
+                              model                       = "EDGE-T",
+                              gdx                         = data$gdxPath,
                               isTransportExtendedReported = isTransportExtendedReported)
 
     if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))
@@ -150,21 +150,22 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
   #########################################################################
   ## Report REMIND input data
   #########################################################################
-  if (isREMINDinputReported) {                                                                  # nolint: object_name_linter
-    REMINDinputData <- toolReportREMINDinputVarSet(baseVarSet$ext$fleetESdemand,            # nolint: object_name_linter
-                                                       baseVarSet$ext$fleetFEdemand,
-                                                       baseVarSet$int$fleetEnergyIntensity,
-                                                       baseVarSet$int$fleetCost[variable == "Capital costs"],
-                                                       data$combinedCAPEXandOPEX,
-                                                       data$prefTrends,
-                                                       data$enIntensity,
-                                                       data$initialIncoCosts,
-                                                       data$annualMileage,
-                                                       data$timeValueCosts,
-                                                       data$demScen,
-                                                       data$SSPscen,
-                                                       data$transportPolScen,
-                                                       data$helpers)
+  if (isREMINDinputReported) {                                                                                              # nolint: object_name_linter
+    REMINDinputData <- toolReportREMINDinputVarSet(fleetESdemand        = baseVarSet$ext$fleetESdemand,                     # nolint: object_name_linter
+                                                   fleetFEdemand        = baseVarSet$ext$fleetFEdemand,
+                                                   fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
+                                                   fleetCapCosts        = baseVarSet$int$fleetCost[variable == "Capital costs"],
+                                                   combinedCAPEXandOPEX = data$combinedCAPEXandOPEX,
+                                                   scenSpecPrefTrends   = data$prefTrends,
+                                                   scenSpecEnIntensity  = data$enIntensity,
+                                                   initialIncoCosts     = data$initialIncoCosts,
+                                                   annualMileage        = data$annualMileage,
+                                                   timeValueCosts       = data$timeValueCosts,
+                                                   demScen              = data$demScen,
+                                                   SSPscen              = data$SSPscen,
+                                                   transportPolScen     = data$transportPolScen,
+                                                   timeResReporting     = timeResReporting,
+                                                   helpers              = data$helpers)
     reporting <- REMINDinputData
     if (isStored) storeData(outputFolder = folderPath, REMINDinputData = REMINDinputData)
   }
