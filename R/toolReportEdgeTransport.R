@@ -154,6 +154,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
     REMINDinputData <- toolReportREMINDinputVarSet(fleetESdemand        = baseVarSet$ext$fleetESdemand,                     # nolint: object_name_linter
                                                    fleetFEdemand        = baseVarSet$ext$fleetFEdemand,
                                                    fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
+                                                   loadFactor           = data$loadFactor,
                                                    fleetCapCosts        = baseVarSet$int$fleetCost[variable == "Capital costs"],
                                                    combinedCAPEXandOPEX = data$combinedCAPEXandOPEX,
                                                    scenSpecPrefTrends   = data$prefTrends,
@@ -161,6 +162,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
                                                    initialIncoCosts     = data$initialIncoCosts,
                                                    annualMileage        = data$annualMileage,
                                                    timeValueCosts       = data$timeValueCosts,
+                                                   hybridElecShare      = data$hybridElecShare,
                                                    demScen              = data$demScen,
                                                    SSPscen              = data$SSPscen,
                                                    transportPolScen     = data$transportPolScen,

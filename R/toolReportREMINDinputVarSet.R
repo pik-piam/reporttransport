@@ -17,13 +17,14 @@
 #' @param helpers list with helpers
 #'
 #' @returns REMIND/iterative EDGE-T input data
+#' @export
 #' @author Johanna Hoppe
 #' @import data.table
-#' @export
 
 toolReportREMINDinputVarSet <- function(fleetESdemand,
                                         fleetFEdemand,
                                         fleetEnergyIntensity,
+                                        loadFactor,
                                         fleetCapCosts,
                                         combinedCAPEXandOPEX,
                                         scenSpecPrefTrends,
@@ -31,6 +32,7 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
                                         initialIncoCosts,
                                         annualMileage,
                                         timeValueCosts,
+                                        hybridElecShare,
                                         demScen,
                                         SSPscen,
                                         transportPolScen,
@@ -54,53 +56,67 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   #############################################################
   # See needed inputs in REMIND/modules/35_transport/edge_esm/datainput.gms
   # Unit conversion
-  EJtoTwa <- 31.71e-03                                                                                                                  # nolint: object_name_linter
-  browser()
-  # Capital costs for the transport system [2005US$/pkm or 2005US$/tkm]
+  MJtoTwa <- 3.169e-14                                                                                                                # nolint: object_name_linter
+
+  # Capital costs for the transport system [2005US$/pkm or 2005US$/tkm]-------------------------------------------
   # p35_esCapCost(tall, all_regi, all_GDPscen, all_demScen, EDGE_scenario_all, all_teEs)                                                # nolint: commented_code_linter
   p35_esCapCost <- copy(fleetCapCosts)                                                                                                  # nolint: object_name_linter
   p35_esCapCost <- p35_esCapCost[period %in% timeResReporting]
-  p35_esCapCost <- merge(p35_esCapCost, unique(helpers$mapEdgeToREMIND[, c("all_teEs", "univocalName", "technology")]),                 # nolint: object_name_linter
-                         by = c("univocalName", "technology"))
-
+  capCostMap <- unique(helpers$mapEdgeToREMIND[, c("all_teEs", "univocalName", "technology")])
+  # Walking and Cycling are not mapped on all_teEs
+  capCostMap <- capCostMap[!is.na(all_teEs)]
+  p35_esCapCost <- merge(p35_esCapCost, capCostMap, by = c("univocalName", "technology"))                                               # nolint: object_name_linter
   p35_esCapCost <- p35_esCapCost[, .(value = sum(value)), by = c("region", "period", "all_teEs")]                                       # nolint: object_name_linter
 
-  # Aggregate energy efficiency of transport fuel technologies [trn pkm/Twa or trn tkm/Twa]
+  #Energy efficiency of transport fuel technologies [trn pkm/Twa or trn tkm/Twa]-----------------------------------
   # p35_fe2es(tall, all_regi, all_GDPscen, all_demScen, EDGE_scenario_all, all_teEs)                                                    # nolint: commented_code_linter
-  p35_fe2es <- copy(fleetEnergyIntensity)                                                                                               # nolint: object_name_linter
-  p35_fe2es <- p35_fe2es[period %in% timeResReporting]
-  # convert to TWa/trn (pkm|tkm)
-  p35_fe2es[, value := value * EJtoTwa * 1e03]
+  fleetEnergyIntensity <- copy(fleetEnergyIntensity)                                                                                    # nolint: object_name_linter
+  loadFactor <- copy(loadFactor)[, c("variable", "unit") := NULL]
+  setnames(loadFactor, "value", "loadFactor")
+  p35_fe2es <- merge(fleetEnergyIntensity[period %in% timeResReporting], loadFactor[period %in% timeResReporting],
+                                by = intersect(names(fleetEnergyIntensity), names(loadFactor)), all = TRUE)
+  p35_fe2es[, value := value / loadFactor][, loadFactor := NULL][, unit := "MJ/(p|t)km"]
+  p35_fe2es[, value := 1 / value][, unit := "(p|t)km/MJ"]
   # convert to trn (pkm|tkm)/TWa
-  p35_fe2es[, value := 1 / value]
-  p35_fe2es <- merge(p35_fe2es, unique(helpers$mapEdgeToREMIND[, c("all_teEs", "univocalName", "technology")]),                         # nolint: object_name_linter
-                     by = c("univocalName", "technology"))
+  p35_fe2es[, value := value * 10^-12/MJtoTwa]
   # aggregate with fleet ES demand as weight
   fleetESdemand <- copy(fleetESdemand)
   fleetESdemand <- fleetESdemand[period %in% timeResReporting]
   setnames(fleetESdemand, "value", "ESdemand")
   fleetESdemand[, c("unit", "variable") := NULL]
   p35_fe2es <- merge(p35_fe2es, fleetESdemand, by = intersect(names(p35_fe2es), names(fleetESdemand)))                                  # nolint: object_name_linter
+  #Split hybrids
+  hybrids <- p35_fe2es[technology == "Hybrid electric"]
+  hybrids[, ESdemand := hybridElecShare * value][, technology := "BEV"]
+  p35_fe2es[technology == "Hybrid electric", ESdemand := (1 - hybridElecShare) * value]
+  p35_fe2es[technology == "Hybrid electric", technology := "Liquids"]
+  p35_fe2es <- rbind(p35_fe2es, hybrids)
+  fe2esMap <- unique(helpers$mapEdgeToREMIND[, c("all_teEs", "univocalName", "technology")])
+  fe2esMap <- fe2esMap[!is.na(all_teEs)]
+  p35_fe2es <- merge(p35_fe2es, fe2esMap, by = c("univocalName", "technology"), all.y = TRUE)                                                         # nolint: object_name_linter
+  p35_fe2es[, sumES := sum(ESdemand), by = c("region", "period", "all_teEs")]
+  # Remove weight if whole branch has zero demand to keep data
+  p35_fe2es[sumES == 0, ESdemand := 1]
   p35_fe2es[, sumES := sum(ESdemand), by = c("region", "period", "all_teEs")]
   p35_fe2es <- p35_fe2es[, .(value = sum(value * ESdemand / sumES)),  by = c("region", "period", "all_teEs")]                           # nolint: object_name_linter
 
-  # Aggregate FE Demand per transport fuel technology [TWa]
+  # Final energy demand per transport fuel technology [TWa]-----------------------------------------------------
   # p35_demByTech(tall, all_regi, all_GDPscen, all_demScen, EDGE_scenario_all, all_enty, all_in, all_teEs)                              # nolint: commented_code_linter
   # convert to TWa
   p35_demByTech <- copy(fleetFEdemand)                                                                                                  # nolint: object_name_linter
+  p35_demByTech <- p35_demByTech[!univocalName %in% c("Cycle", "Walk")]
   p35_demByTech <- p35_demByTech[period %in% timeResReporting]
-  p35_demByTech[, value := value * EJtoTwa]                                                                                             # nolint: object_name_linter
-  p35_demByTech <- merge(p35_demByTech,                                                                                                 # nolint: object_name_linter
-                         unique(helpers$mapEdgeToREMIND[, c("all_enty", "all_in", "all_teEs",                                           # nolint: object_name_linter
-                                                            "univocalName", "technology")]),
-                         by = c("univocalName", "technology"))
-  p35_demByTech <- p35_demByTech[, .(value = sum(value)), by = c("region", "period", "all_teEs")]                                       # nolint: object_name_linter
+  p35_demByTech[, value := value * MJtoTwa * 10^12]
+  demByTechMap <- unique(helpers$mapEdgeToREMIND[, c("all_enty", "all_in", "all_teEs", "univocalName", "technology")])
+  demByTechMap <- demByTechMap[!is.na(all_teEs)]
+  demByTechMap[technology %in% c("BEV", "Electric"), technology := "Electricity"]
+  demByTechMap[technology == "FCEV", technology := "Hydrogen"]
+  p35_demByTech <- merge(p35_demByTech, demByTechMap, by = c("univocalName", "technology"), all.x = TRUE)# nolint: object_name_linter
+  p35_demByTech <- p35_demByTech[, .(value = sum(value)), by = c("region", "period", "all_enty", "all_in", "all_teEs")]
 
-  # Input data for edgeTransport iterative that is coupled to REMIND--------------------------------------------
   ####################################################################
   ## Input data for edgeTransport iterative that is coupled to REMIND
   ####################################################################
-  # -> can be supplied as it is
   # CAPEXandNonFuelOPEX
   # Fuel costs are added from the fulldata.gdx of the last REMIND iteration in the iterative script
   CAPEXandNonFuelOPEX <- copy(combinedCAPEXandOPEX)                                                                                     # nolint: object_name_linter
