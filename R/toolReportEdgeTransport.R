@@ -125,7 +125,6 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
       outputVars$int <- append(outputVars$int, extendedTransportVarSet$int)
     }
     if (isAnalyticsReported) {
-      browser()
       if (!is.null(data$endogenousCostsIterations)) {
         analyticsVarSet <- reportAnalyticsVarSet(data = data, timeResReporting = timeResReporting)
         outputVars$analytic <- analyticsVarSet
