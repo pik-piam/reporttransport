@@ -6,8 +6,8 @@ test_that("variable aggregation works", {
     if (length(unique(datatable[variable %in% vars]$variable)) < length(vars)){
       print(paste0("Missing variables in aggregation checks ", aggrname))
     } else if (length(unique(datatable[variable %in% vars]$variable)) > length(vars)) {
-      browser()
       print(paste0('Duplicate in aggregation check: ', aggrname, 'not summed up'))
+      browser()
     } else {datatable <- datatable[variable %in% vars,
                                    .(variable = aggrname,
                                      value = sum(value)),
