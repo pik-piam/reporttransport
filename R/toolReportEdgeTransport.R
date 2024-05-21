@@ -84,11 +84,15 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
       # load files for analytic purposes
       fleetFilesIterations <- list.files(path    = file.path(folderPath, "4_Output"),
                                          pattern = "fleetVehNumbersIteration.*", full.names = TRUE)
-      data$fleetVehNumbersIterations <- lapply(fleetFilesIterations, readRDS)
+      if (length(fleetFilesIterations) > 0) {
+       data$fleetVehNumbersIterations <- lapply(fleetFilesIterations, readRDS)
+      }
       endogenousCostFilesIterations <- list.files(path       = file.path(folderPath, "4_Output"),
                                                   pattern    = "endogenousCostsIteration.*",
                                                   full.names = TRUE)
-      data$endogenousCostsIterations <- lapply(endogenousCostFilesIterations, readRDS)
+      if (length(endogenousCostFilesIterations) > 0) {
+        data$endogenousCostsIterations <- lapply(endogenousCostFilesIterations, readRDS)
+      }
     }
     if (isREMINDinputReported) {
       # load files for REMIND input data only reporting
@@ -112,13 +116,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
     transportVarSet <- reportTransportVarSet(data             = data,
                                              baseVarSet       = baseVarSet,
                                              timeResReporting = timeResReporting)
-    # New memory adress to modify output vars
-    outputVars <- copy(outputVars)
-    # Prevent double accounting for liquids and gases, where the split in different
-    # production routes is reported in addition
-    outputVars[["ext"]][["fleetFEdemand"]] <- NULL
-    outputVars$ext <- append(outputVars$ext, transportVarSet$ext)
-    outputVars$int <- append(outputVars$int, transportVarSet$int)
+    outputVars <- transportVarSet
     if (isTransportExtendedReported) {
       extendedTransportVarSet <- reportExtendedTransportVarSet(data             = data,
                                                                baseVarSet       = baseVarSet,
@@ -127,8 +125,14 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
       outputVars$int <- append(outputVars$int, extendedTransportVarSet$int)
     }
     if (isAnalyticsReported) {
-      analyticsVarSet <- reportAnalyticsVarSet(data = data, timeResReporting = timeResReporting)
-      outputVars$analytic <- analyticsVarSet
+      browser()
+      if (!is.null(data$endogenousCostsIterations)) {
+        analyticsVarSet <- reportAnalyticsVarSet(data = data, timeResReporting = timeResReporting)
+        outputVars$analytic <- analyticsVarSet
+      } else {
+        message("Analytics data not stored in the run folder. Analytics reporting is skipped.")
+      }
+
     }
   }
 

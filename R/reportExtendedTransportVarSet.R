@@ -16,10 +16,11 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
 
   # Switch from mixed time resolution to the reporting time resolution for all vars------------
   loadFactor <- copy(data$loadFactor)[period %in% timeResReporting]
-  baseVarSet$ext$fleetFEdemand <- baseVarSet$ext$fleetFEdemand[period %in% timeResReporting]
+  fleetFEdemand <- baseVarSet$ext$fleetFEdemand[period %in% timeResReporting]
+  fleetCost <- baseVarSet$int$fleetCost[period %in% timeResReporting]
 
   # Report useful energy-----------------------------------------------------------------------
-  fleetUEdemand <- toolReportUE(FEdemand = baseVarSet$ext$fleetFEdemand,
+  fleetUEdemand <- toolReportUE(FEdemand = fleetFEdemand,
                                 helpers = data$helpers)
 
   # Report vintages (stock without sales)-------------------------------------------------------
@@ -33,8 +34,9 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
 
   # Split extensive and intensive variables ---------------------------------------------------
   outputVarsExt <- list(fleetUEdemand = fleetUEdemand,
-                        vintages = vintages)
-  outputVarsInt <- list(loadFactor = loadFactor)
+                        vintages      = vintages)
+  outputVarsInt <- list(loadFactor = loadFactor,
+                        fleetCost  = fleetCost)
   outputVars <- list(ext = outputVarsExt,
                      int = outputVarsInt)
   return(outputVars)

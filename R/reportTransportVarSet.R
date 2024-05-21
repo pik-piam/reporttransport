@@ -17,14 +17,14 @@ reportTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   data$ESdemandFVsalesLevel <- data$ESdemandFVsalesLevel[period %in% timeResReporting]
   data$fleetSizeAndComposition <- lapply(data$fleetSizeAndComposition,
                                          FUN = function(x) x <- x[period %in% timeResReporting])
-  data$enIntensity <- data$enIntensity[period %in% timeResReporting]
   data$upfrontCAPEXtrackedFleet <- data$upfrontCAPEXtrackedFleet[period %in% timeResReporting]
-  baseVarSet$ext$fleetFEdemand <- baseVarSet$ext$fleetFEdemand[period %in% timeResReporting]
-  baseVarSet$ext$fleetESdemand <- baseVarSet$ext$fleetESdemand[period %in% timeResReporting]
-  baseVarSet$int$fleetCost <- baseVarSet$int$fleetCost[period %in% timeResReporting]
+  fleetFEdemand <- baseVarSet$ext$fleetFEdemand[period %in% timeResReporting]
+  fleetESdemand <- baseVarSet$ext$fleetESdemand[period %in% timeResReporting]
+  fleetCost <- baseVarSet$int$fleetCost[period %in% timeResReporting]
+  fleetEnergyIntensity <- baseVarSet$int$fleetEnergyIntensity[period %in% timeResReporting]
 
   # Report liquids and gases split----------------------------------------------------------------------
-  varsFEcomposition <- baseVarSet$ext$fleetFEdemand[technology %in% c("Liquids", "Gases")]
+  varsFEcomposition <- fleetFEdemand[technology %in% c("Liquids", "Gases")]
   mixedCarrierSplit <- reportLiquidsAndGasesComposition(dtFE = varsFEcomposition,
                                                             gdxPath = data$gdxPath,
                                                             timeResReporting = timeResReporting,
@@ -59,11 +59,11 @@ reportTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   sales <- approx_dt(sales, timeResReporting, "period", "value", extrapolate = TRUE)
 
   # Report yearly investment costs-------------------------------------------------------------------------
-  fleetES <- copy(baseVarSet$ext$fleetESdemand)
+  fleetES <- copy(fleetESdemand)
   fleetES[, c("variable", "unit") := NULL]
   setnames(fleetES, "value", "ESdemand")
-  fleetYrlCosts <- merge(baseVarSet$int$fleetCost, fleetES,
-                         by = intersect(names(baseVarSet$int$fleetCost), names(fleetES)))
+  fleetYrlCosts <- merge(fleetCost, fleetES,
+                         by = intersect(names(fleetCost), names(fleetES)))
   fleetYrlCosts[, value := value * ESdemand][, unit := "billion US$2005/yr"][, ESdemand := NULL]
   fleetYrlCosts[variable == "Capital costs", variable := "Annualized fleet investments"]
   fleetYrlCosts[variable == "Operating costs (total non-fuel)",
@@ -86,11 +86,13 @@ reportTransportVarSet <- function(data, baseVarSet, timeResReporting) {
 
   # Split extensive and intensive variables ---------------------------------------------------
   outputVarsExt <- list(FEsplittedCarriers = fleetFEdemandsplittedCarriers,
+                        fleetESdemand = fleetESdemand,
                         fleetEmissions = fleetEmissions,
                         sales = sales,
                         stock = data$fleetSizeAndComposition$fleetVehNumbers,
                         fleetYrlCosts = fleetYrlCosts)
-  outputVarsInt <- list(upfrontCAPEXtrackedFleet = data$upfrontCAPEXtrackedFleet)
+  outputVarsInt <- list(upfrontCAPEXtrackedFleet = data$upfrontCAPEXtrackedFleet,
+                        fleetEnergyIntensity = fleetEnergyIntensity)
   outputVars <- list(ext = outputVarsExt,
                      int = outputVarsInt)
 
