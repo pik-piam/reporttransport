@@ -51,13 +51,10 @@ walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
 ```{r}
 tot <- "ES|Transport|Pass|Road|LDV|Four Wheelers"
 items <- c(
-       "ES|Transport|Pass|Road|LDV|Van",
-       "ES|Transport|Pass|Road|LDV|SUV",
        "ES|Transport|Pass|Road|LDV|Large",
        "ES|Transport|Pass|Road|LDV|Medium",
        "ES|Transport|Pass|Road|LDV|Small",
-       "ES|Transport|Pass|Road|LDV|Mini"
-  )
+)
 
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE,  orderVars = "user")
