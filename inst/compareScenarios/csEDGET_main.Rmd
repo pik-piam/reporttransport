@@ -17,9 +17,9 @@ output:
     number_sections: yes
 geometry: "a4paper,landscape,left = 0.5cm,right = 0.5cm,top = 0.5cm,bottom = 0.5cm,footnotesep=0.0cm,footskip = 0.1cm"
 params:
-  mifScen: "C:/Users/johannah/Documents/EDGE-Transport/2024-05-08_20.18.47SSP2EU-Mix2-SSP2EU/Transport.mif"
+  mifScen: ""
   mifScenNames: !r c()
-  mifHist: "C:/Users/johannah/Documents/EDGE-Transport/HistoricalData/historical_21.mif"
+  mifHist: ""
   yearsScen: !r c(seq(2005, 2060, 5), seq(2070, 2100, 10))
   yearsHist: !r c(seq(2010, 2020, 1), seq(2025, 2100, 5))
   yearsBarPlot: !r c(2010, 2030, 2050, 2100)
@@ -35,13 +35,15 @@ subparagraph: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,
-                      error = TRUE,
-                      message = FALSE,
-                      warning = params$warning,
-                      fig.width = params$figWidth,
-                      fig.height = params$figHeight)
+knitr::opts_chunk$set(
+  echo = FALSE,
+  error = TRUE,
+  message = FALSE,
+  warning = params$warning,
+  fig.width = params$figWidth, 
+  fig.height = params$figHeight)
 ```
+
 
 ```{r libraries, include=FALSE}
 # kableExtra must not be loaded before the call of library(kableExtra) below,
@@ -50,6 +52,7 @@ knitr::opts_chunk$set(echo = FALSE,
 # If the following line is not included, successive calls to compareScenarios2()
 # may cause "Undefined control sequence" errors in LaTeX.
 try(unloadNamespace("kableExtra"), silent = TRUE)
+
 library(gridExtra)
 options(tidyverse.quiet = TRUE)
 library(tidyverse)
@@ -181,8 +184,8 @@ histRefModel <- c(
 ```{r calcuate pCap variables}
 # For all variables in following table, add a new variable to data with the name
 # "OldName pCap". Calculate its value by
-#     OldValue * conversionFactor
-# and set its unit to newUnit.
+#     OldValue * conversionFactor 
+# and set its unit to newUnit. 
 # The new variable "OldName pCap" will be available in the plot sections.
 pCapVariables <- tribble(
   ~variable, ~newUnit, ~conversionFactor,
@@ -192,8 +195,8 @@ pCapVariables <- tribble(
   "ES|Transport|Bunkers|Pass|International Aviation", "pkm/yr", 1e9,
   "ES|Transport|Pass|Domestic Aviation", "pkm/yr", 1e9,
   "ES|Transport|Pass|Road|Bus", "pkm/yr", 1e9,
-  "ES|Transport|Pass|Road|Non-Motorized|Walking", "pkm/yr", 1e9,
-  "ES|Transport|Pass|Road|Non-Motorized|Cycling", "pkm/yr", 1e9,
+  "ES|Transport|Pass|Non-motorized|Walk", "pkm/yr", 1e9,
+  "ES|Transport|Pass|Non-motorized|Cycle", "pkm/yr", 1e9,
   "ES|Transport|Pass|Rail|non-HSR", "pkm/yr", 1e9,
   "ES|Transport|Pass|Rail|HSR", "pkm/yr", 1e9,
   "ES|Transport|Freight", "tkm/yr", 1e9,
@@ -208,7 +211,7 @@ pCapVariables <- tribble(
   "ES|Transport|Pass|Road|LDV|BEV", "pkm/yr", 1e9,
   "ES|Transport|Pass|Road|LDV|FCEV", "pkm/yr", 1e9,
   "ES|Transport|Pass|Road|LDV|Gases", "pkm/yr", 1e9,
-  "ES|Transport|Pass|Road|LDV|Hybrid Electric", "pkm/yr", 1e9,
+  "ES|Transport|Pass|Road|LDV|Hybrid electric", "pkm/yr", 1e9,
   "ES|Transport|Pass|Road|LDV|Liquids", "pkm/yr", 1e9,
   "ES|Transport|Freight with bunkers", "tkm/yr", 1e9,
   "ES|Transport|Freight|Road|Electric", "pkm/yr", 1e9,
@@ -216,18 +219,18 @@ pCapVariables <- tribble(
   "ES|Transport|Freight|Road|Gases", "pkm/yr", 1e9,
   "ES|Transport|Freight|Road|Liquids", "pkm/yr", 1e9)
 
-data %>%
+data %>% 
   filter(variable == "Population") %>%
-  filter(scenario != "historical" | model == histRefModel["Population"]) %>%
-  select(scenario, region, period, value) %>%
+  filter(scenario != "historical" | model == histRefModel["Population"]) %>% 
+  select(scenario, region, period, value) %>% 
   mutate(
     population = value * 1e6, # unit originally is million, now is 1
-    value = NULL) ->
+    value = NULL) -> 
   dataPop
 
-data %>%
-  inner_join(pCapVariables, "variable") %>%
-  left_join(dataPop, c("scenario", "region", "period")) %>%
+data %>% 
+  inner_join(pCapVariables, 'variable') %>% 
+  left_join(dataPop, c('scenario', 'region', 'period')) %>% 
   mutate(
     value = value / population * conversionFactor,
     variable = paste0(variable, " pCap"),
@@ -235,29 +238,31 @@ data %>%
     newUnit = NULL, conversionFactor = NULL, population = NULL) ->
   dataPCap
 
-data %>%
+data %>% 
   bind_rows(dataPCap) ->
   data
 ```
 
+
 ```{r add gdp column}
 # Create a new column gdp with the value of GDP|PPP pCap (kUS$2005).
-data %>%
-  filter(variable == "GDP|PPP pCap") %>%
-  filter(scenario != "historical" | model == histRefModel["GDP|PPP pCap"]) %>%
-  select(scenario, region, period, value) %>%
-  rename(gdp = value) ->
+data %>% 
+  filter(variable == "GDP|PPP pCap") %>% 
+  filter(scenario != "historical" | model == histRefModel["GDP|PPP pCap"]) %>% 
+  select(scenario, region, period, value) %>% 
+  rename(gdp = value) ->   
   dataGDP
-data %>%
-  left_join(dataGDP, c("scenario", "region", "period")) ->
+data %>% 
+  left_join(dataGDP, c('scenario', 'region', 'period')) ->
   data
 ```
 
+
 ```{r calcuate pGDP variables}
 # For all variables in following table, add a new variable to data with the name
-# "OldName pGDP". Calculate its value by
-#     OldValue / (GDP|PPP pCap) * conversionFactor
-# and set its unit to newUnit.
+# "OldName pGDP". Calculate its value by 
+#     OldValue / (GDP|PPP pCap) * conversionFactor 
+# and set its unit to newUnit. 
 # The new variable "OldName pGDP" will be available in the plot sections.
 pGdpVariables <- tribble(
   ~variable, ~newUnit, ~conversionFactor,
@@ -266,15 +271,15 @@ pGdpVariables <- tribble(
   "FE|Transport", "MJ/US$2005", 1e3,
   "FE|Buildings", "MJ/US$2005", 1e3,
   "FE|Industry", "MJ/US$2005", 1e3)
-data %>%
-  inner_join(pGdpVariables, "variable") %>%
+data %>% 
+  inner_join(pGdpVariables, 'variable') %>% 
   mutate(
     value = value / gdp * conversionFactor,
     variable = paste0(variable, " pGDP"),
     unit = newUnit,
     newUnit = NULL, conversionFactor = NULL) ->
   dataPGdp
-data %>%
+data %>% 
   bind_rows(dataPGdp) ->
   data
 ```
@@ -291,13 +296,14 @@ options(mip.histRefModel = histRefModel)
 ```
 
 ```{r define plot functions}
-source("cs2_plot_functions.R", local = TRUE)
+source("cs2_plot_functions.R", local=TRUE)
 ```
+
 
 ```{r sectionPaths, include=FALSE}
 if (length(params$sections) == 1 && params$sections == "all") {
-  dir() %>%
-    str_subset("^csEDGET_[0-9]{2}.+//.Rmd$") %>%
+  dir() %>% 
+    str_subset("^csEDGET_[0-9]{2}.+//.Rmd$") %>% 
     sort() ->
     sectionPaths
 } else {
