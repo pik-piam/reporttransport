@@ -11,7 +11,7 @@
 #'- isTransportReported + isTransportExtendedReported activates further the extended reporting of transport variables
 #'  and if isStored is activated as well, triggers the generation of a seperate transport.MIF.
 #'  It includes the reduced reporting and additional transport variables for a detailed analysis of the transport
-#'  sector using transportCompareScenarios provided in the edgeTransport package
+#'  sector using transportCompareScenarios 
 #'- isTransportReported + isTransportExtendedReported + isAnalyticsReported activates further the generation of
 #'  additional variables
 #'  for the analysis of the model behavior such as the inconvenience costs over iterations. They can be analyzed

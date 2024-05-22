@@ -91,7 +91,7 @@ showAreaAndBarPlots(data, items, tot, fill=TRUE, orderVars = "user")
 ```{r}
 tot <- "ES|Transport|Pass|Road|Bus"
 items <- c(
-       "ES|Transport|Pass|Road|Bus|Electric",
+       "ES|Transport|Pass|Road|Bus|BEV",
        "ES|Transport|Pass|Road|Bus|FCEV",
        "ES|Transport|Pass|Road|Bus|Gases",
        "ES|Transport|Pass|Road|Bus|Liquids" 
@@ -158,7 +158,7 @@ showAreaAndBarPlots(data, items, tot, fill=TRUE, orderVars = "user")
 ```{r}
 tot <-  "ES|Transport|Freight|Road"
 items <- c(
-       "ES|Transport|Freight|Road|Electric",
+       "ES|Transport|Freight|Road|BEV",
        "ES|Transport|Freight|Road|FCEV",
        "ES|Transport|Freight|Road|Gases",
        "ES|Transport|Freight|Road|Liquids"

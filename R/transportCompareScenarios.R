@@ -84,7 +84,7 @@
 transportCompareScenarios <- function(
   mifScen, mifHist,
   outputDir = getwd(),
-  outputFile = "CompareScenarios_EDGE-Transport",
+  outputFile = "CompareScenarios",
   outputFormat = "PDF",
   ...
 ) {
@@ -109,8 +109,8 @@ transportCompareScenarios <- function(
   }
   # copy the template directory from the package to the outputDir because rmarkdown writes to the folder
   # containing the template.
-  templateInOutputDir <- file.path(outputDir, "compareScenarios_Transport", "csEDGET_main.Rmd")
-  file.copy(system.file("Rmd/compareScenarios_Transport/", package = "edgeTransport"),
+  templateInOutputDir <- file.path(outputDir, "CompareScenarios", "csEDGET_main.Rmd")
+  file.copy(system.file("compareScenarios", package = "reporttransport"),
             outputDir, recursive = TRUE)
   render(
     templateInOutputDir,
@@ -120,13 +120,13 @@ transportCompareScenarios <- function(
     output_format = outputFormat,
     params = yamlParams,
     envir = new.env())
-  unlink(file.path(outputDir, "compareScenarios_Transport"), recursive = TRUE)
+  unlink(file.path(outputDir, "CompareScenarios"), recursive = TRUE)
 }
 
 # Copies the CompareScenarios2-Rmds to the specified location and modifies
 # their YAML header according to \code{yamlParams}.
 .compareScenarios2Rmd <- function(yamlParams, outputDir, outputFile) {
-  pathMain <- system.file("compareScenarios_Transport/csEDGET_main.Rmd", package = "edgeTransport")
+  pathMain <- system.file("CompareScenarios/csEDGET_main.Rmd", package = "reporttransport")
   linesMain <- readLines(pathMain)
   delimiters <- grep("^(---|\\.\\.\\.)\\s*$", linesMain)
   headerMain <- linesMain[(delimiters[1]):(delimiters[2])]
@@ -146,7 +146,7 @@ transportCompareScenarios <- function(
   pathDir <- file.path(outputDir, paste0(outputFile, "_Rmd"))
   if (!dir.exists(pathDir)) dir.create(pathDir)
   dirFiles <- dir(
-    system.file("compareScenarios_Transport", package = "edgeTransport"),
+    system.file("CompareScenarios", package = "reporttransport"),
     full.names = TRUE)
   rmdDirFiles <- grep(
     dirFiles,
@@ -157,7 +157,7 @@ transportCompareScenarios <- function(
     newYaml,
     path = file.path(pathDir, "cs2_main.Rmd"),
     template = system.file(
-      "compareScenarios_Transport/csEDGET_main.Rmd",
-      package = "edgeTransport"),
+      "CompareScenarios/csEDGET_main.Rmd",
+      package = "reporttransport"),
     include_yaml = FALSE)
 }
