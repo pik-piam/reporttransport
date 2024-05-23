@@ -29,7 +29,7 @@ reportTransportVarSet <- function(data, baseVarSet, timeResReporting) {
                                                             gdxPath = data$gdxPath,
                                                             timeResReporting = timeResReporting,
                                                             helpers = data$helpers)
-  fleetFEdemandsplittedCarriers <- copy(baseVarSet$ext$fleetFEdemand[!technology %in% c("Liquids", "Gases")])
+  fleetFEdemandsplittedCarriers <- copy(fleetFEdemand[!technology %in% c("Liquids", "Gases")])
   fleetFEdemandsplittedCarriers[, fuel := NA]
   fleetFEdemandsplittedCarriers <- rbind(fleetFEdemandsplittedCarriers, mixedCarrierSplit$splittedCarriers)
 
