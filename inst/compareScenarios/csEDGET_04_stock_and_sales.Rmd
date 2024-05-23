@@ -79,7 +79,7 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ## Busses
 ```{r}
 tot <- "Stock|Transport|Pass|Road|Bus"
-items <- c("Stock|Transport|Pass|Road|Bus|Electric",
+items <- c("Stock|Transport|Pass|Road|Bus|BEV",
            "Stock|Transport|Pass|Road|Bus|FCEV",
            "Stock|Transport|Pass|Road|Bus|Liquids",
            "Stock|Transport|Pass|Road|Bus|NG")
@@ -114,7 +114,7 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ## Small Truck stock by technology
 ```{r}
 tot <- "Stock|Transport|Freight|Road|Truck|truck (0-3_5t)"
-items <- c("Stock|Transport|Freight|Road|Truck|truck (0-3_5t)|Electric",
+items <- c("Stock|Transport|Freight|Road|Truck|truck (0-3_5t)|BEV",
            "Stock|Transport|Freight|Road|Truck|truck (0-3_5t)|FCEV",
            "Stock|Transport|Freight|Road|Truck|truck (0-3_5t)|Liquids",
            "Stock|Transport|Freight|Road|Truck|truck (0-3_5t)|NG")
@@ -125,7 +125,7 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ## Small Truck sales by technology
 ```{r}
 tot <- "Sales|Transport|Freight|Road|Truck|truck (0-3_5t)"
-items <- c("Sales|Transport|Freight|Road|Truck|truck (0-3_5t)|Electric",
+items <- c("Sales|Transport|Freight|Road|Truck|truck (0-3_5t)|BEV",
            "Sales|Transport|Freight|Road|Truck|truck (0-3_5t)|FCEV",
            "Sales|Transport|Freight|Road|Truck|truck (0-3_5t)|Liquids",
            "Sales|Transport|Freight|Road|Truck|truck (0-3_5t)|NG")
@@ -136,7 +136,7 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ## Large Truck stock by technology
 ```{r}
 tot <- "Stock|Transport|Freight|Road|Truck|Truck (40t)"
-items <- c("Stock|Transport|Freight|Road|Truck|Truck (40t)|Electric",
+items <- c("Stock|Transport|Freight|Road|Truck|Truck (40t)|BEV",
            "Stock|Transport|Freight|Road|Truck|Truck (40t)|FCEV",
            "Stock|Transport|Freight|Road|Truck|Truck (40t)|Liquids",
            "Stock|Transport|Freight|Road|Truck|Truck (40t)|NG")
@@ -147,7 +147,7 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ## Large Truck sales by technology
 ```{r}
 tot <- "Sales|Transport|Freight|Road|Truck|Truck (40t)"
-items <- c("Sales|Transport|Freight|Road|Truck|Truck (40t)|Electric",
+items <- c("Sales|Transport|Freight|Road|Truck|Truck (40t)|BEV",
            "Sales|Transport|Freight|Road|Truck|Truck (40t)|FCEV",
            "Sales|Transport|Freight|Road|Truck|Truck (40t)|Liquids",
            "Sales|Transport|Freight|Road|Truck|Truck (40t)|NG")
