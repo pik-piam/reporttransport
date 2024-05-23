@@ -8,7 +8,7 @@ transportCompareScenarios(
   mifScen,
   mifHist,
   outputDir = getwd(),
-  outputFile = "CompareScenarios_EDGE-Transport",
+  outputFile = "CompareScenarios",
   outputFormat = "PDF",
   ...
 )
