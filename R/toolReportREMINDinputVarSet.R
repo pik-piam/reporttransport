@@ -3,6 +3,7 @@
 #' @param fleetESdemand energy service demand on fleet level
 #' @param fleetFEdemand final energy demand on fleet level
 #' @param fleetEnergyIntensity energy intensity on fleet level
+#' @param loadFactor load factor data
 #' @param fleetCapCosts annualized capital costs on fleet level
 #' @param combinedCAPEXandOPEX CAPEX and OPEX on sales level in high temporal resolution
 #' @param scenSpecPrefTrends scenario specific preference trends in high temporal resolution
@@ -10,6 +11,7 @@
 #' @param initialIncoCosts initial inconvenience cost
 #' @param annualMileage annual mileage in high temporal resolution
 #' @param timeValueCosts time value cost equivalent in high temporal resolution
+#' @param hybridElecShare share of electric driving for hybrid electric vehicles
 #' @param demScen demand scenario
 #' @param SSPscen SSP scenario
 #' @param transportPolScen transport policy scenario
@@ -67,7 +69,8 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   capCostMap <- capCostMap[!is.na(all_teEs)]
   p35_esCapCost <- merge(p35_esCapCost, capCostMap, by = c("univocalName", "technology"))                                               # nolint: object_name_linter
   p35_esCapCost <- p35_esCapCost[, .(value = sum(value)), by = c("region", "period", "all_teEs")]                                       # nolint: object_name_linter
-
+  checkForNAsDups(p35_esCapCost, "p35_esCapCost", "toolReportREMINDinputDataVarSet()")
+  browser()
   #Energy efficiency of transport fuel technologies [trn pkm/Twa or trn tkm/Twa]-----------------------------------
   # p35_fe2es(tall, all_regi, all_GDPscen, all_demScen, EDGE_scenario_all, all_teEs)                                                    # nolint: commented_code_linter
   fleetEnergyIntensity <- copy(fleetEnergyIntensity)                                                                                    # nolint: object_name_linter
@@ -99,6 +102,7 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   p35_fe2es[sumES == 0, ESdemand := 1]
   p35_fe2es[, sumES := sum(ESdemand), by = c("region", "period", "all_teEs")]
   p35_fe2es <- p35_fe2es[, .(value = sum(value * ESdemand / sumES)),  by = c("region", "period", "all_teEs")]                           # nolint: object_name_linter
+  checkForNAsDups(p35_fe2es, "p35_fe2es", "toolReportREMINDinputDataVarSet()")
 
   # Final energy demand per transport fuel technology [TWa]-----------------------------------------------------
   # p35_demByTech(tall, all_regi, all_GDPscen, all_demScen, EDGE_scenario_all, all_enty, all_in, all_teEs)                              # nolint: commented_code_linter
@@ -113,6 +117,7 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   demByTechMap[technology == "FCEV", technology := "Hydrogen"]
   p35_demByTech <- merge(p35_demByTech, demByTechMap, by = c("univocalName", "technology"), all.x = TRUE)# nolint: object_name_linter
   p35_demByTech <- p35_demByTech[, .(value = sum(value)), by = c("region", "period", "all_enty", "all_in", "all_teEs")]
+  checkForNAsDups(p35_demByTech, "p35_demByTech", "toolReportREMINDinputDataVarSet()")
 
   ####################################################################
   ## Input data for edgeTransport iterative that is coupled to REMIND
@@ -121,12 +126,19 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   # Fuel costs are added from the fulldata.gdx of the last REMIND iteration in the iterative script
   CAPEXandNonFuelOPEX <- copy(combinedCAPEXandOPEX)                                                                                     # nolint: object_name_linter
   CAPEXandNonFuelOPEX <- CAPEXandNonFuelOPEX[!variable == "Fuel costs"]                                                                 # nolint: object_name_linter
+  checkForNAsDups(CAPEXandNonFuelOPEX, "CAPEXandNonFuelOPEX", "toolReportREMINDinputDataVarSet()")
   # scenSpecPrefTrends
+  checkForNAsDups(scenSpecPrefTrends, "scenSpecPrefTrends", "toolReportREMINDinputDataVarSet()")
   # scenSpecLoadFactor
+  checkForNAsDups(scenSpecLoadFactor, "scenSpecLoadFactor", "toolReportREMINDinputDataVarSet()")
   # scenSpecEnIntensity
+  checkForNAsDups(scenSpecEnIntensity, "scenSpecEnIntensity", "toolReportREMINDinputDataVarSet()")
   # initialIncoCosts
+  checkForNAsDups(initialIncoCosts, "initialIncoCosts", "toolReportREMINDinputDataVarSet()")
   # annualMileage
+  checkForNAsDups(annualMileage, "annualMileage", "toolReportREMINDinputDataVarSet()")
   # timeValueCosts
+  checkForNAsDups(timeValueCosts, "timeValueCosts", "toolReportREMINDinputDataVarSet()")
 
   output <- list(
     p35_esCapCost = p35_esCapCost,
@@ -134,6 +146,7 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
     p35_demByTech = p35_demByTech,
     CAPEXandNonFuelOPEX = CAPEXandNonFuelOPEX,
     scenSpecPrefTrends = scenSpecPrefTrends,
+    scenSpecLoadFactor = scenSpecLoadFactor,
     scenSpecEnIntensity = scenSpecEnIntensity,
     initialIncoCosts = initialIncoCosts,
     annualMileage = annualMileage,
