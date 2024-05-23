@@ -3,9 +3,9 @@
 #' @param fleetESdemand energy service demand on fleet level
 #' @param fleetFEdemand final energy demand on fleet level
 #' @param fleetEnergyIntensity energy intensity on fleet level
-#' @param loadFactor load factor data
 #' @param fleetCapCosts annualized capital costs on fleet level
 #' @param combinedCAPEXandOPEX CAPEX and OPEX on sales level in high temporal resolution
+#' @param scenSpecLoadFactor scenario specific load factor data
 #' @param scenSpecPrefTrends scenario specific preference trends in high temporal resolution
 #' @param scenSpecEnIntensity scenario specific energy intensity in high temporal resolution
 #' @param initialIncoCosts initial inconvenience cost
@@ -26,7 +26,7 @@
 toolReportREMINDinputVarSet <- function(fleetESdemand,
                                         fleetFEdemand,
                                         fleetEnergyIntensity,
-                                        loadFactor,
+                                        scenSpecLoadFactor,
                                         fleetCapCosts,
                                         combinedCAPEXandOPEX,
                                         scenSpecPrefTrends,
@@ -68,13 +68,23 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   # Walking and Cycling are not mapped on all_teEs
   capCostMap <- capCostMap[!is.na(all_teEs)]
   p35_esCapCost <- merge(p35_esCapCost, capCostMap, by = c("univocalName", "technology"))                                               # nolint: object_name_linter
-  p35_esCapCost <- p35_esCapCost[, .(value = sum(value)), by = c("region", "period", "all_teEs")]                                       # nolint: object_name_linter
+  # aggregate with fleet ES demand as weight
+  fleetESdemand <- copy(fleetESdemand)
+  fleetESdemand <- fleetESdemand[period %in% timeResReporting]
+  setnames(fleetESdemand, "value", "ESdemand")
+  fleetESdemand[, c("unit", "variable") := NULL]
+  p35_esCapCost <- merge(p35_esCapCost, fleetESdemand, by = intersect(names(p35_esCapCost), names(fleetESdemand)))
+  p35_esCapCost[, sumES := sum(ESdemand), by = c("region", "period", "all_teEs")]
+  # Remove weight if whole branch has zero demand to keep data
+  p35_esCapCost[sumES == 0, ESdemand := 1]
+  p35_esCapCost[, sumES := sum(ESdemand), by = c("region", "period", "all_teEs")]
+  p35_esCapCost <- p35_esCapCost[, .(value = sum(value * ESdemand / sumES)),  by = c("region", "period", "all_teEs")]                                     # nolint: object_name_linter
   checkForNAsDups(p35_esCapCost, "p35_esCapCost", "toolReportREMINDinputDataVarSet()")
-  browser()
+
   #Energy efficiency of transport fuel technologies [trn pkm/Twa or trn tkm/Twa]-----------------------------------
   # p35_fe2es(tall, all_regi, all_GDPscen, all_demScen, EDGE_scenario_all, all_teEs)                                                    # nolint: commented_code_linter
   fleetEnergyIntensity <- copy(fleetEnergyIntensity)                                                                                    # nolint: object_name_linter
-  loadFactor <- copy(loadFactor)[, c("variable", "unit") := NULL]
+  loadFactor <- copy(scenSpecLoadFactor)[, c("variable", "unit") := NULL]
   setnames(loadFactor, "value", "loadFactor")
   p35_fe2es <- merge(fleetEnergyIntensity[period %in% timeResReporting], loadFactor[period %in% timeResReporting],
                                 by = intersect(names(fleetEnergyIntensity), names(loadFactor)), all = TRUE)
@@ -82,11 +92,6 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   p35_fe2es[, value := 1 / value][, unit := "(p|t)km/MJ"]
   # convert to trn (pkm|tkm)/TWa
   p35_fe2es[, value := value * 10^-12/MJtoTwa]
-  # aggregate with fleet ES demand as weight
-  fleetESdemand <- copy(fleetESdemand)
-  fleetESdemand <- fleetESdemand[period %in% timeResReporting]
-  setnames(fleetESdemand, "value", "ESdemand")
-  fleetESdemand[, c("unit", "variable") := NULL]
   p35_fe2es <- merge(p35_fe2es, fleetESdemand, by = intersect(names(p35_fe2es), names(fleetESdemand)))                                  # nolint: object_name_linter
   #Split hybrids
   hybrids <- p35_fe2es[technology == "Hybrid electric"]
@@ -154,6 +159,10 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   )
 
   output <- lapply(output, prepareForREMIND, demScen, SSPscen, transportPolScen)
+
+  setnames(output$p35_esCapCost, c("region", "period"), c("all_regi", "tall"))
+  setnames(output$p35_fe2es, c("region", "period"), c("all_regi", "tall"))
+  setnames(output$p35_demByTech, c("region", "period"), c("all_regi", "tall"))
 
   return(output)
 }
