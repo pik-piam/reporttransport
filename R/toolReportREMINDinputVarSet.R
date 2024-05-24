@@ -89,7 +89,7 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   f35_esCapCost <- copy(fleetCapCosts)                                                                                                  # nolint: object_name_linter
   f35_esCapCost <- f35_esCapCost[period %in% timeResReporting]
   capCostMap <- unique(helpers$mapEdgeToREMIND[, c("all_teEs", "univocalName", "technology")])
-  # Walking and Cycling are not mapped on all_teEs
+  # Walk and Cycle are not mapped on all_teEs
   capCostMap <- capCostMap[!is.na(all_teEs)]
   f35_esCapCost <- merge(f35_esCapCost, capCostMap, by = c("univocalName", "technology"))                                               # nolint: object_name_linter
   # aggregate with fleet ES demand as weight
