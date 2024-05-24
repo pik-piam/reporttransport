@@ -53,7 +53,7 @@ tot <- "ES|Transport|Pass|Road|LDV|Four Wheelers"
 items <- c(
        "ES|Transport|Pass|Road|LDV|Four Wheelers|Large",
        "ES|Transport|Pass|Road|LDV|Four Wheelers|Medium",
-       "ES|Transport|Pass|Road|LDV|Four Wheelers|Small",
+       "ES|Transport|Pass|Road|LDV|Four Wheelers|Small"
 )
 
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
@@ -143,11 +143,11 @@ items <- c(
 ```{r}
 tot <- "ES|Transport|Freight|Road"
 items <- c(
-       "ES|Transport|Freight|Road|Truck (40t)",
-       "ES|Transport|Freight|Road|Truck (26t)",
-       "ES|Transport|Freight|Road|Truck (18t)",
-       "ES|Transport|Freight|Road|truck (7_5t)",
-       "ES|Transport|Freight|Road|truck (0-3_5t)"
+       "ES|Transport|Freight|Road|Heavy|Truck (40t)",
+       "ES|Transport|Freight|Road|Heavy|Truck (26t)",
+       "ES|Transport|Freight|Road|Heavy|Truck (18t)",
+       "ES|Transport|Freight|Road|Light|Truck (7_5t)",
+       "ES|Transport|Freight|Road|Light|Truck (0-3_5t)"
   )
 
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
