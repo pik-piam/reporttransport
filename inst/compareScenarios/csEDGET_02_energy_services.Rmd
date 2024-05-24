@@ -39,9 +39,9 @@ items <- c(
     "ES|Transport|Pass|Non-motorized|Walk pCap",
     "ES|Transport|Pass|Non-motorized|Cycle pCap"
     )
-showMultiLinePlots(data, items)    
-showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap")
-walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
+#showMultiLinePlots(data, items)    
+#showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap")
+#walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
 
 ```
 
@@ -131,9 +131,9 @@ items <- c(
       "ES|Transport|Freight|Rail pCap",
       "ES|Transport|Freight|Road pCap"
     )
-showMultiLinePlots(data, items)    
-showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap")
-walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
+#showMultiLinePlots(data, items)    
+#showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap")
+#walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
 
 ```
 
