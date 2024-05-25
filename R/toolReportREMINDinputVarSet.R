@@ -17,6 +17,7 @@
 #' @param transportPolScen transport policy scenario
 #' @param timeResReporting time resolution reporting
 #' @param helpers list with helpers
+#' @importFrom rmndt disaggregate_dt
 #'
 #' @returns REMIND/iterative EDGE-T input data
 #' @export
@@ -189,9 +190,10 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   shares_LDV_transport <- melt(shares_LDV_transport, id.vars = c("iso", "period"))
   setnames(shares_LDV_transport, c("iso", "period", "variable"), c("region", "year", "sharetype"))
   shares_LDV_transport[, varname := "shares_LDV_transport"]
+  shares_LDV_transport[, DEM_scenario := paste0("gdp_", demScen)]
   shares_LDV_transport[, GDP_scenario := paste0("gdp_", SSPscen)]
   shares_LDV_transport[, EDGE_scenario := transportPolScen]
-  setcolorder(shares_LDV_transport, c("region", "year", "GDP_scenario", "EDGE_scenario", "sharetype", "varname", "value"))
+  setcolorder(shares_LDV_transport, c("region", "year", "GDP_scenario", "EDGE_scenario", "DEM_scenario",  "sharetype", "varname", "value"))
 
   output <- list(
     f35_esCapCost = f35_esCapCost,
