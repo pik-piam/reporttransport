@@ -5,24 +5,26 @@ Version: 0.0.2.9004
 Date: 2024-05-25
 Authors@R:
     person("Johanna", "Hoppe", , "johanna.hoppe@pik-potsdam.de", role = c("aut", "cre"))
-Description: This package contains edgeTransport-specific routines to report model results. The main functionality is to generate transport reporting variables in MIF format from a given edgeTransport model run folder or REMIND input data.
+Description: This package contains edgeTransport-specific routines to
+    report model results. The main functionality is to generate transport
+    reporting variables in MIF format from a given edgeTransport model run
+    folder or REMIND input data.
 License: LGPL-3
 URL: https://github.com/pik-piam/reporttransport
-Depends: 
 Imports:
     data.table,
     gdx,
     gdxrrw,
+    quitte,
+    remind2,
     rlang,
     rmarkdown,
     rmndt,
-    yaml, 
-    ymlthis,
-    remind2,
-    quitte,
-    utils
+    utils,
+    yaml,
+    ymlthis
 Suggests:
-    testthat,
-    sf
+    sf,
+    testthat
 Encoding: UTF-8
 RoxygenNote: 7.3.1
