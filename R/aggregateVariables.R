@@ -175,14 +175,17 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   # Aggregate transport overall without bunkers --------------------------------------------------------------------
   aggrvars <- copy(varsForFurtherAggregation)
   aggrvars <- aggrvars[sector %in% c("|Pass", "|Freight")]
+  aggrvars[grepl("billion pkm/yr|billion tkm/yr", unit), unit := "billion (p|t)km/yr"]
   byCols <- c("region", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
   aggrvars[, variable := paste0(variable, "|Transport")]
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
   # Aggregate transport overall without bunkers keeping technology level
   aggrvars <- copy(varsForFurtherAggregation)
-  # Active modes need to be excluded as they dont have a technology
   aggrvars <- aggrvars[sector %in% c("|Pass", "|Freight")]
+  # Active modes need to be excluded as they dont have a technology
+  aggrvars <- aggrvars[!is.na(technology)]
+  aggrvars[grepl("billion pkm/yr|billion tkm/yr", unit), unit := "billion (p|t)km/yr"]
   byCols <- c("region", "technology", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
   aggrvars[, variable := paste0(variable, "|Transport", technology)][, c("technology") := NULL]
@@ -190,6 +193,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
 
   # Aggregate transport overall with bunkers --------------------------------------------------------------------
   aggrvars <- copy(varsForFurtherAggregation)
+  aggrvars[grepl("billion pkm/yr|billion tkm/yr", unit), unit := "billion (p|t)km/yr"]
   byCols <- c("region", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
   aggrvars[, variable := paste0(variable, "|Transport with bunkers")]
@@ -198,6 +202,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   aggrvars <- copy(varsForFurtherAggregation)
   # Active modes need to be excluded as they dont have a technology
   aggrvars <- aggrvars[!is.na(technology)]
+  aggrvars[grepl("billion pkm/yr|billion tkm/yr", unit), unit := "billion (p|t)km/yr"]
   byCols <- c("region", "technology", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
   aggrvars[, variable := paste0(variable, "|Transport with bunkers", technology)][, c("technology") := NULL]
@@ -206,6 +211,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   # Aggregate transport road --------------------------------------------------------------------
   aggrvars <- copy(varsForFurtherAggregation)
   aggrvars <- aggrvars[subsectorL1 == "|Road"]
+  aggrvars[grepl("billion pkm/yr|billion tkm/yr", unit), unit := "billion (p|t)km/yr"]
   byCols <- c("region", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
   aggrvars[, variable := paste0(variable, "|Transport|Road")]
@@ -214,6 +220,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   aggrvars <- copy(varsForFurtherAggregation)
   # Active modes need to be excluded as they dont have a technology
   aggrvars <- aggrvars[!is.na(technology) & subsectorL1 == "|Road"]
+  aggrvars[grepl("billion pkm/yr|billion tkm/yr", unit), unit := "billion (p|t)km/yr"]
   byCols <- c("region", "technology", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
   aggrvars[, variable := paste0(variable, "|Transport|Road", technology)][, c("technology") := NULL]
@@ -222,6 +229,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   # Aggregate transport rail --------------------------------------------------------------------
   aggrvars <- copy(varsForFurtherAggregation)
   aggrvars <- aggrvars[subsectorL1 %in% c("|Rail", "|HSR", "|non-HSR")]
+  aggrvars[grepl("billion pkm/yr|billion tkm/yr", unit), unit := "billion (p|t)km/yr"]
   byCols <- c("region", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
   aggrvars[, variable := paste0(variable, "|Transport|Rail")]
@@ -229,6 +237,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   # Aggregate rail keeping technology level
   aggrvars <- copy(varsForFurtherAggregation)
   aggrvars <- aggrvars[subsectorL1 %in% c("|Rail", "|HSR", "|non-HSR")]
+  aggrvars[grepl("billion pkm/yr|billion tkm/yr", unit), unit := "billion (p|t)km/yr"]
   byCols <- c("region", "technology", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
   aggrvars[, variable := paste0(variable, "|Transport|Rail", technology)][, c("technology") := NULL]
@@ -251,7 +260,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
 
   if (anyNA(aggregatedvars)) stop("Output variable contains NAs.
                                   Please check toolReportAndAggregatedMIF()")
-  if (anyDuplicated(aggregatedvars)) stop("Output variable contains Duplicates.
+  if (anyDuplicated(aggregatedvars[, c("region", "period", "variable")])) stop("Output variable contains Duplicates.
                                          Please check toolReportAndAggregatedMIF()")
   return(aggregatedvars)
 }
