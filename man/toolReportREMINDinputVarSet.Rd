@@ -9,6 +9,7 @@ toolReportREMINDinputVarSet(
   fleetESdemand,
   fleetFEdemand,
   fleetEnergyIntensity,
+  scenSpecLoadFactor,
   fleetCapCosts,
   combinedCAPEXandOPEX,
   scenSpecPrefTrends,
@@ -16,9 +17,11 @@ toolReportREMINDinputVarSet(
   initialIncoCosts,
   annualMileage,
   timeValueCosts,
+  hybridElecShare,
   demScen,
   SSPscen,
   transportPolScen,
+  timeResReporting,
   helpers
 )
 
@@ -26,6 +29,7 @@ toolReportREMINDinputVarSet(
   fleetESdemand,
   fleetFEdemand,
   fleetEnergyIntensity,
+  scenSpecLoadFactor,
   fleetCapCosts,
   combinedCAPEXandOPEX,
   scenSpecPrefTrends,
@@ -33,50 +37,58 @@ toolReportREMINDinputVarSet(
   initialIncoCosts,
   annualMileage,
   timeValueCosts,
+  hybridElecShare,
   demScen,
   SSPscen,
   transportPolScen,
+  timeResReporting,
   helpers
 )
 }
 \arguments{
-\item{fleetESdemand}{xx}
+\item{fleetESdemand}{energy service demand on fleet level}
 
-\item{fleetFEdemand}{xx}
+\item{fleetFEdemand}{final energy demand on fleet level}
 
-\item{fleetEnergyIntensity}{xx}
+\item{fleetEnergyIntensity}{energy intensity on fleet level}
 
-\item{fleetCapCosts}{xx}
+\item{scenSpecLoadFactor}{scenario specific load factor data}
 
-\item{combinedCAPEXandOPEX}{xx}
+\item{fleetCapCosts}{annualized capital costs on fleet level}
 
-\item{scenSpecPrefTrends}{xx}
+\item{combinedCAPEXandOPEX}{CAPEX and OPEX on sales level in high temporal resolution}
 
-\item{scenSpecEnIntensity}{xx}
+\item{scenSpecPrefTrends}{scenario specific preference trends in high temporal resolution}
 
-\item{initialIncoCosts}{description}
+\item{scenSpecEnIntensity}{scenario specific energy intensity in high temporal resolution}
 
-\item{annualMileage}{description}
+\item{initialIncoCosts}{initial inconvenience cost}
 
-\item{timeValueCosts}{description}
+\item{annualMileage}{annual mileage in high temporal resolution}
 
-\item{demScen}{description}
+\item{timeValueCosts}{time value cost equivalent in high temporal resolution}
 
-\item{SSPscen}{description}
+\item{hybridElecShare}{share of electric driving for hybrid electric vehicles}
 
-\item{transportPolScen}{description}
+\item{demScen}{demand scenario}
 
-\item{helpers}{description}
+\item{SSPscen}{SSP scenario}
+
+\item{transportPolScen}{transport policy scenario}
+
+\item{timeResReporting}{time resolution reporting}
+
+\item{helpers}{list with helpers}
 }
 \value{
 Detailed transport output variable set
 
-Detailed transport output variable set
+REMIND/iterative EDGE-T input data
 }
 \description{
 Report detailed transport variable set
 
-Report detailed transport variable set
+Report REMIND/iterative EDGE-T input data
 }
 \author{
 Johanna Hoppe

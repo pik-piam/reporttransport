@@ -11,7 +11,7 @@
 #'- isTransportReported + isTransportExtendedReported activates further the extended reporting of transport variables
 #'  and if isStored is activated as well, triggers the generation of a seperate transport.MIF.
 #'  It includes the reduced reporting and additional transport variables for a detailed analysis of the transport
-#'  sector using transportCompareScenarios 
+#'  sector using transportCompareScenarios
 #'- isTransportReported + isTransportExtendedReported + isAnalyticsReported activates further the generation of
 #'  additional variables
 #'  for the analysis of the model behavior such as the inconvenience costs over iterations. They can be analyzed
@@ -40,8 +40,6 @@
 toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, isTransportReported = TRUE,
                                     isTransportExtendedReported = FALSE, isAnalyticsReported = FALSE,
                                     isREMINDinputReported = FALSE, isStored = TRUE) {
-
-  variable <- NULL
 
   # If you want to change timeResReporting to timesteps outside the modeleled timesteps,
   # please add an interpolation step
@@ -157,9 +155,9 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
     REMINDinputData <- toolReportREMINDinputVarSet(fleetESdemand        = baseVarSet$ext$fleetESdemand,                     # nolint: object_name_linter
                                                    fleetFEdemand        = baseVarSet$ext$fleetFEdemand,
                                                    fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
-                                                   loadFactor           = data$loadFactor,
                                                    fleetCapCosts        = baseVarSet$int$fleetCost[variable == "Capital costs"],
                                                    combinedCAPEXandOPEX = data$combinedCAPEXandOPEX,
+                                                   scenSpecLoadFactor   = data$loadFactor,
                                                    scenSpecPrefTrends   = data$prefTrends,
                                                    scenSpecEnIntensity  = data$enIntensity,
                                                    initialIncoCosts     = data$initialIncoCosts,
