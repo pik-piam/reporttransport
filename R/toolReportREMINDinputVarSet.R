@@ -172,23 +172,14 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   # The LDV share in the total liquids is used to adjust the IEA values
   # to our differentiation of fedie/fepet in calcIO
   shares_LDV_transport <- copy(fleetFEdemand)[technology %in% c("Liquids") & period %in% timeResReporting]
-  shares_LDV_transport <- shares_LDV_transport[, .(value = sum(value)), by = .(region, period, subsectorL1, subsectorL2)]
-  weightGdp <- calcOutput("GDP", aggregate = FALSE)[, , paste0("gdp_", SSPscen)] |> time_interpolate(timeResReporting)
-  weightGdp <- magpie2dt(weightGdp)
-  weightGdp[, variable := NULL]
-  setnames(weightGdp, c("value", "iso3c", "year"), c("weight", "iso", "period"))
+  shares_LDV_transport <- shares_LDV_transport[,  .(value = sum(value[subsectorL2 == "trn_pass_road_LDV"]) / sum(value)), by = c("region", "period")]
   edgeTtoIsoMapping <- helpers$regionmappingISOto21to12[, c("countryCode", "regionCode21")]
   setnames(edgeTtoIsoMapping, c("countryCode", "regionCode21"), c("iso", "region"))
   shares_LDV_transport <- disaggregate_dt(shares_LDV_transport, edgeTtoIsoMapping, fewcol = "region",
-                  manycol = "iso", datacols = c("period", "subsectorL1", "subsectorL2"), weights = weightGdp)
-  shares_LDV_transport[, share_LDV_totliq := value[subsectorL2 == "trn_pass_road_LDV"] / sum(value), by = c("iso", "period")]
-  shares_LDV_transport[, share_LDV_totroad := value[subsectorL2 == "trn_pass_road_LDV"] /
-                         sum(value[subsectorL1 %in% c("trn_pass_road", "trn_freight_road")]),
-                         by = c("iso", "period")]
-  shares_LDV_transport[, c("subsectorL1", "subsectorL2", "value") := NULL]
-  shares_LDV_transport <- unique(shares_LDV_transport)
-  shares_LDV_transport <- melt(shares_LDV_transport, id.vars = c("iso", "period"))
-  setnames(shares_LDV_transport, c("iso", "period", "variable"), c("region", "year", "sharetype"))
+                  manycol = "iso", datacols = c("period"))
+  setnames(shares_LDV_transport, c("iso", "period"), c("region", "year"))
+  shares_LDV_transport <- approx_dt(shares_LDV_transport, seq(1990, 2150), "year", "value", "region", extrapolate = TRUE)
+  shares_LDV_transport[,  sharetype := "share_LDV_totliq"]
   shares_LDV_transport[, varname := "shares_LDV_transport"]
   shares_LDV_transport[, DEM_scenario := paste0("gdp_", demScen)]
   shares_LDV_transport[, GDP_scenario := paste0("gdp_", SSPscen)]
