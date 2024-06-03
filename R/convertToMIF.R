@@ -54,24 +54,26 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   varsToMIFint[, fuel := NA]
   varsToMIFint <- applyReportingNames(varsToMIFint, helpers$reportingNames)
 
-  # Aggregate variables-----------------------------------------------------------------------
-  toMIFext <- aggregateVariables(varsToMIFext, helpers$reportingAggregation)
-  weight <- varsToMIFext[variable == "ES"]
-  toMIFint <- aggregateVariables(varsToMIFint, helpers$reportingAggregation, weight)
-  toMIFint <- rbind(noAggregationvars, toMIFint, fill = TRUE, use.names = TRUE)
-
   # Regional aggregation----------------------------------------------------------------------
   ## Aggregation to world is always supplied
-  mapWorld <- unique(toMIFext[, c("region")])[, aggrReg := "World"]
-  worldDataExt <- as.data.table(aggregate_map(toMIFext, mapWorld, by = "region"))
-  weight <- copy(GDPMER)
-  setnames(weight, "value", "weight_val_col")
-  worldDataInt <- as.data.table(aggregate_map(toMIFint, mapWorld, by = "region",
-                                              weights = weight, weight_item_col = "region"))
+  mapWorld <- unique(varsToMIFext[, c("region")])[, aggrReg := "World"]
+  worldDataExt <- as.data.table(aggregate_map(varsToMIFext, mapWorld, by = "region"))
+  weight <- copy(varsToMIFext[variable == "ES"])
+  weight[, c("variable", "unit", "fuel") := NULL]
+  setnames(weight, "value", "weight")
+  weightedInt <- merge(weight,varsToMIFint, by = intersect(names(varsToMIFint), names(weight)), all.x = TRUE)
+  byCols <- names(weightedInt)
+  byCols <- byCols[!byCols %in% c("region", "value", "weight")]
+  weightedInt[, sum := sum(weight), by = eval(byCols)]
+  weightedInt[sum == 0, weight := 1, by = eval(byCols)][, sum := NULL]
+  worldDataInt <- weightedInt[, .(value = sum(value * (weight / sum(weight)))), by = eval(byCols)]
+  worldDataInt[, region := "World"]
+  varsToMIFint <- rbind(varsToMIFint, worldDataInt)
+  varsToMIFext <- rbind(varsToMIFext, worldDataExt)
 
+  ## Additional regions
   ## if regionSubsetList != NULL -> gdx provides 21 region resolution
   regionSubsetList <- toolRegionSubsets(gdx)
-
   if (!is.null(regionSubsetList)) {
     # ADD EU-27 region aggregation
     if ("EUR" %in% names(regionSubsetList)) {
@@ -81,33 +83,31 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
     }
     # Create Mapping for region Aggregation out of region SubsetList
     namesReg <- names(regionSubsetList)
-    regSubsetAggregation <- data.table()
+    regSubsetMap <- data.table()
     for (i in seq_along(namesReg)) {
       tmp <- data.table(region = regionSubsetList[[i]], aggrReg = namesReg[i])
-      regSubsetAggregation <- rbind(regSubsetAggregation, tmp)
+      regSubsetMap <- rbind(regSubsetMap, tmp)
     }
-    subsetDataExt <- as.data.table(aggregate_map(toMIFext[region %in% unique(regSubsetAggregation$region)],
-                                                 regSubsetAggregation, by = "region"))
-    weight <- copy(GDPMER)
-    setnames(weight, "value", "weight_val_col")
-    subsetDataDataInt <- as.data.table(aggregate_map(toMIFint[region %in% unique(regSubsetAggregation$region)],
-                                                     regSubsetAggregation, by = "region",
-                                                     weights = weight, weight_item_col = "region"))
+    regSubsetDataExt <- as.data.table(aggregate_map(varsToMIFext[region %in% unique(regSubsetMap$region)],
+                                                 regSubsetMap, by = "region"))
+    weightedInt <- merge(varsToMIFint, regSubsetMap, by = intersect(names(varsToMIFint), names(regSubsetMap)), all.y = TRUE)
+    weightedInt <- merge(weight, weightedInt, by = intersect(names(weightedInt), names(weight)), all.y = TRUE)
+    byCols <- names(weightedInt)
+    byCols <- byCols[!byCols %in% c("region", "value", "weight")]
+    weightedInt[, sum := sum(weight), by = eval(byCols)]
+    weightedInt[sum == 0, weight := 1, by = eval(byCols)][, sum := NULL]
+    regSubsetDataInt <- weightedInt[, .(value = sum(value * (weight / sum(weight)))), by = eval(byCols)]
+    setnames(regSubsetDataInt, "aggrReg", "region")
 
-    # EUR and EU27 aggregation is always provided in the 21 region resolution
-    toMIFint <- rbind(toMIFint, subsetDataDataInt[region %in% c("EUR", "EU27")])
-    toMIFext <- rbind(toMIFext, subsetDataExt[region %in% c("EUR", "EU27")])
+    varsToMIFint <- rbind(varsToMIFint, regSubsetDataInt)
+    varsToMIFext <- rbind(varsToMIFext, regSubsetDataExt)
   }
 
-  # World aggregation is always added
-  toMIFint <- rbind(toMIFint, worldDataInt)
-  toMIFext <- rbind(toMIFext, worldDataExt)
-
-  # Other subset region are only provided in the extended reporting
-  if (isTransportExtendedReported == TRUE) {
-    toMIFint <- rbind(toMIFint, subsetDataDataInt[!region %in% c("EUR", "EU27")])
-    toMIFext <- rbind(toMIFext, subsetDataExt[!region %in% c("EUR", "EU27")])
-  }
+  # Aggregate variables-----------------------------------------------------------------------
+  toMIFext <- aggregateVariables(varsToMIFext, helpers$reportingAggregation)
+  weight <- varsToMIFext[variable == "ES"]
+  toMIFint <- aggregateVariables(varsToMIFint, helpers$reportingAggregation, weight)
+  toMIFint <- rbind(noAggregationvars, toMIFint, fill = TRUE, use.names = TRUE)
 
   toMIF <- rbind(toMIFint, toMIFext)
 
@@ -122,9 +122,9 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   toMIF <- as.quitte(toMIF)
 
   if (anyNA(toMIF)) stop("MIF output contains NAs.
-                         Please check toolReportAndAggregatedMIF()")
+                         Please check reportAndAggregatedMIF()")
   if (anyDuplicated(toMIF)) stop("MIF output contains duplicates.
-                                 Please check toolReportAndAggregatedMIF()")
+                                 Please check reportAndAggregatedMIF()")
 
   return(toMIF)
 }

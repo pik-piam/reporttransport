@@ -20,7 +20,7 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   fleetCost <- baseVarSet$int$fleetCost[period %in% timeResReporting]
 
   # Report useful energy-----------------------------------------------------------------------
-  fleetUEdemand <- toolReportUE(FEdemand = fleetFEdemand,
+  fleetUEdemand <- reportUE(FEdemand = fleetFEdemand,
                                 helpers = data$helpers)
 
   # Report vintages (stock without sales)-------------------------------------------------------

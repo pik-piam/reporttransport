@@ -8,12 +8,12 @@
 #' @import data.table
 #' @export
 
-toolReportBaseVarSet <- function(data, timeResReporting) {
+reportBaseVarSet <- function(data, timeResReporting) {
 
   subsectorL3 <- variable <- period <- NULL
 
   # aggregate costs---------------------------------------------------------------------------
-  aggregatedCosts <- toolReportAggregatedCosts(data$combinedCAPEXandOPEX)
+  aggregatedCosts <- reportAggregatedCosts(data$combinedCAPEXandOPEX)
   aggregatedCosts <- merge(aggregatedCosts, data$helpers$decisionTree,
                            by = intersect(names(aggregatedCosts), names(data$helpers$decisionTree)))
 
@@ -27,12 +27,12 @@ toolReportBaseVarSet <- function(data, timeResReporting) {
   # to reflect the value for each year referring to the vehicle stock
   fleetVariables <- list(fleetEnergyIntensity = data$enIntensity,
                          fleetCapCosts = aggregatedCosts[variable == "Capital costs sales"])
-  fleetData <- lapply(fleetVariables, toolReportFleetVariables,
+  fleetData <- lapply(fleetVariables, reportFleetVariables,
                       data$fleetSizeAndComposition$fleetVehNumbersConstrYears, data$helpers)
   fleetCost <- rbind(fleetData$fleetCapCosts, aggregatedCosts[!variable == "Capital costs sales"])
 
   # Calculate final energy---------------------------------------------------------------------
-  fleetFEdemand <- toolReportFE(fleetEnergyIntensity = fleetData$fleetEnergyIntensity, fleetESdemand = fleetESdemand,
+  fleetFEdemand <- reportFE(fleetEnergyIntensity = fleetData$fleetEnergyIntensity, fleetESdemand = fleetESdemand,
                                 loadFactor = data$loadFactor, hybridElecShare = data$hybridElecShare, helpers = data$helpers)
 
   # Split extensive and intensive variables ---------------------------------------------------
