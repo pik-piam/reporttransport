@@ -14,7 +14,7 @@ test_that("variable aggregation works", {
     return(datatable)
   }
 
- load(test_path("testVariableAggregation.Rdata"))
+ load(test_path("testVariableAggregation.RData"))
 
  # Check summation for extensive variables "ES" and "FE" by example
  extensiveTestVars <- aggregateVariables(vars[variable %in% c("ES", "FE")],
