@@ -26,6 +26,7 @@ Imports:
     yaml,
     ymlthis
 Suggests:
+    knitr,
     sf,
     testthat
 Encoding: UTF-8
