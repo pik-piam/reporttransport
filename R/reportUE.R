@@ -8,7 +8,7 @@
 #' @import data.table
 #' @export
 
-toolReportUE <- function(FEdemand, helpers) {                                                                               # nolint: object_name_linter
+reportUE <- function(FEdemand, helpers) {                                                                               # nolint: object_name_linter
 
   value <- variable <- UEefficiency <- univocalName <- NULL
 

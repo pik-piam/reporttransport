@@ -37,7 +37,7 @@
 #' @import data.table
 #' @export
 
-toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, isTransportReported = TRUE,
+reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, isTransportReported = TRUE,
                                     isTransportExtendedReported = FALSE, isAnalyticsReported = FALSE,
                                     isREMINDinputReported = FALSE, isStored = TRUE) {
 
@@ -56,7 +56,6 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
     data <- append(data, cfg[names(cfg) %in% c("SSPscen", "transportPolScen", "demScen")])
     data$hybridElecShare <- readRDS(file.path(folderPath, "1_InputDataRaw", "hybridElecShare.RDS"))
     data$helpers <- readRDS(file.path(folderPath, "1_InputDataRaw", "helpers.RDS"))
-    data$GDPMER <- readRDS(file.path(folderPath, "1_InputDataRaw", "GDPMER.RDS"))
     data$combinedCAPEXandOPEX <- readRDS(file.path(folderPath, "2_InputDataPolicy", "combinedCAPEXandOPEX.RDS"))
     data$enIntensity <- readRDS(file.path(folderPath, "2_InputDataPolicy", "enIntensity.RDS"))
     data$loadFactor <- readRDS(file.path(folderPath, "2_InputDataPolicy", "loadFactor.RDS"))
@@ -107,7 +106,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
   #########################################################################
 
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
-  baseVarSet <- toolReportBaseVarSet(data = data, timeResReporting = timeResReporting)
+  baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
   outputVars <- baseVarSet
 
   if (isTransportReported) {
@@ -152,7 +151,7 @@ toolReportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data 
   ## Report REMIND input data
   #########################################################################
   if (isREMINDinputReported) {                                                                                              # nolint: object_name_linter
-    REMINDinputData <- toolReportREMINDinputVarSet(fleetESdemand        = baseVarSet$ext$fleetESdemand,                     # nolint: object_name_linter
+    REMINDinputData <- reportREMINDinputVarSet(fleetESdemand        = baseVarSet$ext$fleetESdemand,                     # nolint: object_name_linter
                                                    fleetFEdemand        = baseVarSet$ext$fleetFEdemand,
                                                    fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
                                                    fleetCapCosts        = baseVarSet$int$fleetCost[variable == "Capital costs"],

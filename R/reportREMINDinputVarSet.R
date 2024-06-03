@@ -24,7 +24,7 @@
 #' @author Johanna Hoppe
 #' @import data.table
 
-toolReportREMINDinputVarSet <- function(fleetESdemand,
+reportREMINDinputVarSet <- function(fleetESdemand,
                                         fleetFEdemand,
                                         fleetEnergyIntensity,
                                         scenSpecLoadFactor,
@@ -83,7 +83,7 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   trpdemandMap <- unique(helpers$mapEdgeToREMIND[, c("all_in", "univocalName", "technology")])
   f29_trpdemand <- merge(f29_trpdemand, trpdemandMap, by = c("univocalName", "technology"), all.x = TRUE)# nolint: object_name_linter
   f29_trpdemand <- f29_trpdemand[, .(value = sum(value)), by = c("region", "period", "all_in")]
-  checkForNAsDups(f29_trpdemand, "f29_trpdemand", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(f29_trpdemand, "f29_trpdemand", "reportREMINDinputDataVarSet()")
 
   # Capital costs for the transport system [2005US$/pkm or 2005US$/tkm]-------------------------------------------
   # f35_esCapCost(tall, all_regi, all_GDPscen, all_demScen, all_EDGE_scenario, all_teEs)                                                # nolint: commented_code_linter
@@ -103,7 +103,7 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   f35_esCapCost[sumES == 0, ESdemand := 1]
   f35_esCapCost[, sumES := sum(ESdemand), by = c("region", "period", "all_teEs")]
   f35_esCapCost <- f35_esCapCost[, .(value = sum(value * ESdemand / sumES)),  by = c("region", "period", "all_teEs")]                                     # nolint: object_name_linter
-  checkForNAsDups(f35_esCapCost, "f35_esCapCost", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(f35_esCapCost, "f35_esCapCost", "reportREMINDinputDataVarSet()")
 
   #Energy efficiency of transport fuel technologies [trn pkm/Twa or trn tkm/Twa]-----------------------------------
   # f35_fe2es(tall, all_regi, all_GDPscen, all_demScen, EDGE_scenario, all_teEs)                                                    # nolint: commented_code_linter
@@ -128,7 +128,7 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   f35_fe2es[sumES == 0, ESdemand := 1]
   f35_fe2es[, sumES := sum(ESdemand), by = c("region", "period", "all_teEs")]
   f35_fe2es <- f35_fe2es[, .(value = sum(value * ESdemand / sumES)),  by = c("region", "period", "all_teEs")]                           # nolint: object_name_linter
-  checkForNAsDups(f35_fe2es, "f35_fe2es", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(f35_fe2es, "f35_fe2es", "reportREMINDinputDataVarSet()")
 
   # Final energy demand per transport fuel technology [TWa]-----------------------------------------------------
   # f35_demByTech(tall, all_regi, all_GDPscen, all_demScen, all_EDGE_scenario, all_enty, all_in, all_teEs)                              # nolint: commented_code_linter
@@ -143,7 +143,7 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   demByTechMap[technology == "FCEV", technology := "Hydrogen"]
   f35_demByTech <- merge(f35_demByTech, demByTechMap, by = c("univocalName", "technology"), all.x = TRUE)# nolint: object_name_linter
   f35_demByTech <- f35_demByTech[, .(value = sum(value)), by = c("region", "period", "all_enty", "all_in", "all_teEs")]
-  checkForNAsDups(f35_demByTech, "f35_demByTech", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(f35_demByTech, "f35_demByTech", "reportREMINDinputDataVarSet()")
 
   ####################################################################
   ## Input data for edgeTransport iterative that is coupled to REMIND
@@ -152,19 +152,19 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   # Fuel costs are added from the fulldata.gdx of the last REMIND iteration in the iterative script
   CAPEXandNonFuelOPEX <- copy(combinedCAPEXandOPEX)                                                                                     # nolint: object_name_linter
   CAPEXandNonFuelOPEX <- CAPEXandNonFuelOPEX[!variable == "Fuel costs"]                                                                 # nolint: object_name_linter
-  checkForNAsDups(CAPEXandNonFuelOPEX, "CAPEXandNonFuelOPEX", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(CAPEXandNonFuelOPEX, "CAPEXandNonFuelOPEX", "reportREMINDinputDataVarSet()")
   # scenSpecPrefTrends
-  checkForNAsDups(scenSpecPrefTrends, "scenSpecPrefTrends", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(scenSpecPrefTrends, "scenSpecPrefTrends", "reportREMINDinputDataVarSet()")
   # scenSpecLoadFactor
-  checkForNAsDups(scenSpecLoadFactor, "scenSpecLoadFactor", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(scenSpecLoadFactor, "scenSpecLoadFactor", "reportREMINDinputDataVarSet()")
   # scenSpecEnIntensity
-  checkForNAsDups(scenSpecEnIntensity, "scenSpecEnIntensity", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(scenSpecEnIntensity, "scenSpecEnIntensity", "reportREMINDinputDataVarSet()")
   # initialIncoCosts
-  checkForNAsDups(initialIncoCosts, "initialIncoCosts", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(initialIncoCosts, "initialIncoCosts", "reportREMINDinputDataVarSet()")
   # annualMileage
-  checkForNAsDups(annualMileage, "annualMileage", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(annualMileage, "annualMileage", "reportREMINDinputDataVarSet()")
   # timeValueCosts
-  checkForNAsDups(timeValueCosts, "timeValueCosts", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(timeValueCosts, "timeValueCosts", "reportREMINDinputDataVarSet()")
 
   ####################################################################
   ## Additional information used from EDGE-T standalone in pik-piam

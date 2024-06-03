@@ -8,7 +8,7 @@
 #' @import data.table
 #' @export
 
-toolReportAggregatedCosts <- function(combinedCAPEXandOPEX) {
+reportAggregatedCosts <- function(combinedCAPEXandOPEX) {
 
   type <- variable <- . <- value <- NULL
 
