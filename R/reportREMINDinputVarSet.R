@@ -40,8 +40,7 @@ reportREMINDinputVarSet <- function(fleetESdemand,
                                         SSPscen,
                                         transportPolScen,
                                         timeResReporting,
-                                        helpers,
-                                        files) {
+                                        helpers) {
 
   DEM_scenario <- GDP_scenario <- EDGE_scenario <- value <- sumES <- variable <- univocalName <- ESdemand <- NULL
 
@@ -50,10 +49,11 @@ reportREMINDinputVarSet <- function(fleetESdemand,
 
   # See needed inputs in REMIND/modules/35_transport/edge_esm/datainput.gms
   # and REMIND/modules/29_CES_parameters/calibratedatainput.gms
-  f29_trpdemand <- reportToREMINDtrpdemand(fleetESdemand, helpers)
-  f35_esCapCost <- reportToREMINDcapitalCosts(fleetCapCosts, helpers)
-  f35_fe2es <- reportToREMINDenergyEfficiency(fleetEnergyIntensity, timeResReporting, helpers)
-  f35_demByTech <- reportToREMINDfinalEnergyDemand(fleetFEdemand, timeResReporting, helpers)
+  f29_trpdemand <- reportToREMINDtrpdemand(fleetESdemand, hybridElecShare, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
+  f35_esCapCost <- reportToREMINDcapitalCosts(fleetCapCosts, fleetESdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
+  f35_fe2es <- reportToREMINDenergyEfficiency(fleetEnergyIntensity, scenSpecLoadFactor, fleetESdemand, hybridElecShare, timeResReporting,
+                                              demScen, SSPscen, transportPolScen, helpers)
+  f35_demByTech <- reportToREMINDfinalEnergyDemand(fleetFEdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
 
   ## Input data for edgeTransport iterative that is coupled to REMIND--------------------------------------------------------
 
@@ -76,12 +76,17 @@ reportREMINDinputVarSet <- function(fleetESdemand,
   checkForNAsDups(timeValueCosts, "timeValueCosts", "reportREMINDinputDataVarSet()")
 
   ## Additional information used from EDGE-T standalone in pik-piam---------------------------------------------------------
+  shares_LDV_transport <- toolReportsharesLDVtransport(fleetFEdemand, timeResReporting, helpers)
 
-  output <- list(
+
+  inputREMIND <- list(
     f35_esCapCost = f35_esCapCost,
     f35_fe2es = f35_fe2es,
     f35_demByTech = f35_demByTech,
-    f29_trpdemand = f29_trpdemand,
+    f29_trpdemand = f29_trpdemand
+  )
+
+  inputIterative <- list(
     CAPEXandNonFuelOPEX = CAPEXandNonFuelOPEX,
     scenSpecPrefTrends = scenSpecPrefTrends,
     scenSpecLoadFactor = scenSpecLoadFactor,
@@ -91,8 +96,9 @@ reportREMINDinputVarSet <- function(fleetESdemand,
     timeValueCosts = timeValueCosts
   )
 
-  output <- lapply(output, prepareForREMIND, demScen, SSPscen, transportPolScen)
-  output$shares_LDV_transport <- shares_LDV_transport
+  inputIterative <- lapply(inputIterative, prepareForREMIND, demScen, SSPscen, transportPolScen)
+  input <- append(inputREMIND, inputIterative)
+  input <- append(input, list(shares_LDV_transport = shares_LDV_transport))
 
-  return(output)
+  return(input)
 }

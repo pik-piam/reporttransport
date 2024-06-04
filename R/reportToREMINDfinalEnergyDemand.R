@@ -1,17 +1,20 @@
 #'Report to REMIND f35_demByTech
 #'
 #' @param fleetFEdemand final energy demand on fleet level
-#' @param helpers list of helpers
 #' @param timeResReporting time resolution reporting
+#' @param demScen demand scenario
+#' @param SSPscen SSP scenario
+#' @param transportPolScen transport policy scenario
+#' @param helpers list of helpers
 #' @returns Final energy demand on CES level per transport fuel technology [TWa]
 #' @export
 #' @author Johanna Hoppe
 #' @import data.table
 
-reportToREMINDfinalEnergyDemand <- function(fleetFEdemand, timeResReporting, helpers) { 
- 
-  MJtoTwa <- 3.169e-14      
-  
+reportToREMINDfinalEnergyDemand <- function(fleetFEdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers) {
+
+  MJtoTwa <- 3.169e-14
+
   # f35_demByTech(tall, all_regi, all_GDPscen, all_demScen, all_EDGE_scenario, all_enty, all_in, all_teEs)                              # nolint: commented_code_linter
   f35_demByTech <- copy(fleetFEdemand)                                                                                                  # nolint: object_name_linter
   f35_demByTech <- f35_demByTech[!univocalName %in% c("Cycle", "Walk")]
@@ -25,7 +28,8 @@ reportToREMINDfinalEnergyDemand <- function(fleetFEdemand, timeResReporting, hel
   f35_demByTech <- merge(f35_demByTech, demByTechMap, by = c("univocalName", "technology"), all.x = TRUE)# nolint: object_name_linter
   f35_demByTech <- f35_demByTech[, .(value = sum(value)), by = c("region", "period", "all_enty", "all_in", "all_teEs")]
   checkForNAsDups(f35_demByTech, "f35_demByTech", "reportToREMINDfinalEnergyDemand()")
+  f35_demByTech <- prepareForREMIND(f35_demByTech, demScen, SSPscen, transportPolScen)
   setnames(f35_demByTech, c("period", "region"), c("tall", "all_regi"))
-  
+
   return(f35_demByTech)
 }
