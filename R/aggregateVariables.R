@@ -76,7 +76,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   test <- copy(vars)
   test[, value := NULL]
   if (anyDuplicated(test)) stop("Variables for aggregation contain duplicates.
-                                Check toolreportEdgeTransport() to prevent double counting")
+                                Check reportEdgeTransport() to prevent double counting")
 
   # Prepare vars
   vars <- merge(vars, mapAggregation, by = "univocalName", allow.cartesian = TRUE, all.x = TRUE)
@@ -267,8 +267,8 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
 
   if (anyNA(aggregatedvars)) stop("Output variable contains NAs.
-                                  Please check toolReportAndAggregatedMIF()")
+                                  Please check reportAndAggregatedMIF()")
   if (anyDuplicated(aggregatedvars[, c("region", "period", "variable")])) stop("Output variable contains Duplicates.
-                                         Please check toolReportAndAggregatedMIF()")
+                                         Please check reportAndAggregatedMIF()")
   return(aggregatedvars)
 }

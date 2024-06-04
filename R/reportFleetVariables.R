@@ -17,7 +17,7 @@
 #' @export
 
 
-toolReportFleetVariables <- function(salesData, vehiclesConstrYears, helpers) {
+reportFleetVariables <- function(salesData, vehiclesConstrYears, helpers) {
 
   sum <- share <- value <- unit <- variable <- period <- constrYear <- subsectorL3 <- . <- NULL
 

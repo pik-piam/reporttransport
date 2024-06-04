@@ -1,12 +1,15 @@
 # Reporting package for edgeTransport
 
-R package **reporttransport**, version **0.0.2.9004**
+R package **reporttransport**, version **0.0.2.9006**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/reporttransport)](https://cran.r-project.org/package=reporttransport)  [![R build status](https://github.com/pik-piam/reporttransport/workflows/check/badge.svg)](https://github.com/pik-piam/reporttransport/actions) [![codecov](https://codecov.io/gh/pik-piam/reporttransport/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/reporttransport) [![r-universe](https://pik-piam.r-universe.dev/badges/reporttransport)](https://pik-piam.r-universe.dev/builds)
 
 ## Purpose and Functionality
 
-This package contains edgeTransport-specific routines to report model results. The main functionality is to generate transport reporting variables in MIF format from a given edgeTransport model run folder or REMIND input data.
+This package contains edgeTransport-specific routines to
+    report model results. The main functionality is to generate transport
+    reporting variables in MIF format from a given edgeTransport model run
+    folder or REMIND input data.
 
 
 ## Installation
@@ -38,7 +41,7 @@ In case of questions / problems please contact Johanna Hoppe <johanna.hoppe@pik-
 
 To cite package **reporttransport** in publications use:
 
-Hoppe J (2024). _reporttransport: Reporting package for edgeTransport_. R package version 0.0.2.9004, <https://github.com/pik-piam/reporttransport>.
+Hoppe J (2024). _reporttransport: Reporting package for edgeTransport_. R package version 0.0.2.9006, <https://github.com/pik-piam/reporttransport>.
 
 A BibTeX entry for LaTeX users is
 
@@ -47,7 +50,7 @@ A BibTeX entry for LaTeX users is
   title = {reporttransport: Reporting package for edgeTransport},
   author = {Johanna Hoppe},
   year = {2024},
-  note = {R package version 0.0.2.9004},
+  note = {R package version 0.0.2.9006},
   url = {https://github.com/pik-piam/reporttransport},
 }
 ```

@@ -93,7 +93,7 @@ storeData <- function(outputFolder, outputRaw = NULL, ...) {
     vars <- vars[!names(vars) %in% c("SSPscen", "transportPolScen", "demScen")]
   }
   if (!is.null(vars$gdxPath)) {
-    file.copy(gdxPath, file.path(outputFolder))
+    file.copy(vars$gdxPath, file.path(outputFolder))
     vars <- vars[!names(vars) %in% c("gdxPath")]
   }
 

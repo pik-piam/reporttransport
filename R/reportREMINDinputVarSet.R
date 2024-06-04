@@ -24,7 +24,7 @@
 #' @author Johanna Hoppe
 #' @import data.table
 
-toolReportREMINDinputVarSet <- function(fleetESdemand,
+reportREMINDinputVarSet <- function(fleetESdemand,
                                         fleetFEdemand,
                                         fleetEnergyIntensity,
                                         scenSpecLoadFactor,
@@ -61,19 +61,19 @@ toolReportREMINDinputVarSet <- function(fleetESdemand,
   # Fuel costs are added from the fulldata.gdx of the last REMIND iteration in the iterative script
   CAPEXandNonFuelOPEX <- copy(combinedCAPEXandOPEX)                                                                                     # nolint: object_name_linter
   CAPEXandNonFuelOPEX <- CAPEXandNonFuelOPEX[!variable == "Fuel costs"]                                                                 # nolint: object_name_linter
-  checkForNAsDups(CAPEXandNonFuelOPEX, "CAPEXandNonFuelOPEX", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(CAPEXandNonFuelOPEX, "CAPEXandNonFuelOPEX", "reportREMINDinputDataVarSet()")
   # scenSpecPrefTrends
-  checkForNAsDups(scenSpecPrefTrends, "scenSpecPrefTrends", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(scenSpecPrefTrends, "scenSpecPrefTrends", "reportREMINDinputDataVarSet()")
   # scenSpecLoadFactor
-  checkForNAsDups(scenSpecLoadFactor, "scenSpecLoadFactor", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(scenSpecLoadFactor, "scenSpecLoadFactor", "reportREMINDinputDataVarSet()")
   # scenSpecEnIntensity
-  checkForNAsDups(scenSpecEnIntensity, "scenSpecEnIntensity", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(scenSpecEnIntensity, "scenSpecEnIntensity", "reportREMINDinputDataVarSet()")
   # initialIncoCosts
-  checkForNAsDups(initialIncoCosts, "initialIncoCosts", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(initialIncoCosts, "initialIncoCosts", "reportREMINDinputDataVarSet()")
   # annualMileage
-  checkForNAsDups(annualMileage, "annualMileage", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(annualMileage, "annualMileage", "reportREMINDinputDataVarSet()")
   # timeValueCosts
-  checkForNAsDups(timeValueCosts, "timeValueCosts", "toolReportREMINDinputDataVarSet()")
+  checkForNAsDups(timeValueCosts, "timeValueCosts", "reportREMINDinputDataVarSet()")
 
   ## Additional information used from EDGE-T standalone in pik-piam---------------------------------------------------------
 
