@@ -4,12 +4,25 @@
 \alias{toolReportsharesLDVtransport}
 \title{Report FE shares of LDV in transport liquids}
 \usage{
-toolReportsharesLDVtransport(fleetFEdemand, timeResReporting, helpers)
+toolReportsharesLDVtransport(
+  fleetFEdemand,
+  timeResReporting,
+  demScen,
+  SSPscen,
+  transportPolScen,
+  helpers
+)
 }
 \arguments{
 \item{fleetFEdemand}{final energy demand on fleet level}
 
 \item{timeResReporting}{time resolution reporting}
+
+\item{demScen}{demand scenario}
+
+\item{SSPscen}{SSP scenario}
+
+\item{transportPolScen}{transport policy scenario}
 
 \item{helpers}{list of helpers}
 }

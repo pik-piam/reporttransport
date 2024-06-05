@@ -76,7 +76,8 @@ reportREMINDinputVarSet <- function(fleetESdemand,
   checkForNAsDups(timeValueCosts, "timeValueCosts", "reportREMINDinputDataVarSet()")
 
   ## Additional information used from EDGE-T standalone in pik-piam---------------------------------------------------------
-  shares_LDV_transport <- toolReportsharesLDVtransport(fleetFEdemand, timeResReporting, helpers)
+  shares_LDV_transport <- toolReportsharesLDVtransport(fleetFEdemand, timeResReporting, demScen,
+                                                       SSPscen, transportPolScen, helpers)
 
 
   inputREMIND <- list(
