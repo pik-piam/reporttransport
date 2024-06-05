@@ -35,7 +35,7 @@ items <- c("Stock|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|BEV
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|FCEV",
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|Hybrid electric",
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|Liquids",
-           "Stock|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|NG")
+           "Stock|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|Gases")
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
@@ -47,7 +47,7 @@ items <- c("Sales|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|BEV
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|FCEV",
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|Hybrid electric",
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|Liquids",
-           "Sales|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|NG")
+           "Sales|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|Gases")
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
@@ -59,7 +59,7 @@ items <- c("Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|FCEV",
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|Hybrid electric",
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|Liquids",
-           "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|NG")
+           "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|Gases")
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
@@ -71,7 +71,7 @@ items <- c("Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|FCEV",
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|Hybrid electric",
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|Liquids",
-           "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|NG")
+           "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|Gases")
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
@@ -82,7 +82,7 @@ tot <- "Stock|Transport|Pass|Road|Bus"
 items <- c("Stock|Transport|Pass|Road|Bus|BEV",
            "Stock|Transport|Pass|Road|Bus|FCEV",
            "Stock|Transport|Pass|Road|Bus|Liquids",
-           "Stock|Transport|Pass|Road|Bus|NG")
+           "Stock|Transport|Pass|Road|Bus|Gases")
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
@@ -117,7 +117,7 @@ tot <- "Stock|Transport|Freight|Road|Light|Truck (0-3_5t)"
 items <- c("Stock|Transport|Freight|Road|Light|Truck (0-3_5t)|BEV",
            "Stock|Transport|Freight|Road|Light|Truck (0-3_5t)|FCEV",
            "Stock|Transport|Freight|Road|Light|Truck (0-3_5t)|Liquids",
-           "Stock|Transport|Freight|Road|Light|Truck (0-3_5t)|NG")
+           "Stock|Transport|Freight|Road|Light|Truck (0-3_5t)|Gases")
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
@@ -128,7 +128,7 @@ tot <- "Sales|Transport|Freight|Road|Light|Truck (0-3_5t)"
 items <- c("Sales|Transport|Freight|Road|Light|Truck (0-3_5t)|BEV",
            "Sales|Transport|Freight|Road|Light|Truck (0-3_5t)|FCEV",
            "Sales|Transport|Freight|Road|Light|Truck (0-3_5t)|Liquids",
-           "Sales|Transport|Freight|Road|Light|Truck (0-3_5t)|NG")
+           "Sales|Transport|Freight|Road|Light|Truck (0-3_5t)|Gases")
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
@@ -139,7 +139,7 @@ tot <- "Stock|Transport|Freight|Road|Heavy|Truck (40t)"
 items <- c("Stock|Transport|Freight|Road|Heavy|Truck (40t)|BEV",
            "Stock|Transport|Freight|Road|Heavy|Truck (40t)|FCEV",
            "Stock|Transport|Freight|Road|Heavy|Truck (40t)|Liquids",
-           "Stock|Transport|Freight|Road|Heavy|Truck (40t)|NG")
+           "Stock|Transport|Freight|Road|Heavy|Truck (40t)|Gases")
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
@@ -150,7 +150,7 @@ tot <- "Sales|Transport|Freight|Road|Heavy|Truck (40t)"
 items <- c("Sales|Transport|Freight|Road|Heavy|Truck (40t)|BEV",
            "Sales|Transport|Freight|Road|Heavy|Truck (40t)|FCEV",
            "Sales|Transport|Freight|Road|Heavy|Truck (40t)|Liquids",
-           "Sales|Transport|Freight|Road|Heavy|Truck (40t)|NG")
+           "Sales|Transport|Freight|Road|Heavy|Truck (40t)|Gases")
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
