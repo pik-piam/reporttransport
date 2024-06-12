@@ -1,8 +1,8 @@
 Type: Package
 Package: reporttransport
 Title: Reporting package for edgeTransport
-Version: 0.0.2.9010
-Date: 2024-06-08
+Version: 0.0.3
+Date: 2024-06-12
 Authors@R:
     person("Johanna", "Hoppe", , "johanna.hoppe@pik-potsdam.de", role = c("aut", "cre"))
 Description: This package contains edgeTransport-specific routines to
