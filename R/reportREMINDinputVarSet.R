@@ -44,6 +44,11 @@ reportREMINDinputVarSet <- function(fleetESdemand,
 
   DEM_scenario <- GDP_scenario <- EDGE_scenario <- value <- sumES <- variable <- univocalName <- ESdemand <- NULL
 
+  timeResReporting <- c(seq(1900,1985,5),
+    seq(1990, 2060, by = 5),
+    seq(2070, 2110, by = 10),
+    2130, 2150)
+
   ## Input data for transport module GAMS code----------------------------------------------------------------------------
 
   # See needed inputs in REMIND/modules/35_transport/edge_esm/datainput.gms
@@ -53,6 +58,15 @@ reportREMINDinputVarSet <- function(fleetESdemand,
   f35_fe2es <- reportToREMINDenergyEfficiency(fleetEnergyIntensity, scenSpecLoadFactor, fleetESdemand, hybridElecShare, timeResReporting,
                                               demScen, SSPscen, transportPolScen, helpers)
   f35_demByTech <- reportToREMINDfinalEnergyDemand(fleetFEdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
+
+  inputREMIND <- list(
+    f35_esCapCost = f35_esCapCost,
+    f35_fe2es = f35_fe2es,
+    f35_demByTech = f35_demByTech,
+    f29_trpdemand = f29_trpdemand
+  )
+
+  inputREMIND <- lapply(inputREMIND, approx_dt, timeResReporting, "tall", "value", extrapolate = TRUE)
 
   ## Input data for edgeTransport iterative that is coupled to REMIND--------------------------------------------------------
 
@@ -77,14 +91,6 @@ reportREMINDinputVarSet <- function(fleetESdemand,
   ## Additional information used from EDGE-T standalone in pik-piam---------------------------------------------------------
   shares_LDV_transport <- toolReportsharesLDVtransport(fleetFEdemand, timeResReporting, demScen,
                                                        SSPscen, transportPolScen, helpers)
-
-
-  inputREMIND <- list(
-    f35_esCapCost = f35_esCapCost,
-    f35_fe2es = f35_fe2es,
-    f35_demByTech = f35_demByTech,
-    f29_trpdemand = f29_trpdemand
-  )
 
   inputIterative <- list(
     CAPEXandNonFuelOPEX = CAPEXandNonFuelOPEX,
