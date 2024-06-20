@@ -32,7 +32,7 @@ reportToREMINDtrpdemand <- function(fleetESdemand, hybridElecShare, timeResRepor
   f29_trpdemand <- fleetESdemandWoHybrid[!univocalName %in% c("Cycle", "Walk")]
   # convert billion pkm|tkm to trillion pkm|tkm
   f29_trpdemand[, value := value * 1e-3]
-  trpdemandMap <- unique(helpers$mapEdgeToREMIND[, c("all_in", "univocalName", "technology")])
+  trpdemandMap <- unique(helpers$mapEdgeToREMIND[!is.na(univocalName), c("all_in", "univocalName", "technology")])
   f29_trpdemand <- merge(f29_trpdemand, trpdemandMap, by = c("univocalName", "technology"), all.x = TRUE)                                                      # nolint: object_name_linter
   f29_trpdemand <- f29_trpdemand[, .(value = sum(value)), by = c("region", "period", "all_in")]
   checkForNAsDups(f29_trpdemand, "f29_trpdemand", "reportToREMINDtrpdemand()")
