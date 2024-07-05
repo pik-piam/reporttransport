@@ -1,9 +1,10 @@
 # Emissions
 
-## Emissions Passenger
+## Tailpipe Emissions Passenger
 ```{r}
 tot <- "Emi|CO2|Energy|Tailpipe|Transport|Pass"
 items <- c(
+      "Emi|CO2|Energy|Tailpipe|Transport|Bunkers|Pass|International Aviation",
       "Emi|CO2|Energy|Tailpipe|Transport|Pass|Domestic Aviation",
       "Emi|CO2|Energy|Tailpipe|Transport|Pass|Rail",
       "Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|Bus",
@@ -17,7 +18,7 @@ walk(c(items,"Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|LDV"
       ), showLinePlots, data = data)
 ```
 
-## Emissions LDV Four Wheelers
+## Tailpipe Emissions LDV Four Wheelers
 ```{r}
 tot <- "Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|LDV|Four Wheelers"
 items <- c(
@@ -32,10 +33,11 @@ showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)
 ```
 
-## Emissions Freight
+## Tailpipe Emissions Freight
 ```{r}
 tot <- "Emi|CO2|Energy|Tailpipe|Transport|Freight"
 items <- c(
+      "Emi|CO2|Energy|Tailpipe|Transport|Bunkers|Freight|International Shipping",
       "Emi|CO2|Energy|Tailpipe|Transport|Freight|Domestic Shipping",
       "Emi|CO2|Energy|Tailpipe|Transport|Freight|Rail",
       "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road"
@@ -46,15 +48,15 @@ showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)
 ```      
 
-## Emissions Freight Road      
+## Tailpipe Emissions Freight Road      
 ```{r}
 tot <- "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road"
 items <- c(
-      "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road|Heavy|Truck (40t)",
-      "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road|Heavy|Truck (26t)",
-      "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road|Heavy|Truck (18t)",
-      "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road|Light|Truck (7_5t)",
-      "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road|Light|Truck (0-3_5t)")
+      "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road|Heavy|Truck(40t)",
+      "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road|Heavy|Truck(26t)",
+      "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road|Heavy|Truck(18t)",
+      "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road|Light|Truck(7_5t)",
+      "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road|Light|Truck(0-3_5t)")
 
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
@@ -62,3 +64,66 @@ showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)
 ```      
       
+## Demand (netto) Emissions Passenger
+```{r}
+tot <- "Emi|CO2|Energy|Demand|Transport|Pass"
+items <- c(
+      "Emi|CO2|Energy|Demand|Transport|Bunkers|Pass|International Aviation",
+      "Emi|CO2|Energy|Demand|Transport|Pass|Domestic Aviation",
+      "Emi|CO2|Energy|Demand|Transport|Pass|Rail",
+      "Emi|CO2|Energy|Demand|Transport|Pass|Road|Bus",
+      "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Four Wheelers",
+      "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Two Wheelers")
+
+showAreaAndBarPlots(data, items[2:6], tot, orderVars = "user")
+showAreaAndBarPlots(data, items[2:6], tot, fill = TRUE, orderVars = "user")
+showLinePlots(data, tot)
+walk(c(items,"Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV"
+      ), showLinePlots, data = data)
+```
+
+## Demand (netto) Emissions LDV Four Wheelers
+```{r}
+tot <- "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Four Wheelers"
+items <- c(
+      "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Four Wheelers|Large",
+      "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Four Wheelers|Medium",
+      "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Four Wheelers|Small"
+      )
+
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+showLinePlots(data, tot)
+walk(items, showLinePlots, data = data)
+```
+
+## Demand (netto) Emissions Freight
+```{r}
+tot <- "Emi|CO2|Energy|Demand|Transport|Freight"
+items <- c(
+      "Emi|CO2|Energy|Demand|Transport|Bunkers|Freight|International Shipping",
+      "Emi|CO2|Energy|Demand|Transport|Freight|Domestic Shipping",
+      "Emi|CO2|Energy|Demand|Transport|Freight|Rail",
+      "Emi|CO2|Energy|Demand|Transport|Freight|Road"
+  )
+showAreaAndBarPlots(data, items[2:4], tot, orderVars = "user")
+showAreaAndBarPlots(data, items[2:4], tot, fill = TRUE, orderVars = "user")
+showLinePlots(data, tot)
+walk(items, showLinePlots, data = data)
+```      
+
+## Demand (netto) Emissions Freight Road      
+```{r}
+tot <- "Emi|CO2|Energy|Demand|Transport|Freight|Road"
+items <- c(
+      "Emi|CO2|Energy|Demand|Transport|Freight|Road|Heavy|Truck(40t)",
+      "Emi|CO2|Energy|Demand|Transport|Freight|Road|Heavy|Truck(26t)",
+      "Emi|CO2|Energy|Demand|Transport|Freight|Road|Heavy|Truck(18t)",
+      "Emi|CO2|Energy|Demand|Transport|Freight|Road|Light|Truck(7_5t)",
+      "Emi|CO2|Energy|Demand|Transport|Freight|Road|Light|Truck(0-3_5t)")
+
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+showLinePlots(data, tot)
+walk(items, showLinePlots, data = data)
+```      

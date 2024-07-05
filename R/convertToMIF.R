@@ -39,15 +39,22 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
     dt <- vars[, ..colsToRename]
     dt <- dt[, lapply(.SD, rename, helpers$reportingNames)]
     varsNew <- cbind(vars[, ..colsUnchanged], dt)
+    # Remove spaces in vehicle types
+    varsNew[, vehicleType := gsub(" \\(", "\\(", vehicleType)]
     setcolorder(varsNew, colOrder)
     return(varsNew)
   }
 
   # Use ES demand as weight to aggregate over modes-------------------------------------------
-  varsToMIFext <- rbindlist(vars$ext, fill = TRUE, use.names = TRUE)
-  varsToMIFint <- vars$int[!names(vars) %in% c("FEsplitShares")]
-  noAggregationvars <- vars$int[["FEsplitShares"]]
-  varsToMIFint <- rbindlist(varsToMIFint, fill = TRUE, use.names = TRUE)
+  varsToMIFext <- vars$ext[!names(vars$ext) %in% c("GDPppp", "population")]
+  noAggregationvars <- vars$ext[c("GDPppp","population")]
+  varsToMIFext <- rbindlist(varsToMIFext, fill = TRUE, use.names = TRUE)
+  varsToMIFint <- rbindlist(vars$int, fill = TRUE, use.names = TRUE)
+
+  # Prepare vars that are not aggregated over modes
+  noAggregationvars$GDPppp[, variable := "GDP|PPP"][, value := value * 1e-3][, unit := "billion constant 2005 Int$PPP"]
+  noAggregationvars$population[, variable := "Population"][, unit := "million"]
+  noAggregationvars <- rbindlist(noAggregationvars, fill = TRUE, use.names = TRUE)
 
   # Apply variable naming convention----------------------------------------------------------
   varsToMIFext <- applyReportingNames(varsToMIFext, helpers$reportingNames)
@@ -58,6 +65,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   ## Aggregation to world is always supplied
   mapWorld <- unique(varsToMIFext[, c("region")])[, aggrReg := "World"]
   worldDataExt <- as.data.table(aggregate_map(varsToMIFext, mapWorld, by = "region"))
+  worldDatanoAggregationvars <- as.data.table(aggregate_map(noAggregationvars, mapWorld, by = "region"))
   weight <- copy(varsToMIFext[variable == "ES"])
   weight[, c("variable", "unit", "fuel") := NULL]
   setnames(weight, "value", "weight")
@@ -70,6 +78,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   worldDataInt[, region := "World"]
   varsToMIFint <- rbind(varsToMIFint, worldDataInt)
   varsToMIFext <- rbind(varsToMIFext, worldDataExt)
+  noAggregationvars <- rbind(noAggregationvars, worldDatanoAggregationvars)
 
   ## Additional regions
   ## if regionSubsetList != NULL -> gdx provides 21 region resolution
@@ -90,6 +99,8 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
     }
     regSubsetDataExt <- as.data.table(aggregate_map(varsToMIFext[region %in% unique(regSubsetMap$region)],
                                                  regSubsetMap, by = "region"))
+    regSubsetDataNoAggregationVars <- as.data.table(aggregate_map(noAggregationvars[region %in% unique(regSubsetMap$region)],
+                                                                  regSubsetMap, by = "region"))
     weightedInt <- merge(varsToMIFint, regSubsetMap, by = intersect(names(varsToMIFint), names(regSubsetMap)), all.y = TRUE)
     weightedInt <- merge(weight, weightedInt, by = intersect(names(weightedInt), names(weight)), all.y = TRUE)
     byCols <- names(weightedInt)
@@ -99,17 +110,20 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
     regSubsetDataInt <- weightedInt[, .(value = sum(value * (weight / sum(weight)))), by = eval(byCols)]
     setnames(regSubsetDataInt, "aggrReg", "region")
 
+    regSubsetDataExt <- as.data.table(aggregate_map(varsToMIFext[region %in% unique(regSubsetMap$region)],
+                                                    regSubsetMap, by = "region"))
+
     varsToMIFint <- rbind(varsToMIFint, regSubsetDataInt)
     varsToMIFext <- rbind(varsToMIFext, regSubsetDataExt)
+    noAggregationvars <- rbind(regSubsetDataNoAggregationVars, noAggregationvars)
   }
 
   # Aggregate variables-----------------------------------------------------------------------
   toMIFext <- aggregateVariables(varsToMIFext, helpers$reportingAggregation)
   weight <- varsToMIFext[variable == "ES"]
   toMIFint <- aggregateVariables(varsToMIFint, helpers$reportingAggregation, weight)
-  toMIFint <- rbind(noAggregationvars, toMIFint, fill = TRUE, use.names = TRUE)
 
-  toMIF <- rbind(toMIFint, toMIFext)
+  toMIF <- rbind(toMIFint, toMIFext, noAggregationvars)
 
   if (!is.null(vars$analytic)) {
     analyticVars <- rbindlist(vars$analytic, use.names = TRUE)
@@ -120,6 +134,8 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
 
   toMIF[, model := model][, scenario := scenario]
   toMIF <- as.quitte(toMIF)
+
+  toMIF <- renameDuplicateVariables(toMIF)
 
   if (anyNA(toMIF)) stop("MIF output contains NAs.
                          Please check reportAndAggregatedMIF()")

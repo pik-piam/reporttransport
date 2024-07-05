@@ -66,6 +66,10 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     if (isTransportReported) {
       data$upfrontCAPEXtrackedFleet <- readRDS(file.path(folderPath, "2_InputDataPolicy",
                                                          "upfrontCAPEXtrackedFleet.RDS"))
+      data$population <- readRDS(file.path(folderPath, "1_InputDataRaw",
+                                           "population.RDS"))
+      data$GDPppp <- readRDS(file.path(folderPath, "1_InputDataRaw",
+                                           "GDPppp.RDS"))
       gdxPath <- list.files(path = folderPath, pattern = "\\.gdx$", full.names = TRUE)
       # Check if any files were found
       if (length(gdxPath) > 1) {
@@ -152,22 +156,23 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   #########################################################################
   if (isREMINDinputReported) {                                                                                              # nolint: object_name_linter
     REMINDinputData <- reportREMINDinputVarSet(fleetESdemand        = baseVarSet$ext$fleetESdemand,                     # nolint: object_name_linter
-                                                   fleetFEdemand        = baseVarSet$ext$fleetFEdemand,
-                                                   fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
-                                                   fleetCapCosts        = baseVarSet$int$fleetCost[variable == "Capital costs"],
-                                                   combinedCAPEXandOPEX = data$combinedCAPEXandOPEX,
-                                                   scenSpecLoadFactor   = data$loadFactor,
-                                                   scenSpecPrefTrends   = data$prefTrends,
-                                                   scenSpecEnIntensity  = data$enIntensity,
-                                                   initialIncoCosts     = data$initialIncoCosts,
-                                                   annualMileage        = data$annualMileage,
-                                                   timeValueCosts       = data$timeValueCosts,
-                                                   hybridElecShare      = data$hybridElecShare,
-                                                   demScen              = data$demScen,
-                                                   SSPscen              = data$SSPscen,
-                                                   transportPolScen     = data$transportPolScen,
-                                                   timeResReporting     = timeResReporting,
-                                                   helpers              = data$helpers)
+                                               fleetFEdemand        = baseVarSet$ext$fleetFEdemand,
+                                               fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
+                                               fleetCapCosts        = baseVarSet$int$fleetCost[variable == "Capital costs"],
+                                               combinedCAPEXandOPEX = data$combinedCAPEXandOPEX,
+                                               scenSpecLoadFactor   = data$loadFactor,
+                                               scenSpecPrefTrends   = data$prefTrends,
+                                               scenSpecEnIntensity  = data$enIntensity,
+                                               initialIncoCosts     = data$initialIncoCosts,
+                                               annualMileage        = data$annualMileage,
+                                               timeValueCosts       = data$timeValueCosts,
+                                               hybridElecShare      = data$hybridElecShare,
+                                               demScen              = data$demScen,
+                                               SSPscen              = data$SSPscen,
+                                               transportPolScen     = data$transportPolScen,
+                                               timeResReporting     = timeResReporting,
+                                               helpers              = data$helpers)
+
     reporting <- REMINDinputData
     if (isStored) storeData(outputFolder = folderPath, REMINDinputData = REMINDinputData)
   }

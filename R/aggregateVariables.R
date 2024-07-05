@@ -109,7 +109,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   }
 
   # Aggregate keeping technology level --------------------------------------------------------------------
-  aggregateLeveltoTech <- c("sector", "subsectorL1", "subsectorL2", "subsectorL3", "aggrVehSizes")
+  aggregateLeveltoTech <- c("sector", "aggrRail", "subsectorL1", "subsectorL2", "subsectorL3", "aggrVehSizes")
   for (i in aggregateLeveltoTech) {
     aggrvars <- copy(vars)
     cols <- aggrOrder[1:match(i, aggrOrder)]
@@ -123,7 +123,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
 
   # Aggregate keeping fuel level --------------------------------------------------------------------
   if (nrow(vars[!is.na(fuel)]) > 0) {
-    aggregateLeveltoTech <- c("sector", "subsectorL1", "subsectorL2", "subsectorL3", "aggrVehSizes")
+    aggregateLeveltoTech <- c("sector", "aggrRail", "subsectorL1", "subsectorL2", "subsectorL3", "aggrVehSizes")
     for (i in aggregateLeveltoTech) {
       aggrvars <- copy(vars)
       cols <- aggrOrder[1:match(i, aggrOrder)]
@@ -250,6 +250,15 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
   aggrvars[, variable := paste0(variable, "|Transport|Rail", technology)][, c("technology") := NULL]
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
+  # Aggregate rail keeping fuel level
+  aggrvars <- copy(varsForFurtherAggregation)
+  aggrvars <- aggrvars[subsectorL1 %in% c("|Rail", "|HSR", "|non-HSR") & !is.na(fuel)]
+  aggrvars[grepl("billion pkm/yr|billion tkm/yr", unit), unit := "billion (p|t)km/yr"]
+  aggrvars[grepl("US\\$2005/pkm|US\\$2005/tkm", unit), unit := "US$2005/(p|t)km"]
+  byCols <- c("region", "technology", "fuel", "variable", "unit", "period")
+  aggrvars <- aggregateLevel(aggrvars, byCols, weight)
+  aggrvars[, variable := paste0(variable, "|Transport|Rail", technology, "|", fuel)][, c("technology", "fuel") := NULL]
+  aggregatedvars <- rbind(aggregatedvars, aggrvars)
 
   # Aggregate aviation --------------------------------------------------------------------
   aggrvars <- copy(varsForFurtherAggregation)
@@ -264,6 +273,13 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   byCols <- c("region", "technology", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
   aggrvars[, variable := paste0(variable, "|Transport|Pass|Aviation", technology)][, c("technology") := NULL]
+  aggregatedvars <- rbind(aggregatedvars, aggrvars)
+  # Aggregate keeping fuel level
+  aggrvars <- copy(varsForFurtherAggregation)
+  aggrvars <- aggrvars[grepl(".*Aviation.*", subsectorL1) & !is.na(fuel)]
+  byCols <- c("region", "technology", "fuel", "variable", "unit", "period")
+  aggrvars <- aggregateLevel(aggrvars, byCols, weight)
+  aggrvars[, variable := paste0(variable, "|Transport|Pass|Aviation", technology, "|", fuel)][, c("technology", "fuel") := NULL]
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
 
   if (anyNA(aggregatedvars)) stop("Output variable contains NAs.

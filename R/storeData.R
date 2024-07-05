@@ -27,7 +27,8 @@ storeData <- function(outputFolder, outputRaw = NULL, ...) {
                        "fuelCosts",
                        "timeValueCosts",
                        "subsidies",
-                       "GDPMER",
+                       "GDPppp",
+                       "population",
                        "helpers")) subfolder <- "1_InputDataRaw"
     if (varName %in% c("prefTrends",
                        "loadFactor",
@@ -66,9 +67,8 @@ storeData <- function(outputFolder, outputRaw = NULL, ...) {
   #########################################################################
   ## Create output folder and subfolders
   #########################################################################
-
   if (!dir.exists(outputFolder)) {
-    dir.create(outputFolder)
+    dir.create(outputFolder, recursive = TRUE)
     dir.create(file.path(outputFolder, "1_InputDataRaw"))
     dir.create(file.path(outputFolder, "2_InputDataPolicy"))
     dir.create(file.path(outputFolder, "3_Calibration"))

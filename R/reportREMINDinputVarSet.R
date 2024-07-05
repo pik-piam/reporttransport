@@ -25,35 +25,56 @@
 #' @import data.table
 
 reportREMINDinputVarSet <- function(fleetESdemand,
-                                        fleetFEdemand,
-                                        fleetEnergyIntensity,
-                                        scenSpecLoadFactor,
-                                        fleetCapCosts,
-                                        combinedCAPEXandOPEX,
-                                        scenSpecPrefTrends,
-                                        scenSpecEnIntensity,
-                                        initialIncoCosts,
-                                        annualMileage,
-                                        timeValueCosts,
-                                        hybridElecShare,
-                                        demScen,
-                                        SSPscen,
-                                        transportPolScen,
-                                        timeResReporting,
-                                        helpers) {
+                                    fleetFEdemand,
+                                    fleetEnergyIntensity,
+                                    scenSpecLoadFactor,
+                                    fleetCapCosts,
+                                    combinedCAPEXandOPEX,
+                                    scenSpecPrefTrends,
+                                    scenSpecEnIntensity,
+                                    initialIncoCosts,
+                                    annualMileage,
+                                    timeValueCosts,
+                                    hybridElecShare,
+                                    demScen,
+                                    SSPscen,
+                                    transportPolScen,
+                                    timeResReporting,
+                                    helpers) {
 
   DEM_scenario <- GDP_scenario <- EDGE_scenario <- value <- sumES <- variable <- univocalName <- ESdemand <- NULL
 
+  timeResReporting <- c(seq(1900,1985,5),
+    seq(1990, 2060, by = 5),
+    seq(2070, 2110, by = 10),
+    2130, 2150)
 
   ## Input data for transport module GAMS code----------------------------------------------------------------------------
 
   # See needed inputs in REMIND/modules/35_transport/edge_esm/datainput.gms
   # and REMIND/modules/29_CES_parameters/calibratedatainput.gms
-  f29_trpdemand <- reportToREMINDtrpdemand(fleetESdemand, hybridElecShare, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
   f35_esCapCost <- reportToREMINDcapitalCosts(fleetCapCosts, fleetESdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
   f35_fe2es <- reportToREMINDenergyEfficiency(fleetEnergyIntensity, scenSpecLoadFactor, fleetESdemand, hybridElecShare, timeResReporting,
                                               demScen, SSPscen, transportPolScen, helpers)
   f35_demByTech <- reportToREMINDfinalEnergyDemand(fleetFEdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
+
+  inputREMIND <- list(
+    f35_esCapCost = f35_esCapCost,
+    f35_fe2es = f35_fe2es,
+    f35_demByTech = f35_demByTech
+  )
+
+  inputREMIND <- lapply(inputREMIND, approx_dt, timeResReporting, "tall", "value", extrapolate = TRUE)
+
+  #p29_trpdemand(tall, all_regi, all_GDPscen, all_demScen, all_EDGE_scenario, all_in)
+  fe2es <- copy(inputREMIND$f35_fe2es)
+  setnames(fe2es, "value", "fe2es")
+  f29_trpdemand <- merge(fe2es, inputREMIND$f35_demByTech, by = intersect(names(fe2es), names(f35_demByTech)))
+  weightESdemand <- f29_trpdemand[, .(value = sum(fe2es * value)), by = c("tall", "all_regi", "GDP_scenario", "DEM_scenario", "EDGE_scenario", "all_teEs")]
+  f29_trpdemand <- f29_trpdemand[, .(value = sum(fe2es * value)), by = c("tall", "all_regi", "GDP_scenario", "DEM_scenario", "EDGE_scenario", "all_in")]
+
+  inputREMIND[["f29_trpdemand"]] <- f29_trpdemand
+  inputREMIND[["weightESdemand"]] <- weightESdemand
 
   ## Input data for edgeTransport iterative that is coupled to REMIND--------------------------------------------------------
 
@@ -78,14 +99,6 @@ reportREMINDinputVarSet <- function(fleetESdemand,
   ## Additional information used from EDGE-T standalone in pik-piam---------------------------------------------------------
   shares_LDV_transport <- toolReportsharesLDVtransport(fleetFEdemand, timeResReporting, demScen,
                                                        SSPscen, transportPolScen, helpers)
-
-
-  inputREMIND <- list(
-    f35_esCapCost = f35_esCapCost,
-    f35_fe2es = f35_fe2es,
-    f35_demByTech = f35_demByTech,
-    f29_trpdemand = f29_trpdemand
-  )
 
   inputIterative <- list(
     CAPEXandNonFuelOPEX = CAPEXandNonFuelOPEX,

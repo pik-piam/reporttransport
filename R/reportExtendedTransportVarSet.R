@@ -18,6 +18,8 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   loadFactor <- copy(data$loadFactor)[period %in% timeResReporting]
   fleetFEdemand <- baseVarSet$ext$fleetFEdemand[period %in% timeResReporting]
   fleetCost <- baseVarSet$int$fleetCost[period %in% timeResReporting]
+  population <- data$population[period %in% timeResReporting]
+  GDPppp <- data$GDPppp[period %in% timeResReporting]
 
   # Report useful energy-----------------------------------------------------------------------
   fleetUEdemand <- reportUE(FEdemand = fleetFEdemand,
@@ -34,7 +36,9 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
 
   # Split extensive and intensive variables ---------------------------------------------------
   outputVarsExt <- list(fleetUEdemand = fleetUEdemand,
-                        vintages      = vintages)
+                        vintages      = vintages,
+                        population    = population,
+                        GDPppp        = GDPppp)
   outputVarsInt <- list(loadFactor = loadFactor,
                         fleetCost  = fleetCost)
   outputVars <- list(ext = outputVarsExt,
