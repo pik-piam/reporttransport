@@ -2,7 +2,7 @@
 ## Passenger with bunkers
 ```{r}
 tot_wbunk <- "ES|Transport|Pass with bunkers"
-tot_wobunk <- "ES|Transport|Pass"
+tot_wobunk <- "ES|Transport edge|Pass"
 items <- c(
     "ES|Transport|Bunkers|Pass|International Aviation",
     "ES|Transport|Pass|Domestic Aviation",
@@ -24,9 +24,8 @@ walk(c("ES|Transport|Pass|Aviation", items[1:5], "ES|Transport|Pass|Road|LDV", i
 
 ## Passenger per Capita
 ```{r}
-
 items <- c(
-    "ES|Transport|Pass pCap",
+    "ES|Transport edge|Pass pCap",
     "ES|Transport|Pass|Aviation pCap",
     "ES|Transport|Bunkers|Pass|International Aviation pCap",
     "ES|Transport|Pass|Domestic Aviation pCap",
@@ -39,10 +38,9 @@ items <- c(
     "ES|Transport|Pass|Non-motorized|Walk pCap",
     "ES|Transport|Pass|Non-motorized|Cycle pCap"
     )
-#showMultiLinePlots(data, items)    
-#showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap")
-#walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
-
+showMultiLinePlots(data, items)    
+showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap")
+walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
 ```
 
 ## LDV Four Wheelers 
@@ -125,15 +123,15 @@ walk(items, showLinePlots, data=data)
 ```{r}
 
 items <- c(
-      "ES|Transport|Freight pCap",
+      "ES|Transport edge|Freight pCap",
       "ES|Transport|Bunkers|Freight|International Shipping pCap",
       "ES|Transport|Freight|Domestic Shipping pCap",
       "ES|Transport|Freight|Rail pCap",
       "ES|Transport|Freight|Road pCap"
     )
-#showMultiLinePlots(data, items)    
-#showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap")
-#walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
+showMultiLinePlots(data, items)    
+showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap")
+walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
 
 ```
 
@@ -143,11 +141,11 @@ items <- c(
 ```{r}
 tot <- "ES|Transport|Freight|Road"
 items <- c(
-       "ES|Transport|Freight|Road|Heavy|Truck (40t)",
-       "ES|Transport|Freight|Road|Heavy|Truck (26t)",
-       "ES|Transport|Freight|Road|Heavy|Truck (18t)",
-       "ES|Transport|Freight|Road|Light|Truck (7_5t)",
-       "ES|Transport|Freight|Road|Light|Truck (0-3_5t)"
+       "ES|Transport|Freight|Road|Heavy|Truck(40t)",
+       "ES|Transport|Freight|Road|Heavy|Truck(26t)",
+       "ES|Transport|Freight|Road|Heavy|Truck(18t)",
+       "ES|Transport|Freight|Road|Light|Truck(7_5t)",
+       "ES|Transport|Freight|Road|Light|Truck(0-3_5t)"
   )
 
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
@@ -168,5 +166,3 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill=TRUE, orderVars = "user")
 ```
 
-data
-showLinePlotsByVariable(data=data,)

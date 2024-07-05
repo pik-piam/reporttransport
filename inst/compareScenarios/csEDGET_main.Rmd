@@ -17,7 +17,7 @@ output:
     number_sections: yes
 geometry: "a4paper,landscape,left = 0.5cm,right = 0.5cm,top = 0.5cm,bottom = 0.5cm,footnotesep=0.0cm,footskip = 0.1cm"
 params:
-  mifScen: ""
+  mifScen: !r c()
   mifScenNames: !r c()
   mifHist: ""
   yearsScen: !r c(seq(2005, 2060, 5), seq(2070, 2100, 10))
@@ -25,7 +25,7 @@ params:
   yearsBarPlot: !r c(2010, 2030, 2050, 2100)
   reg: !r c("OAS","MEA","SSA","LAM","REF","CAZ","CHA","IND","JPN","USA","NEU","EUR","World")
   modelsHistExclude: !r c()
-  sections: !r c("01_energy_demand","02_energy_services","03_energy_intensity", "04_stock_and_sales", "05_Emissions", "06_costs_and_shareweight_trends")
+  sections: !r c("01_energy_demand","02_energy_services","03_energy_intensity", "04_stock_and_sales", "05_Emissions")
   userSectionPath: null
   mainReg: "World"
   figWidth: 15 
@@ -190,7 +190,7 @@ histRefModel <- c(
 pCapVariables <- tribble(
   ~variable, ~newUnit, ~conversionFactor,
   "GDP|PPP", "kUS$2005", 1e6,
-  "ES|Transport|Pass", "pkm/yr", 1e9,
+  "ES|Transport edge|Pass", "pkm/yr", 1e9,
   "ES|Transport|Pass|Aviation", "pkm/yr", 1e9,
   "ES|Transport|Bunkers|Pass|International Aviation", "pkm/yr", 1e9,
   "ES|Transport|Pass|Domestic Aviation", "pkm/yr", 1e9,
@@ -199,7 +199,7 @@ pCapVariables <- tribble(
   "ES|Transport|Pass|Non-motorized|Cycle", "pkm/yr", 1e9,
   "ES|Transport|Pass|Rail|non-HSR", "pkm/yr", 1e9,
   "ES|Transport|Pass|Rail|HSR", "pkm/yr", 1e9,
-  "ES|Transport|Freight", "tkm/yr", 1e9,
+  "ES|Transport edge|Freight", "tkm/yr", 1e9,
   "ES|Transport|Bunkers|Freight|International Shipping", "tkm/yr", 1e9,
   "ES|Transport|Freight|Road", "tkm/yr", 1e9,
   "ES|Transport|Freight|Domestic Shipping", "tkm/yr", 1e9,
