@@ -66,6 +66,10 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     if (isTransportReported) {
       data$upfrontCAPEXtrackedFleet <- readRDS(file.path(folderPath, "2_InputDataPolicy",
                                                          "upfrontCAPEXtrackedFleet.RDS"))
+      data$population <- readRDS(file.path(folderPath, "1_InputDataRaw",
+                                           "population.RDS"))
+      data$GDPppp <- readRDS(file.path(folderPath, "1_InputDataRaw",
+                                           "GDPppp.RDS"))
       gdxPath <- list.files(path = folderPath, pattern = "\\.gdx$", full.names = TRUE)
       # Check if any files were found
       if (length(gdxPath) > 1) {
