@@ -54,7 +54,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   data <- append(data, args)
 
   # load files needed for all
-  if (is.null(data$cfg)) {
+  if (is.null(data$SSPscen)) {
     cfg <- readRDS(file.path(folderPath, "cfg.RDS"))
     data <- append(data, cfg[names(cfg) %in% c("SSPscen", "transportPolScen", "demScen")])
   }
