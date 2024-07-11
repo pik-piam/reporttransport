@@ -25,7 +25,7 @@ reportBaseVarSet <- function(data, timeResReporting) {
                          data$fleetSizeAndComposition$fleetESdemand)
   # Energy intensity and Capital costs are tied to the construction year and have to be recalculated
   # to reflect the value for each year referring to the vehicle stock
-  fleetVariables <- list(fleetEnergyIntensity = data$enIntensity,
+  fleetVariables <- list(fleetEnergyIntensity = data$scenSpecEnIntensity,
                          fleetCapCosts = aggregatedCosts[variable == "Capital costs sales"])
   fleetData <- lapply(fleetVariables, reportFleetVariables,
                       data$fleetSizeAndComposition$fleetVehNumbersConstrYears, data$helpers)
@@ -33,7 +33,7 @@ reportBaseVarSet <- function(data, timeResReporting) {
 
   # Calculate final energy---------------------------------------------------------------------
   fleetFEdemand <- reportFE(fleetEnergyIntensity = fleetData$fleetEnergyIntensity, fleetESdemand = fleetESdemand,
-                                loadFactor = data$loadFactor, hybridElecShare = data$hybridElecShare, helpers = data$helpers)
+                                loadFactor = data$scenSpecLoadFactor, hybridElecShare = data$hybridElecShare, helpers = data$helpers)
 
   # Split extensive and intensive variables ---------------------------------------------------
   outputVarsExt <- list(fleetESdemand = fleetESdemand,

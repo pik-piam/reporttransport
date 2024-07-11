@@ -4,12 +4,12 @@
 \alias{storeData}
 \title{Store EDGE-Transport model results}
 \usage{
-storeData(outputFolder, outputRaw = NULL, ...)
+storeData(outputFolder, varsList = NULL, ...)
 }
 \arguments{
 \item{outputFolder}{Path to folder for storing output data}
 
-\item{outputRaw}{Raw model results}
+\item{varsList}{Raw model results}
 
 \item{...}{Optional passing of additional variables}
 }

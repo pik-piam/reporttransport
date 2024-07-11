@@ -79,11 +79,12 @@ reportTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   fleetYrlCosts <- rbind(fleetYrlCosts, aggregatedOperatingCosts)
 
   # Report upfront capital cost for vehicle sales
-  data$upfrontCAPEXtrackedFleet <- copy(data$upfrontCAPEXtrackedFleet)
-  data$upfrontCAPEXtrackedFleet <- merge(data$upfrontCAPEXtrackedFleet, data$helpers$decisionTree,
+  if (!is.null(data$upfrontCAPEXtrackedFleet)) {
+    data$upfrontCAPEXtrackedFleet <- copy(data$upfrontCAPEXtrackedFleet)
+    data$upfrontCAPEXtrackedFleet <- merge(data$upfrontCAPEXtrackedFleet, data$helpers$decisionTree,
                                          by = intersect(names(data$upfrontCAPEXtrackedFleet),
                                                         names(data$helpers$decisionTree)))
-
+  }
   # Split extensive and intensive variables ---------------------------------------------------
   outputVarsExt <- list(FEsplittedCarriers = fleetFEdemandsplittedCarriers,
                         fleetESdemand = fleetESdemand,

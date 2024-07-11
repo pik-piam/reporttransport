@@ -62,19 +62,19 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   if (is.null(data$hybridElecShare)) data$hybridElecShare <- readRDS(file.path(folderPath, "1_InputDataRaw", "hybridElecShare.RDS"))
   if (is.null(data$helpers)) data$helpers <- readRDS(file.path(folderPath, "1_InputDataRaw", "helpers.RDS"))
   if (is.null(data$combinedCAPEXandOPEX)) data$combinedCAPEXandOPEX <- readRDS(file.path(folderPath, "2_InputDataPolicy", "combinedCAPEXandOPEX.RDS"))
-  if (is.null(data$enIntensity)) data$enIntensity <- readRDS(file.path(folderPath, "2_InputDataPolicy", "enIntensity.RDS"))
-  if (is.null(data$loadFactor)) data$loadFactor <- readRDS(file.path(folderPath, "2_InputDataPolicy", "loadFactor.RDS"))
+  if (is.null(data$scenSpecEnIntensity)) data$scenSpecEnIntensity <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecEnIntensity.RDS"))
+  if (is.null(data$scenSpecLoadFactor)) data$scenSpecLoadFactor <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecLoadFactor.RDS"))
   if (is.null(data$fleetSizeAndComposition)) data$fleetSizeAndComposition <- readRDS(file.path(folderPath, "4_Output", "fleetSizeAndComposition.RDS"))
   if (is.null(data$ESdemandFVsalesLevel)) data$ESdemandFVsalesLevel <- readRDS(file.path(folderPath, "4_Output", "ESdemandFVsalesLevel.RDS"))
 
   # load files for standard and extended transport reporting
   if (isTransportReported) {
-    if (is.null(data$upfrontCAPEXtrackedFleet)) data$upfrontCAPEXtrackedFleet <- readRDS(file.path(folderPath, "2_InputDataPolicy",
-                                                       "upfrontCAPEXtrackedFleet.RDS"))
-    if (is.null(data$population)) data$population <- readRDS(file.path(folderPath, "1_InputDataRaw",
-                                         "population.RDS"))
-    if (is.null(data$GDPppp)) data$GDPppp <- readRDS(file.path(folderPath, "1_InputDataRaw",
-                                     "GDPppp.RDS"))
+    if (is.null(data$upfrontCAPEXtrackedFleet) & length(list.files(folderPath, "upfrontCAPEXtrackedFleet.RDS", recursive = TRUE, full.names = TRUE)) > 0)
+      data$upfrontCAPEXtrackedFleet <- readRDS(file.path(folderPath, "2_InputDataPolicy", "upfrontCAPEXtrackedFleet.RDS"))
+    if (is.null(data$population) & length(list.files(folderPath, "population.RDS", recursive = TRUE, full.names = TRUE)) > 0)
+      data$population <- readRDS(file.path(folderPath, "1_InputDataRaw", "population.RDS"))
+    if (is.null(data$GDPppp) & length(list.files(folderPath, "GDPppp.RDS", recursive = TRUE, full.names = TRUE)) > 0)
+      data$GDPppp <- readRDS(file.path(folderPath, "1_InputDataRaw", "GDPppp.RDS"))
     if (is.null(data$gdxPath)) {
       gdxPath <- list.files(path = folderPath, pattern = "\\.gdx$", full.names = TRUE)
       # Check if any files were found
@@ -110,7 +110,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     # load files for REMIND input data only reporting
     if (is.null(data$annualMileage)) data$annualMileage <- readRDS(file.path(folderPath, "1_InputDataRaw", "annualMileage.RDS"))
     if (is.null(data$timeValueCosts)) data$timeValueCosts <- readRDS(file.path(folderPath, "1_InputDataRaw", "timeValueCosts.RDS"))
-    if (is.null(data$prefTrends)) data$prefTrends <- readRDS(file.path(folderPath, "2_InputDataPolicy", "prefTrends.RDS"))
+    if (is.null(data$prefTrends)) data$prefTrends <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecPrefTrends.RDS"))
     if (is.null(data$initialIncoCosts)) data$initialIncoCosts <- readRDS(file.path(folderPath, "2_InputDataPolicy", "initialIncoCosts.RDS"))
   }
   #########################################################################
@@ -118,6 +118,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   #########################################################################
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
   baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
+  reporting <- baseVarSet
   outputVars <- baseVarSet
 
   if (isTransportReported) {
@@ -167,9 +168,9 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                                                fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
                                                fleetCapCosts        = baseVarSet$int$fleetCost[variable == "Capital costs"],
                                                combinedCAPEXandOPEX = data$combinedCAPEXandOPEX,
-                                               scenSpecLoadFactor   = data$loadFactor,
-                                               scenSpecPrefTrends   = data$prefTrends,
-                                               scenSpecEnIntensity  = data$enIntensity,
+                                               scenSpecLoadFactor   = data$scenSpecLoadFactor,
+                                               scenSpecPrefTrends   = data$scenSpecPrefTrends,
+                                               scenSpecEnIntensity  = data$scenSpecEnIntensity,
                                                initialIncoCosts     = data$initialIncoCosts,
                                                annualMileage        = data$annualMileage,
                                                timeValueCosts       = data$timeValueCosts,

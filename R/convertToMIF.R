@@ -50,7 +50,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   noAggregationvars <- vars$ext[c("GDPppp","population")]
   varsToMIFext <- rbindlist(varsToMIFext, fill = TRUE, use.names = TRUE)
   varsToMIFint <- rbindlist(vars$int, fill = TRUE, use.names = TRUE)
-  browser()
+
   # Prepare vars that are not aggregated over modes
   if (!is.null(noAggregationvars$GDPppp)){
     noAggregationvars$GDPppp[, variable := "GDP|PPP"][, value := value * 1e-3][, unit := "billion constant 2005 Int$PPP"]

@@ -3,7 +3,7 @@
 #'This function creates the EDGE-Transport outputfolder and stores all outputfiles in the respective subfolders
 #'
 #' @param outputFolder Path to folder for storing output data
-#' @param outputRaw Raw model results
+#' @param varsList Raw model results
 #' @param ... Optional passing of additional variables
 #'
 #' @author Johanna Hoppe
@@ -11,7 +11,7 @@
 #' @import data.table
 #' @export
 
-storeData <- function(outputFolder, outputRaw = NULL, ...) {
+storeData <- function(outputFolder, varsList = NULL, ...) {
 
   allocateFile <- function(varName) {
     subfolder <- NULL
@@ -24,15 +24,17 @@ storeData <- function(outputFolder, outputRaw = NULL, ...) {
                        "nonFuelOPEXtrackedFleet",
                        "CAPEXother",
                        "nonFuelOPEXother",
-                       "fuelCosts",
+                       "CAPEXandNonFuelOPEX",
                        "timeValueCosts",
                        "subsidies",
                        "GDPppp",
                        "population",
                        "helpers")) subfolder <- "1_InputDataRaw"
-    if (varName %in% c("prefTrends",
-                       "loadFactor",
-                       "enIntensity",
+    if (varName %in% c("scenSpecPrefTrends",
+                       "REMINDfuelCosts",
+                       "REMINDfuelCostIterations",
+                       "scenSpecLoadFactor",
+                       "scenSpecEnIntensity",
                        "combinedCAPEXandOPEX",
                        "upfrontCAPEXtrackedFleet",
                        "initialIncoCosts")) subfolder <- "2_InputDataPolicy"
@@ -42,7 +44,8 @@ storeData <- function(outputFolder, outputRaw = NULL, ...) {
                        "fleetVehNumbersIterations",
                        "endogenousCostsIterations",
                        "endogenousCosts",
-                       "ESdemandFVsalesLevel")) subfolder <- "4_Output"
+                       "ESdemandFVsalesLevel",
+                       "fleetVehiclesPerTech")) subfolder <- "4_Output"
     if (varName %in% c("REMINDinputData")) subfolder <- "5_REMINDinputData"
     if (is.null(subfolder)) stop(paste0("No subfolder assigned to ", varName))
 
@@ -58,12 +61,10 @@ storeData <- function(outputFolder, outputRaw = NULL, ...) {
     if (is.null(subfolder)) subfolder <- allocateFile(varName)
     write.csv(vars[[varName]], file.path(outputFolder, subfolder, paste0(varName, ".csv")))
   }
-
   vars <- list()
-  if (!is.null(outputRaw)) vars <- outputRaw
+  if (!is.null(varsList)) vars <- varsList
   addVars <- list(...)
   vars <- append(vars, addVars)
-
   #########################################################################
   ## Create output folder and subfolders
   #########################################################################
