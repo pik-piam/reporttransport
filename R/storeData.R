@@ -83,8 +83,6 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
   # general data
   if (!(is.null(vars$SSPscen) & is.null(vars$transportPolScen) & is.null(vars$demScen))) {                          # nolint: vector_logic_linter
     cfg <- list(
-      packageVersionEdgeTransport = packageVersion("edgeTransport"),
-      packageVersionMrTransport = packageVersion("mrtransport"),
       SSPscen = vars$SSPscen,
       transportPolScen = vars$transportPolScen,
       demScen = vars$demScen,

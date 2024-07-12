@@ -64,3 +64,22 @@ renameDuplicateVariables <- function(vars) {
 
   return(vars)
 }
+
+#' Check a data.table for NAs and duplicates and throw an error if needed
+#' @author Johanna Hoppe
+#' @param dt data.table to be checked
+#' @param varname name of the variable
+#' @param codePosition position in the code to find the bug
+#' @import data.table
+#' @export
+
+checkForNAsAndDups <- function(dt, varname, codePosition) {
+
+  if (anyNA(dt)) {
+    stop(paste0(varname, " in ", codePosition, " contains NAs."))
+  }
+  if (anyDuplicated(dt)) {
+    stop(paste0(varname, " in ", codePosition, " contains duplicates."))
+  }
+
+}

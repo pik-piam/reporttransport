@@ -27,7 +27,7 @@ reportToREMINDfinalEnergyDemand <- function(fleetFEdemand, timeResReporting, dem
   demByTechMap[technology == "FCEV", technology := "Hydrogen"]
   f35_demByTech <- merge(f35_demByTech, demByTechMap, by = c("univocalName", "technology"), all.x = TRUE)# nolint: object_name_linter
   f35_demByTech <- f35_demByTech[, .(value = sum(value)), by = c("region", "period", "all_enty", "all_in", "all_teEs")]
-  checkForNAsDups(f35_demByTech, "f35_demByTech", "reportToREMINDfinalEnergyDemand()")
+  checkForNAsAndDups(f35_demByTech, "f35_demByTech", "reportToREMINDfinalEnergyDemand()")
   f35_demByTech <- prepareForREMIND(f35_demByTech, demScen, SSPscen, transportPolScen)
   setnames(f35_demByTech, c("period", "region"), c("tall", "all_regi"))
 
