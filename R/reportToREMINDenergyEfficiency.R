@@ -70,7 +70,7 @@ reportToREMINDenergyEfficiency <- function(fleetEnergyIntensity,
   f35_fe2es[sumFE == 0, FEdemand := 1]
   f35_fe2es[, sumFE := sum(FEdemand), by = c("region", "period", "all_teEs")]
   f35_fe2es <- f35_fe2es[, .(value = sum(value * FEdemand / sumFE)),  by = c("region", "period", "all_teEs")]                           # nolint: object_name_linter
-  checkForNAsDups(f35_fe2es, "f35_fe2es", "reportToREMINDenergyEfficiency()")
+  checkForNAsAndDups(f35_fe2es, "f35_fe2es", "reportToREMINDenergyEfficiency()")
   f35_fe2es <- prepareForREMIND(f35_fe2es, demScen, SSPscen, transportPolScen)
   setnames(f35_fe2es, c("period", "region"), c("tall", "all_regi"))
 

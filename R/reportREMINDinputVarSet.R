@@ -82,19 +82,19 @@ reportREMINDinputVarSet <- function(fleetESdemand,
   # Fuel costs are added from the fulldata.gdx of the last REMIND iteration in the iterative script
   CAPEXandNonFuelOPEX <- copy(combinedCAPEXandOPEX)                                                                                     # nolint: object_name_linter
   CAPEXandNonFuelOPEX <- CAPEXandNonFuelOPEX[!variable == "Fuel costs"]                                                                 # nolint: object_name_linter
-  checkForNAsDups(CAPEXandNonFuelOPEX, "CAPEXandNonFuelOPEX", "reportREMINDinputDataVarSet()")
+  checkForNAsAndDups(CAPEXandNonFuelOPEX, "CAPEXandNonFuelOPEX", "reportREMINDinputDataVarSet()")
   # scenSpecPrefTrends
-  checkForNAsDups(scenSpecPrefTrends, "scenSpecPrefTrends", "reportREMINDinputDataVarSet()")
+  checkForNAsAndDups(scenSpecPrefTrends, "scenSpecPrefTrends", "reportREMINDinputDataVarSet()")
   # scenSpecLoadFactor
-  checkForNAsDups(scenSpecLoadFactor, "scenSpecLoadFactor", "reportREMINDinputDataVarSet()")
+  checkForNAsAndDups(scenSpecLoadFactor, "scenSpecLoadFactor", "reportREMINDinputDataVarSet()")
   # scenSpecEnIntensity
-  checkForNAsDups(scenSpecEnIntensity, "scenSpecEnIntensity", "reportREMINDinputDataVarSet()")
+  checkForNAsAndDups(scenSpecEnIntensity, "scenSpecEnIntensity", "reportREMINDinputDataVarSet()")
   # initialIncoCosts
-  checkForNAsDups(initialIncoCosts, "initialIncoCosts", "reportREMINDinputDataVarSet()")
+  checkForNAsAndDups(initialIncoCosts, "initialIncoCosts", "reportREMINDinputDataVarSet()")
   # annualMileage
-  checkForNAsDups(annualMileage, "annualMileage", "reportREMINDinputDataVarSet()")
+  checkForNAsAndDups(annualMileage, "annualMileage", "reportREMINDinputDataVarSet()")
   # timeValueCosts
-  checkForNAsDups(timeValueCosts, "timeValueCosts", "reportREMINDinputDataVarSet()")
+  checkForNAsAndDups(timeValueCosts, "timeValueCosts", "reportREMINDinputDataVarSet()")
 
   ## Additional information used from EDGE-T standalone in pik-piam---------------------------------------------------------
   shares_LDV_transport <- toolReportsharesLDVtransport(fleetFEdemand, timeResReporting, demScen,

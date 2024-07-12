@@ -32,7 +32,7 @@ reportToREMINDcapitalCosts <- function(fleetCapCosts, fleetESdemand, timeResRepo
   f35_esCapCost[sumES == 0, ESdemand := 1]
   f35_esCapCost[, sumES := sum(ESdemand), by = c("region", "period", "all_teEs")]
   f35_esCapCost <- f35_esCapCost[, .(value = sum(value * ESdemand / sumES)),  by = c("region", "period", "all_teEs")]                                     # nolint: object_name_linter
-  checkForNAsDups(f35_esCapCost, "f35_esCapCost", "reportToREMINDcapitalCosts()")
+  checkForNAsAndDups(f35_esCapCost, "f35_esCapCost", "reportToREMINDcapitalCosts()")
   f35_esCapCost <- prepareForREMIND(f35_esCapCost, demScen, SSPscen, transportPolScen)
   setnames(f35_esCapCost, c("period", "region"), c("tall", "all_regi"))
 

@@ -35,7 +35,7 @@ reportToREMINDtrpdemand <- function(fleetESdemand, hybridElecShare, timeResRepor
   trpdemandMap <- unique(helpers$mapEdgeToREMIND[!is.na(univocalName), c("all_in", "univocalName", "technology")])
   f29_trpdemand <- merge(f29_trpdemand, trpdemandMap, by = c("univocalName", "technology"), all.x = TRUE)                                                      # nolint: object_name_linter
   f29_trpdemand <- f29_trpdemand[, .(value = sum(value)), by = c("region", "period", "all_in")]
-  checkForNAsDups(f29_trpdemand, "f29_trpdemand", "reportToREMINDtrpdemand()")
+  checkForNAsAndDups(f29_trpdemand, "f29_trpdemand", "reportToREMINDtrpdemand()")
   f29_trpdemand <- prepareForREMIND(f29_trpdemand, demScen, SSPscen, transportPolScen)
   setnames(f29_trpdemand, c("period", "region"), c("tall", "all_regi"))
 
