@@ -23,6 +23,7 @@
 #'
 #' @param folderPath Path to the EDGE-Transport output folder of an iterative or standalone run
 #' @param data List of model results. If not handed over, the data is loaded from the RDS files in the output folder
+#' @param ... Additional model results/parameter that are handed over individually
 #' @param isTransportReported Switch for activating the reporting of transport data in MIF format
 #' @param isTransportExtendedReported Switch for activating the reporting of detailed transport data im MIF format
 #'                                    needed to create transportCompareScenarios
@@ -38,8 +39,8 @@
 #' @export
 
 reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, isTransportReported = TRUE,
-                                    isTransportExtendedReported = FALSE, isAnalyticsReported = FALSE,
-                                    isREMINDinputReported = FALSE, isStored = TRUE) {
+                                isTransportExtendedReported = FALSE, isAnalyticsReported = FALSE,
+                                isREMINDinputReported = FALSE, isStored = TRUE, ...) {
 
   # If you want to change timeResReporting to timesteps outside the modeleled timesteps,
   # please add an interpolation step
@@ -48,28 +49,33 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   #########################################################################
   ## Load data for reporting if data is not supplied in function call
   #########################################################################
+  args <- list(...)
+  if (is.null(data)) data <- list()
+  data <- append(data, args)
 
-  if (is.null(data)) {
-    data <- list()
-    # load files needed for all
+  # load files needed for all
+  if (is.null(data$SSPscen)) {
     cfg <- readRDS(file.path(folderPath, "cfg.RDS"))
     data <- append(data, cfg[names(cfg) %in% c("SSPscen", "transportPolScen", "demScen")])
-    data$hybridElecShare <- readRDS(file.path(folderPath, "1_InputDataRaw", "hybridElecShare.RDS"))
-    data$helpers <- readRDS(file.path(folderPath, "1_InputDataRaw", "helpers.RDS"))
-    data$combinedCAPEXandOPEX <- readRDS(file.path(folderPath, "2_InputDataPolicy", "combinedCAPEXandOPEX.RDS"))
-    data$enIntensity <- readRDS(file.path(folderPath, "2_InputDataPolicy", "enIntensity.RDS"))
-    data$loadFactor <- readRDS(file.path(folderPath, "2_InputDataPolicy", "loadFactor.RDS"))
-    data$fleetSizeAndComposition <- readRDS(file.path(folderPath, "4_Output", "fleetSizeAndComposition.RDS"))
-    data$ESdemandFVsalesLevel <- readRDS(file.path(folderPath, "4_Output", "ESdemandFVsalesLevel.RDS"))
+  }
+  if (is.null(data$modelName)) data$modelName <- "EDGE-T"
+  if (is.null(data$hybridElecShare)) data$hybridElecShare <- readRDS(file.path(folderPath, "1_InputDataRaw", "hybridElecShare.RDS"))
+  if (is.null(data$helpers)) data$helpers <- readRDS(file.path(folderPath, "1_InputDataRaw", "helpers.RDS"))
+  if (is.null(data$combinedCAPEXandOPEX)) data$combinedCAPEXandOPEX <- readRDS(file.path(folderPath, "2_InputDataPolicy", "combinedCAPEXandOPEX.RDS"))
+  if (is.null(data$scenSpecEnIntensity)) data$scenSpecEnIntensity <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecEnIntensity.RDS"))
+  if (is.null(data$scenSpecLoadFactor)) data$scenSpecLoadFactor <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecLoadFactor.RDS"))
+  if (is.null(data$fleetSizeAndComposition)) data$fleetSizeAndComposition <- readRDS(file.path(folderPath, "4_Output", "fleetSizeAndComposition.RDS"))
+  if (is.null(data$ESdemandFVsalesLevel)) data$ESdemandFVsalesLevel <- readRDS(file.path(folderPath, "4_Output", "ESdemandFVsalesLevel.RDS"))
 
-    # load files for standard and extended transport reporting
-    if (isTransportReported) {
-      data$upfrontCAPEXtrackedFleet <- readRDS(file.path(folderPath, "2_InputDataPolicy",
-                                                         "upfrontCAPEXtrackedFleet.RDS"))
-      data$population <- readRDS(file.path(folderPath, "1_InputDataRaw",
-                                           "population.RDS"))
-      data$GDPppp <- readRDS(file.path(folderPath, "1_InputDataRaw",
-                                           "GDPppp.RDS"))
+  # load files for standard and extended transport reporting
+  if (isTransportReported) {
+    if (is.null(data$upfrontCAPEXtrackedFleet) & length(list.files(folderPath, "upfrontCAPEXtrackedFleet.RDS", recursive = TRUE, full.names = TRUE)) > 0)
+      data$upfrontCAPEXtrackedFleet <- readRDS(file.path(folderPath, "2_InputDataPolicy", "upfrontCAPEXtrackedFleet.RDS"))
+    if (is.null(data$population) & length(list.files(folderPath, "population.RDS", recursive = TRUE, full.names = TRUE)) > 0)
+      data$population <- readRDS(file.path(folderPath, "1_InputDataRaw", "population.RDS"))
+    if (is.null(data$GDPppp) & length(list.files(folderPath, "GDPppp.RDS", recursive = TRUE, full.names = TRUE)) > 0)
+      data$GDPppp <- readRDS(file.path(folderPath, "1_InputDataRaw", "GDPppp.RDS"))
+    if (is.null(data$gdxPath)) {
       gdxPath <- list.files(path = folderPath, pattern = "\\.gdx$", full.names = TRUE)
       # Check if any files were found
       if (length(gdxPath) > 1) {
@@ -81,13 +87,17 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       }
       data$gdxPath <- gdxPath
     }
-    if (isAnalyticsReported) {
-      # load files for analytic purposes
+  }
+  if (isAnalyticsReported) {
+    # load files for analytic purposes
+    if (is.null(data$fleetVehNumbersIterations)) {
       fleetFilesIterations <- list.files(path    = file.path(folderPath, "4_Output"),
-                                         pattern = "fleetVehNumbersIteration.*", full.names = TRUE)
+                                       pattern = "fleetVehNumbersIteration.*", full.names = TRUE)
       if (length(fleetFilesIterations) > 0) {
-       data$fleetVehNumbersIterations <- lapply(fleetFilesIterations, readRDS)
+        data$fleetVehNumbersIterations <- lapply(fleetFilesIterations, readRDS)
       }
+    }
+    if (is.null(data$endogenousCostsIterations)) {
       endogenousCostFilesIterations <- list.files(path       = file.path(folderPath, "4_Output"),
                                                   pattern    = "endogenousCostsIteration.*",
                                                   full.names = TRUE)
@@ -95,22 +105,20 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         data$endogenousCostsIterations <- lapply(endogenousCostFilesIterations, readRDS)
       }
     }
-    if (isREMINDinputReported) {
-      # load files for REMIND input data only reporting
-      data$annualMileage <- readRDS(file.path(folderPath, "1_InputDataRaw", "annualMileage.RDS"))
-      data$timeValueCosts <- readRDS(file.path(folderPath, "1_InputDataRaw", "timeValueCosts.RDS"))
-      data$prefTrends <- readRDS(file.path(folderPath, "2_InputDataPolicy", "prefTrends.RDS"))
-      data$initialIncoCosts <- readRDS(file.path(folderPath, "2_InputDataPolicy", "initialIncoCosts.RDS"))
-    }
-  } else {
-    data <- data
+  }
+  if (isREMINDinputReported) {
+    # load files for REMIND input data only reporting
+    if (is.null(data$annualMileage)) data$annualMileage <- readRDS(file.path(folderPath, "1_InputDataRaw", "annualMileage.RDS"))
+    if (is.null(data$timeValueCosts)) data$timeValueCosts <- readRDS(file.path(folderPath, "1_InputDataRaw", "timeValueCosts.RDS"))
+    if (is.null(data$prefTrends)) data$prefTrends <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecPrefTrends.RDS"))
+    if (is.null(data$initialIncoCosts)) data$initialIncoCosts <- readRDS(file.path(folderPath, "2_InputDataPolicy", "initialIncoCosts.RDS"))
   }
   #########################################################################
   ## Report output variables
   #########################################################################
-
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
   baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
+  reporting <- baseVarSet
   outputVars <- baseVarSet
 
   if (isTransportReported) {
@@ -144,7 +152,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                               GDPMER                      = data$GDPMER,
                               helpers                     = data$helpers,
                               scenario                    = paste0(data$transportPolScen, " ", data$SSPscen),
-                              model                       = "EDGE-T",
+                              model                       = data$modelName,
                               gdx                         = data$gdxPath,
                               isTransportExtendedReported = isTransportExtendedReported)
 
@@ -160,9 +168,9 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                                                fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
                                                fleetCapCosts        = baseVarSet$int$fleetCost[variable == "Capital costs"],
                                                combinedCAPEXandOPEX = data$combinedCAPEXandOPEX,
-                                               scenSpecLoadFactor   = data$loadFactor,
-                                               scenSpecPrefTrends   = data$prefTrends,
-                                               scenSpecEnIntensity  = data$enIntensity,
+                                               scenSpecLoadFactor   = data$scenSpecLoadFactor,
+                                               scenSpecPrefTrends   = data$scenSpecPrefTrends,
+                                               scenSpecEnIntensity  = data$scenSpecEnIntensity,
                                                initialIncoCosts     = data$initialIncoCosts,
                                                annualMileage        = data$annualMileage,
                                                timeValueCosts       = data$timeValueCosts,

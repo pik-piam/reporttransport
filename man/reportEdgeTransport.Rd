@@ -11,7 +11,8 @@ reportEdgeTransport(
   isTransportExtendedReported = FALSE,
   isAnalyticsReported = FALSE,
   isREMINDinputReported = FALSE,
-  isStored = TRUE
+  isStored = TRUE,
+  ...
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ needed to create transportCompareScenarios}
 \item{isREMINDinputReported}{Switch for activating reporting of REMIND input data}
 
 \item{isStored}{Switch for activating data storage and creating the transport.MIF file}
+
+\item{...}{Additional model results/parameter that are handed over individually}
 }
 \value{
 The function either returns the REMINDinputData if isREMINDinputReported is

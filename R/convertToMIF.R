@@ -52,9 +52,11 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   varsToMIFint <- rbindlist(vars$int, fill = TRUE, use.names = TRUE)
 
   # Prepare vars that are not aggregated over modes
-  noAggregationvars$GDPppp[, variable := "GDP|PPP"][, value := value * 1e-3][, unit := "billion constant 2005 Int$PPP"]
-  noAggregationvars$population[, variable := "Population"][, unit := "million"]
-  noAggregationvars <- rbindlist(noAggregationvars, fill = TRUE, use.names = TRUE)
+  if (!is.null(noAggregationvars$GDPppp)){
+    noAggregationvars$GDPppp[, variable := "GDP|PPP"][, value := value * 1e-3][, unit := "billion constant 2005 Int$PPP"]
+    noAggregationvars$population[, variable := "Population"][, unit := "million"]
+    noAggregationvars <- rbindlist(noAggregationvars, fill = TRUE, use.names = TRUE)
+  }
 
   # Apply variable naming convention----------------------------------------------------------
   varsToMIFext <- applyReportingNames(varsToMIFext, helpers$reportingNames)
@@ -65,7 +67,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   ## Aggregation to world is always supplied
   mapWorld <- unique(varsToMIFext[, c("region")])[, aggrReg := "World"]
   worldDataExt <- as.data.table(aggregate_map(varsToMIFext, mapWorld, by = "region"))
-  worldDatanoAggregationvars <- as.data.table(aggregate_map(noAggregationvars, mapWorld, by = "region"))
+  if (!is.null(noAggregationvars$GDPppp)) worldDatanoAggregationvars <- as.data.table(aggregate_map(noAggregationvars, mapWorld, by = "region"))
   weight <- copy(varsToMIFext[variable == "ES"])
   weight[, c("variable", "unit", "fuel") := NULL]
   setnames(weight, "value", "weight")
@@ -78,7 +80,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   worldDataInt[, region := "World"]
   varsToMIFint <- rbind(varsToMIFint, worldDataInt)
   varsToMIFext <- rbind(varsToMIFext, worldDataExt)
-  noAggregationvars <- rbind(noAggregationvars, worldDatanoAggregationvars)
+  if (!is.null(noAggregationvars$GDPppp)) noAggregationvars <- rbind(noAggregationvars, worldDatanoAggregationvars)
 
   ## Additional regions
   ## if regionSubsetList != NULL -> gdx provides 21 region resolution
@@ -99,7 +101,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
     }
     regSubsetDataExt <- as.data.table(aggregate_map(varsToMIFext[region %in% unique(regSubsetMap$region)],
                                                  regSubsetMap, by = "region"))
-    regSubsetDataNoAggregationVars <- as.data.table(aggregate_map(noAggregationvars[region %in% unique(regSubsetMap$region)],
+    if (!is.null(noAggregationvars$GDPppp)) regSubsetDataNoAggregationVars <- as.data.table(aggregate_map(noAggregationvars[region %in% unique(regSubsetMap$region)],
                                                                   regSubsetMap, by = "region"))
     weightedInt <- merge(varsToMIFint, regSubsetMap, by = intersect(names(varsToMIFint), names(regSubsetMap)), all.y = TRUE)
     weightedInt <- merge(weight, weightedInt, by = intersect(names(weightedInt), names(weight)), all.y = TRUE)
@@ -115,7 +117,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
 
     varsToMIFint <- rbind(varsToMIFint, regSubsetDataInt)
     varsToMIFext <- rbind(varsToMIFext, regSubsetDataExt)
-    noAggregationvars <- rbind(regSubsetDataNoAggregationVars, noAggregationvars)
+    if (!is.null(noAggregationvars$GDPppp)) noAggregationvars <- rbind(regSubsetDataNoAggregationVars, noAggregationvars)
   }
 
   # Aggregate variables-----------------------------------------------------------------------
@@ -123,7 +125,9 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   weight <- varsToMIFext[variable == "ES"]
   toMIFint <- aggregateVariables(varsToMIFint, helpers$reportingAggregation, weight)
 
-  toMIF <- rbind(toMIFint, toMIFext, noAggregationvars)
+  if (!is.null(noAggregationvars$GDPppp)) {
+    toMIF <- rbind(toMIFint, toMIFext, noAggregationvars)
+  } else {toMIF <- rbind(toMIFint, toMIFext)}
 
   if (!is.null(vars$analytic)) {
     analyticVars <- rbindlist(vars$analytic, use.names = TRUE)

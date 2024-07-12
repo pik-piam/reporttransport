@@ -15,7 +15,7 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   constrYear <- variable <- period <- . <- value <- NULL
 
   # Switch from mixed time resolution to the reporting time resolution for all vars------------
-  loadFactor <- copy(data$loadFactor)[period %in% timeResReporting]
+  loadFactor <- copy(data$scenSpecLoadFactor)[period %in% timeResReporting]
   fleetFEdemand <- baseVarSet$ext$fleetFEdemand[period %in% timeResReporting]
   fleetCost <- baseVarSet$int$fleetCost[period %in% timeResReporting]
   population <- data$population[period %in% timeResReporting]
