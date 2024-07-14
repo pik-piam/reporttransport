@@ -12,8 +12,8 @@
 prepareForREMIND <- function(dt, demScen, SSPscen, transportPolScen) {                                                                # nolint: object_name_linter
   cols <- names(copy(dt))
   cols <- cols[!cols %in% c("region", "period", "value")]
-  dt[, DEM_scenario := paste0("gdp_", demScen)]
-  dt[, GDP_scenario := paste0("gdp_", SSPscen)]
+  dt[, DEM_scenario := demScen]
+  dt[, GDP_scenario := SSPscen]
   dt[, EDGE_scenario := transportPolScen]
   setcolorder(dt, c("region", "period", "GDP_scenario", "DEM_scenario", "EDGE_scenario", cols, "value"))
   return(dt)
