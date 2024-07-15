@@ -17,7 +17,7 @@
 #' @import data.table
 #' @export
 
-reportFE <- function(fleetEnergyIntensity, fleetESdemand, loadFactor, hybridElecShare, helpers) {
+reportFinalEnergy <- function(fleetEnergyIntensity, fleetESdemand, loadFactor, hybridElecShare, helpers) {
 
   value <- unit <- variable <- technology <- energyIntensity <- ESdemand <- . <- univocalName <- NULL
 

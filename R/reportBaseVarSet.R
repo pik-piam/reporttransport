@@ -32,7 +32,7 @@ reportBaseVarSet <- function(data, timeResReporting) {
   fleetCost <- rbind(fleetData$fleetCapCosts, aggregatedCosts[!variable == "Capital costs sales"])
 
   # Calculate final energy---------------------------------------------------------------------
-  fleetFEdemand <- reportFE(fleetEnergyIntensity = fleetData$fleetEnergyIntensity, fleetESdemand = fleetESdemand,
+  fleetFEdemand <- reportFinalEnergy(fleetEnergyIntensity = fleetData$fleetEnergyIntensity, fleetESdemand = fleetESdemand,
                                 loadFactor = data$scenSpecLoadFactor, hybridElecShare = data$hybridElecShare, helpers = data$helpers)
 
   # Split extensive and intensive variables ---------------------------------------------------
