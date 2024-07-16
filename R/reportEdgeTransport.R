@@ -58,6 +58,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     cfg <- readRDS(file.path(folderPath, "cfg.RDS"))
     data <- append(data, cfg[names(cfg) %in% c("SSPscen", "transportPolScen", "demScen")])
   }
+  if (is.null(data$scenarioName)) data$scenarioName <- paste0(data$transportPolScen, " ", data$SSPscen)
   if (is.null(data$modelName)) data$modelName <- "EDGE-T"
   if (is.null(data$hybridElecShare)) data$hybridElecShare <- readRDS(file.path(folderPath, "1_InputDataRaw", "hybridElecShare.RDS"))
   if (is.null(data$helpers)) data$helpers <- readRDS(file.path(folderPath, "1_InputDataRaw", "helpers.RDS"))
@@ -151,7 +152,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     reporting <- convertToMIF(vars                        = outputVars,
                               GDPMER                      = data$GDPMER,
                               helpers                     = data$helpers,
-                              scenario                    = paste0(data$transportPolScen, " ", data$SSPscen),
+                              scenario                    = data$scenarioName,
                               model                       = data$modelName,
                               gdx                         = data$gdxPath,
                               isTransportExtendedReported = isTransportExtendedReported)
