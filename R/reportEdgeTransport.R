@@ -107,7 +107,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       }
     }
   }
-  browser()
+
   if (isREMINDinputReported) {
     # load files for REMIND input data only reporting
     if (is.null(data$annualMileage)) data$annualMileage <- readRDS(file.path(folderPath, "1_InputDataRaw", "annualMileage.RDS"))
