@@ -25,8 +25,8 @@ toolReportsharesLDVtransport <- function(fleetFEdemand, timeResReporting, demSce
   sharesLDVtransport <- approx_dt(sharesLDVtransport, seq(1990, 2150), "year", "value", "region", extrapolate = TRUE)
   sharesLDVtransport[,  sharetype := "share_LDV_totliq"]
   sharesLDVtransport[, varname := "shares_LDV_transport"]
-  sharesLDVtransport[, DEM_scenario := paste0("gdp_", demScen)]
-  sharesLDVtransport[, GDP_scenario := paste0("gdp_", SSPscen)]
+  sharesLDVtransport[, DEM_scenario := demScen]
+  sharesLDVtransport[, GDP_scenario := SSPscen]
   sharesLDVtransport[, EDGE_scenario := transportPolScen]
   setcolorder(sharesLDVtransport, c("region", "year", "GDP_scenario", "EDGE_scenario", "DEM_scenario",  "sharetype", "varname", "value"))
 

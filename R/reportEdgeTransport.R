@@ -107,11 +107,12 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       }
     }
   }
+
   if (isREMINDinputReported) {
     # load files for REMIND input data only reporting
     if (is.null(data$annualMileage)) data$annualMileage <- readRDS(file.path(folderPath, "1_InputDataRaw", "annualMileage.RDS"))
     if (is.null(data$timeValueCosts)) data$timeValueCosts <- readRDS(file.path(folderPath, "1_InputDataRaw", "timeValueCosts.RDS"))
-    if (is.null(data$prefTrends)) data$prefTrends <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecPrefTrends.RDS"))
+    if (is.null(data$scenSpecPrefTrends)) data$scenSpecPrefTrends <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecPrefTrends.RDS"))
     if (is.null(data$initialIncoCosts)) data$initialIncoCosts <- readRDS(file.path(folderPath, "2_InputDataPolicy", "initialIncoCosts.RDS"))
   }
   #########################################################################
