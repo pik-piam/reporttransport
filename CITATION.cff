@@ -3,7 +3,7 @@ message: If you use this software, please cite it using the metadata from this f
 type: software
 title: 'reporttransport: Reporting package for edgeTransport'
 version: 0.0.11
-date-released: '2024-07-17'
+date-released: '2024-07-18'
 abstract: This package contains edgeTransport-specific routines to report model results.
   The main functionality is to generate transport reporting variables in MIF format
   from a given edgeTransport model run folder or REMIND input data.
