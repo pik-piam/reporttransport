@@ -1,11 +1,4 @@
-```{r load additional libraries}
-
-library(ggplot2)
-library(dplyr)
-
-```
-
-```{r reference models for historical}
+# reference models for historical ----
 
 # Sometimes it is necessary to choose a single model for the historical data,
 # e.g., calculating per capita variables. These reference models are defined here.
@@ -15,12 +8,9 @@ histRefModel <- c(
   "GDP|PPP pCap" = "James_IMF"
 )
 
-options(mip.histRefModel = histRefModel) # nolint
+options(mip.histRefModel = histRefModel)
 
-```
-
-
-```{r load custom plotting function}
+# load custom plotting function ----
 
 showLinePlotsByVariable <- function(
     data, vars, xVar, scales = "free_y",
@@ -109,9 +99,8 @@ showLinePlotsByVariable <- function(
   return(invisible(NULL))
 }
 
-```
+# calculate pCap variables ----
 
-```{r calcuate pCap variables}
 # For all variables in following table, add a new variable to data with the name
 # "OldName pCap". Calculate its value by OldValue * conversionFactor and set its unit to newUnit.
 # The new variable "OldName pCap" will be available in the plot sections.
@@ -148,17 +137,16 @@ pCapVariables <- tribble(
   "ES|Transport|Freight|Road|Liquids", "pkm/yr", 1e9
 )
 
-data %>%
+dataPop <- data %>%
   filter(variable == "Population") %>%
   filter(scenario != "historical" | model == histRefModel["Population"]) %>%
   select(scenario, region, period, value) %>%
   mutate(
     population = value * 1e6, # unit originally is million, now is 1
     value = NULL
-  ) ->
-dataPop
+  )
 
-data %>%
+dataPCap <- data %>%
   inner_join(pCapVariables, "variable") %>%
   left_join(dataPop, c("scenario", "region", "period")) %>%
   mutate(
@@ -166,12 +154,7 @@ data %>%
     variable = paste0(variable, " pCap"),
     unit = newUnit,
     newUnit = NULL, conversionFactor = NULL, population = NULL
-  ) ->
-dataPCap
+  )
 
-data %>%
-  bind_rows(dataPCap) ->
-data
-```
-
-
+data <- data %>%
+  bind_rows(dataPCap)
