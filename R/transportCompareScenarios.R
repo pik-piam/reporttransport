@@ -21,7 +21,7 @@ transportCompareScenarios <- function(
     outputFormat = "PDF") {
 
   piamPlotComparison::compareScenarios(
-    projectLibrary = "edgeTransport",
+    projectLibrary = "reporttransport",
     mifScen = mifScen,
     mifHist = mifHist,
     outputFormat = outputFormat,
