@@ -1,8 +1,8 @@
 Type: Package
 Package: reporttransport
 Title: Reporting package for edgeTransport
-Version: 0.0.11
-Date: 2024-07-18
+Version: 0.0.12
+Date: 2024-07-29
 Authors@R:
     person("Johanna", "Hoppe", , "johanna.hoppe@pik-potsdam.de", role = c("aut", "cre"))
 Description: This package contains edgeTransport-specific routines to
@@ -17,17 +17,14 @@ Imports:
     data.table,
     gdx,
     gdxrrw,
+    piamPlotComparison,
     quitte,
     remind2,
-    rlang,
-    rmarkdown,
     rmndt,
-    utils,
-    yaml,
-    ymlthis
+    utils
 Suggests:
     knitr,
     sf,
     testthat
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
