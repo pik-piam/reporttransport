@@ -124,7 +124,8 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
   baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
   if (isHarmonized) {
-    harmonizedVars <- harmonizeOutput(edgetOutputDir, baseVarSet, data)
+    REMINDoutput <- as.data.table(read.quitte(data$remindReportingFile))
+    harmonizedVars <- harmonizeOutput(REMINDoutput, edgetOutputDir, baseVarSet, data)
     baseVarSet$int$fleetEnergyIntensity <- harmonizedVars$harmonizedEnergyIntensity
     baseVarSet$ext$fleetFEdemand <- harmonizedVars$harmonizedFinalEnergy
   }
@@ -167,6 +168,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                               gdx                         = data$gdxPath,
                               isTransportExtendedReported = isTransportExtendedReported)
 
+    if (isHarmonized) reporting <- reporting[!variable %in% REMINDoutput$variable]
     if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))
   }
 

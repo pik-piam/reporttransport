@@ -16,10 +16,9 @@
 #' @import data.table
 #' @export
 
-harmonizeOutput <- function(edgetOutputDir, baseVarSet, data) {
+harmonizeOutput <- function(REMINDoutput, edgetOutputDir, baseVarSet, data) {
 
     ## Calculate FE harmonization factors that are then applied to the energy intensity
-    REMINDoutput <- as.data.table(read.quitte(data$remindReportingFile))
     harmMap <- tribble(
       ~variable,                                                  ~ all_teEs,
       "FE|Transport|Freight|Short-Medium distance|Electricity",    "te_eselt_frgt_sm",
