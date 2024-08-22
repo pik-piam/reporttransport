@@ -30,17 +30,19 @@
 #' @param isAnalyticsReported Switch for activating reporting of model analytics data
 #' @param isREMINDinputReported Switch for activating reporting of REMIND input data
 #' @param isStored Switch for activating data storage and creating the transport.MIF file
+#' @param isHarmonized Switch for activating ouput harmonization with REMIND
 #'
 #' @returns The function either returns the REMINDinputData if isREMINDinputReported is
 #'          enabled or the transport data in MIF format
 #' @author Johanna Hoppe
 #' @importFrom quitte write.mif
+#' @importFrom tibble tribble
 #' @import data.table
 #' @export
 
 reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, isTransportReported = TRUE,
                                 isTransportExtendedReported = FALSE, isAnalyticsReported = FALSE,
-                                isREMINDinputReported = FALSE, isStored = TRUE, ...) {
+                                isREMINDinputReported = FALSE, isStored = TRUE, isHarmonized = FALSE, ...) {
 
   # If you want to change timeResReporting to timesteps outside the modeleled timesteps,
   # please add an interpolation step
@@ -115,11 +117,18 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     if (is.null(data$scenSpecPrefTrends)) data$scenSpecPrefTrends <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecPrefTrends.RDS"))
     if (is.null(data$initialIncoCosts)) data$initialIncoCosts <- readRDS(file.path(folderPath, "2_InputDataPolicy", "initialIncoCosts.RDS"))
   }
+
   #########################################################################
   ## Report output variables
   #########################################################################
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
   baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
+  if (isHarmonized) {
+    harmonizedVars <- harmonizeOutput(edgetOutputDir, baseVarSet, data)
+    baseVarSet$int$fleetEnergyIntensity <- harmonizedVars$harmonizedEnergyIntensity
+    baseVarSet$ext$fleetFEdemand <- harmonizedVars$harmonizedFinalEnergy
+  }
+  
   reporting <- baseVarSet
   outputVars <- baseVarSet
 

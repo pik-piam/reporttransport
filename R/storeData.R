@@ -44,8 +44,10 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
                        "fleetVehNumbersIterations",
                        "endogenousCostsIterations",
                        "endogenousCosts",
+                       "sectorESdemand",
                        "ESdemandFVsalesLevel",
-                       "fleetVehiclesPerTech")) subfolder <- "4_Output"
+                       "fleetVehiclesPerTech",
+                       "harmFactors")) subfolder <- "4_Output"
     if (varName %in% c("REMINDinputData")) subfolder <- "5_REMINDinputData"
     if (is.null(subfolder)) stop(paste0("No subfolder assigned to ", varName))
 
@@ -59,7 +61,7 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
 
   storeCSV <- function(varName, vars, outputFolder, subfolder = NULL) {
     if (is.null(subfolder)) subfolder <- allocateFile(varName)
-    write.csv(vars[[varName]], file.path(outputFolder, subfolder, paste0(varName, ".csv")))
+    write.csv(vars[[varName]], file.path(outputFolder, subfolder, paste0(varName, ".csv")), row.names = FALSE)
   }
   vars <- list()
   if (!is.null(varsList)) vars <- varsList
