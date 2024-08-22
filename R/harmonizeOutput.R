@@ -4,7 +4,7 @@
 #' As REMIND converges the output between EDGE-T and REMIND still slightly differs.
 #' This function calculates harmonization factors that are applied on the EDGE-T energy intensity and final energy values.
 #' Furthermore, the harmonization factors indicate how well the two models converged and can be used for analysis purposes.
-#'
+#' @param REMINDoutput Output of a REMIND wihtoutPlus.mif to harmonize with
 #' @param edgetOutputDir edgeTransport output directory
 #' @param baseVarSet calculated base variable set including energy intensity and final energy on fleet level
 #' @param data list of raw model output data

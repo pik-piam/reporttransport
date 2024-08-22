@@ -4,9 +4,11 @@
 \alias{harmonizeOutput}
 \title{Harmonize data to last REMIND iteration in coupled mode}
 \usage{
-harmonizeOutput(edgetOutputDir, baseVarSet, data)
+harmonizeOutput(REMINDoutput, edgetOutputDir, baseVarSet, data)
 }
 \arguments{
+\item{REMINDoutput}{Output of a REMIND wihtoutPlus.mif to harmonize with}
+
 \item{edgetOutputDir}{edgeTransport output directory}
 
 \item{baseVarSet}{calculated base variable set including energy intensity and final energy on fleet level}
