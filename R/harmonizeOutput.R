@@ -51,7 +51,7 @@ harmonizeOutput <- function(REMINDoutput, edgetOutputDir, baseVarSet, data) {
     harmFactors <- merge(EDGEToutputToHarmonize, REMINDoutputToHarmonize, by = c("region", "period", "variable"), all.x = TRUE)
     harmFactors[, factor := ifelse(!remind < 1e-6 & !edget < 1e-6, remind/edget, 1)][, c("edget", "remind") := NULL]
     harmFactors[, variable := paste0("Harmonization factor|", variable)][, unit := "-"][, scenario:= data$scenarioName][, model:= data$modelName]
-    storeData(edgetOutputDir, harmFactors)
+    storeData(edgetOutputDir, list(harmFactors = harmFactors))
 
     #Hybrids are listed in energy intensity but are attributed partly to electricity and petrol in the reporting of final energy
     #The liquids part of the final energy needs to be scaled differntly than the electricity part. This is not possible using the current approach.
