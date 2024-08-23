@@ -22,10 +22,10 @@ walk(items, showLinePlots, data = data)
 ```{r}
 tot <- "FE|Transport edge"
 items <- c(
-  "FE|Transport edge|Electricity",
-  "FE|Transport edge|Hydrogen",
-  "FE|Transport edge|Gases",
-  "FE|Transport edge|Liquids"
+  "FE|Transport|Electricity",
+  "FE|Transport|Hydrogen",
+  "FE|Transport|Gases",
+  "FE|Transport|Liquids"
   )
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
@@ -65,12 +65,12 @@ walk(items, showLinePlots, data = data)
 
 ### Passenger 
 ```{r}
-tot <- "FE|Transport edge|Pass"
+tot <- "FE|Transport|Pass"
 items <- c(
-  "FE|Transport edge|Pass|Electricity",
-  "FE|Transport edge|Pass|Hydrogen",
-  "FE|Transport edge|Pass|Gases",
-  "FE|Transport edge|Pass|Liquids"
+  "FE|Transport|Pass|Electricity",
+  "FE|Transport|Pass|Hydrogen",
+  "FE|Transport|Pass|Gases",
+  "FE|Transport|Pass|Liquids"
   )
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
@@ -190,12 +190,12 @@ walk(items, showLinePlots, data = data)
 
 ### Freight 
 ```{r}
-tot <- "FE|Transport edge|Freight"
+tot <- "FE|Transport|Freight"
 items <- c(
-  "FE|Transport edge|Freight|Electricity",
-  "FE|Transport edge|Freight|Hydrogen",
-  "FE|Transport edge|Freight|Gases",
-  "FE|Transport edge|Freight|Liquids"
+  "FE|Transport|Freight|Electricity",
+  "FE|Transport|Freight|Hydrogen",
+  "FE|Transport|Freight|Gases",
+  "FE|Transport|Freight|Liquids"
   )
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
@@ -382,7 +382,7 @@ walk(items, showLinePlots, data = data)
 ### Passenger with bunkers
 ```{r}
 tot_wbunk <- "FE|Transport|Pass with bunkers"
-tot_wobunk <- "FE|Transport edge|Pass"
+tot_wobunk <- "FE|Transport|Pass"
 items <- c(
     "FE|Transport|Bunkers|Pass|International Aviation",
     "FE|Transport|Pass|Domestic Aviation",
@@ -403,7 +403,7 @@ walk(c("FE|Transport|Pass|Aviation", items[1:5], "FE|Transport|Pass|Road|LDV", i
 ### Freight
 ```{r}
 tot_wbunk <- "FE|Transport|Freight with bunkers"
-tot_wobunk <- "FE|Transport edge|Freight"
+tot_wobunk <- "FE|Transport|Freight"
 items <- c(
       "FE|Transport|Bunkers|Freight|International Shipping",
       "FE|Transport|Freight|Domestic Shipping",

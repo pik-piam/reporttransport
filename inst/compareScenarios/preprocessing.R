@@ -108,7 +108,7 @@ showLinePlotsByVariable <- function(
 pCapVariables <- tribble(
   ~variable, ~newUnit, ~conversionFactor,
   "GDP|PPP", "kUS$2005", 1e6,
-  "ES|Transport edge|Pass", "pkm/yr", 1e9,
+  "ES|Transport|Pass", "pkm/yr", 1e9,
   "ES|Transport|Pass|Aviation", "pkm/yr", 1e9,
   "ES|Transport|Bunkers|Pass|International Aviation", "pkm/yr", 1e9,
   "ES|Transport|Pass|Domestic Aviation", "pkm/yr", 1e9,
@@ -117,7 +117,7 @@ pCapVariables <- tribble(
   "ES|Transport|Pass|Non-motorized|Cycle", "pkm/yr", 1e9,
   "ES|Transport|Pass|Rail|non-HSR", "pkm/yr", 1e9,
   "ES|Transport|Pass|Rail|HSR", "pkm/yr", 1e9,
-  "ES|Transport edge|Freight", "tkm/yr", 1e9,
+  "ES|Transport|Freight", "tkm/yr", 1e9,
   "ES|Transport|Bunkers|Freight|International Shipping", "tkm/yr", 1e9,
   "ES|Transport|Freight|Road", "tkm/yr", 1e9,
   "ES|Transport|Freight|Domestic Shipping", "tkm/yr", 1e9,
