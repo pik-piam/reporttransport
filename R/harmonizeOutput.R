@@ -22,7 +22,7 @@ harmonizeOutput <- function(REMINDoutput, edgetOutputDir, baseVarSet, data) {
     harmMap <- tribble(
       ~variable,                                                  ~ all_teEs,
       "FE|Transport|Freight|Short-Medium distance|Electricity",    "te_eselt_frgt_sm",
-      "FE|Transport|Freight|Short-Medium distance|Liquids",        "te_esdie_frgt_sm",
+      "FE|Transport|Freight|Short-Medium distance|Diesel Liquids", "te_esdie_frgt_sm",
       "FE|Transport|Freight|Short-Medium distance|Hydrogen",       "te_esh2t_frgt_sm",
       "FE|Transport|Freight|Short-Medium distance|Gases",          "te_esgat_frgt_sm",
       "FE|Transport|Freight|Long distance|Diesel Liquids",         "te_esdie_frgt_lo",

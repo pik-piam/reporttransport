@@ -123,13 +123,14 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   #########################################################################
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
   baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
+  # Harmonize final energy for coupled EDGE-T/REMIND model output
   if (isHarmonized) {
     REMINDoutput <- as.data.table(read.quitte(data$remindReportingFile))
     harmonizedVars <- harmonizeOutput(REMINDoutput, edgetOutputDir, baseVarSet, data)
     baseVarSet$int$fleetEnergyIntensity <- harmonizedVars$harmonizedEnergyIntensity
     baseVarSet$ext$fleetFEdemand <- harmonizedVars$harmonizedFinalEnergy
   }
-  
+
   reporting <- baseVarSet
   outputVars <- baseVarSet
 
@@ -168,7 +169,21 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                               gdx                         = data$gdxPath,
                               isTransportExtendedReported = isTransportExtendedReported)
 
-    if (isHarmonized) reporting <- reporting[!variable %in% REMINDoutput$variable]
+    if (isHarmonized) {
+      sharedVarsAfterHarmonization <- reporting[variable %in% REMINDoutput$variable]
+      if (nrow(sharedVariables) > 0) {
+        reporting <- reporting[!variable %in% REMINDoutput$variable]
+        setnames(sharedVarsAfterHarmonization, "value", "edge")
+        setnames(REMINDoutput, "value", "remind")
+        sharedVarsAfterHarmonization <- merge(sharedVarsAfterHarmonization, REMINDoutput, 
+         by = intersect(names(sharedVarsAfterHarmonization), names(REMINDoutput)), all.x = TRUE)
+        sharedVariables[, diff := (remind-edge)/remind]
+        storeData(sharedVarsAfterHarmonization)
+        message("The following variables will be dropped from the EDGE-Transport reporting because
+                they are in the REMIND reporting: ", paste(unique(sharedVarsAfterHarmonization$variable), collapse = ", "))
+        
+      }
+    }
     if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))
   }
 

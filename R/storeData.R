@@ -47,7 +47,8 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
                        "sectorESdemand",
                        "ESdemandFVsalesLevel",
                        "fleetVehiclesPerTech",
-                       "harmFactors")) subfolder <- "4_Output"
+                       "harmFactors",
+                       "sharedVarsAfterHarmonization")) subfolder <- "4_Output"
     if (varName %in% c("REMINDinputData")) subfolder <- "5_REMINDinputData"
     if (is.null(subfolder)) stop(paste0("No subfolder assigned to ", varName))
 
