@@ -139,8 +139,6 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   toMIF[, model := model][, scenario := scenario]
   toMIF <- as.quitte(toMIF)
 
-  toMIF <- renameDuplicateVariables(toMIF)
-
   if (anyNA(toMIF)) stop("MIF output contains NAs.
                          Please check reportAndAggregatedMIF()")
   if (anyDuplicated(toMIF)) stop("MIF output contains duplicates.
