@@ -34,6 +34,7 @@ harmonizeOutput <- function(REMINDoutput, edgetOutputDir, baseVarSet, data) {
       "FE|Transport|Pass|Long distance|Diesel Liquids",            "te_esdie_pass_lo"
     )
     REMINDoutputToHarmonize <- REMINDoutput[variable %in% unique(harmMap$variable)]
+    timeResReporting <- unique(REMINDoutputToHarmonize$period)
     if (!length(unique(REMINDoutputToHarmonize$variable)) == length(unique(harmMap$variable))) {
       stop("Variables for EDGE-T harmonization are missing in the REMIND output. Please check reportEdgeTransport()")
     }
