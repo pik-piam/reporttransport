@@ -283,8 +283,8 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
 
   if (anyNA(aggregatedvars)) stop("Output variable contains NAs.
-                                  Please check reportAndAggregatedMIF()")
+                                  Please check aggregateVariables()")
   if (anyDuplicated(aggregatedvars[, c("region", "period", "variable")])) stop("Output variable contains Duplicates.
-                                         Please check reportAndAggregatedMIF()")
+                                         Please check aggregateVariables()")
   return(aggregatedvars)
 }

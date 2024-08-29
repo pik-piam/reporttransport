@@ -47,7 +47,6 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   # If you want to change timeResReporting to timesteps outside the modeleled timesteps,
   # please add an interpolation step
   timeResReporting <-  c(seq(2005, 2060, by = 5), seq(2070, 2110, by = 10), 2130, 2150)
-
   #########################################################################
   ## Load data for reporting if data is not supplied in function call
   #########################################################################
@@ -126,7 +125,10 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   # Harmonize final energy for coupled EDGE-T/REMIND model output
   if (isHarmonized) {
     REMINDoutput <- as.data.table(read.quitte(data$remindReportingFile))
-    harmonizedVars <- harmonizeOutput(REMINDoutput, edgetOutputDir, baseVarSet, data)
+    harmonizedVars <- harmonizeOutput(REMINDoutput = REMINDoutput,
+                                      edgetOutputDir = edgetOutputDir,
+                                      baseVarSet = baseVarSet,
+                                      data = data)
     baseVarSet$int$fleetEnergyIntensity <- harmonizedVars$harmonizedEnergyIntensity
     baseVarSet$ext$fleetFEdemand <- harmonizedVars$harmonizedFinalEnergy
   }
@@ -171,17 +173,17 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
 
     if (isHarmonized) {
       sharedVarsAfterHarmonization <- reporting[variable %in% REMINDoutput$variable]
-      if (nrow(sharedVariables) > 0) {
+      if (nrow(sharedVarsAfterHarmonization) > 0) {
         reporting <- reporting[!variable %in% REMINDoutput$variable]
         setnames(sharedVarsAfterHarmonization, "value", "edge")
         setnames(REMINDoutput, "value", "remind")
-        sharedVarsAfterHarmonization <- merge(sharedVarsAfterHarmonization, REMINDoutput, 
+        sharedVarsAfterHarmonization <- merge(sharedVarsAfterHarmonization, REMINDoutput,
          by = intersect(names(sharedVarsAfterHarmonization), names(REMINDoutput)), all.x = TRUE)
-        sharedVariables[, diff := (remind-edge)/remind]
-        storeData(sharedVarsAfterHarmonization)
+        sharedVarsAfterHarmonization[, diff := (remind-edge)/remind]
+        storeData(edgetOutputDir, list(sharedVarsAfterHarmonization = sharedVarsAfterHarmonization))
         message("The following variables will be dropped from the EDGE-Transport reporting because
                 they are in the REMIND reporting: ", paste(unique(sharedVarsAfterHarmonization$variable), collapse = ", "))
-        
+
       }
     }
     if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))

@@ -48,7 +48,7 @@ harmonizeOutput <- function(REMINDoutput, edgetOutputDir, baseVarSet, data) {
     EDGEToutputToHarmonize <- EDGEToutputToHarmonize[, .(value = sum(value)), by = c("region", "period", "variable", "all_teEs")]
     setnames(EDGEToutputToHarmonize, "value", "edget")
     setnames(REMINDoutputToHarmonize, "value", "remind")
-    harmFactors <- merge(EDGEToutputToHarmonize, REMINDoutputToHarmonize, by = c("region", "period", "variable"), all.x = TRUE)
+    harmFactors <- merge(EDGEToutputToHarmonize, REMINDoutputToHarmonize, by = c("region", "period", "variable"), all.y = TRUE)
     harmFactors[, factor := ifelse(!remind < 1e-6 & !edget < 1e-6, remind/edget, 1)][, c("edget", "remind") := NULL]
     harmFactors[, variable := paste0("Harmonization factor|", variable)][, unit := "-"][, scenario:= data$scenarioName][, model:= data$modelName]
     storeData(edgetOutputDir, list(harmFactors = harmFactors))
@@ -59,24 +59,24 @@ harmonizeOutput <- function(REMINDoutput, edgetOutputDir, baseVarSet, data) {
     #of eneryg service demand, energy intensity and final energy
 
     #Apply factors
-    harmonizedEnergyIntensity <- merge(baseVarSet$int$fleetEnergyIntensity[period %in% timeResReporting], 
+    harmonizedEnergyIntensity <- merge(baseVarSet$int$fleetEnergyIntensity[period %in% timeResReporting],
       data$helpers$mapEdgeToREMIND[, c("all_teEs", "univocalName", "technology")], by = c("univocalName", "technology"), all.x = TRUE)
-    harmonizedEnergyIntensity <- merge(harmonizedEnergyIntensity, harmFactors[, c("region", "period", "all_teEs", "factor")], 
+    harmonizedEnergyIntensity <- merge(harmonizedEnergyIntensity, harmFactors[, c("region", "period", "all_teEs", "factor")],
       by = c("region", "period", "all_teEs"), all.x = TRUE)
     harmonizedEnergyIntensity[technology == "Hybrid electric", factor := 1]
     harmonizedEnergyIntensity[, value := ifelse(!subsectorL1 %in% c("Walk", "Cycle"), value * factor, value)][, c("factor", "all_teEs") := NULL]
     if (anyNA(harmonizedEnergyIntensity)) stop("Variable harmonization did not work. Please check harmonizeOutput() in reporttransport.")
 
     ## Harmonize final energy
-    harmonizedFinalEnergy <- merge(baseVarSet$ext$fleetFEdemand[period %in% timeResReporting], 
+    harmonizedFinalEnergy <- merge(baseVarSet$ext$fleetFEdemand[period %in% timeResReporting],
       demByTechMap, by = c("univocalName", "technology"), all.x = TRUE)
-    harmonizedFinalEnergy <- merge(harmonizedFinalEnergy, harmFactors[, c("region", "period", "all_teEs", "factor")], 
+    harmonizedFinalEnergy <- merge(harmonizedFinalEnergy, harmFactors[, c("region", "period", "all_teEs", "factor")],
       by = c("region", "period", "all_teEs"), all.x = TRUE)
     harmonizedFinalEnergy[, value := ifelse(!subsectorL1 %in% c("Walk", "Cycle"), value * factor, value)]
     FEcheck <- harmonizedFinalEnergy[!subsectorL1 %in% c("Walk", "Cycle")]
-    harmonizedFinalEnergy[, c("factor", "all_teEs") := NULL]    
-    if (anyNA(harmonizedFinalEnergy)) stop("Variable harmonization did not work. Please check harmonizeOutput() in reporttransport.") 
-    
+    harmonizedFinalEnergy[, c("factor", "all_teEs") := NULL]
+    if (anyNA(harmonizedFinalEnergy)) stop("Variable harmonization did not work. Please check harmonizeOutput() in reporttransport.")
+
     ## Check if harmonization worked and how big the deviation due to the hybrids is
     # test harmonization
     FEcheck <- FEcheck[, .(value = sum(value)), by = c("region", "period", "all_teEs")]
@@ -84,7 +84,7 @@ harmonizeOutput <- function(REMINDoutput, edgetOutputDir, baseVarSet, data) {
     FEcheck <- merge(FEcheck, REMINDoutputToHarmonize, by = c("region", "period", "variable"), all.x = TRUE)
     FEcheck[, diff := ifelse(!remind < 1e-6 & !value < 1e-6, (value - remind) / value, 0)]
     if (max(FEcheck$diff > 1e-5)) stop("FE harmonization did not work. Please check harmonizeOutput()")
-    
+
     # test the deviation (as if the dataset would be consistent)
     calculatedFinalEnergy <- reportFinalEnergy(harmonizedEnergyIntensity, baseVarSet$ext$fleetESdemand, data$scenSpecLoadFactor, data$hybridElecShare, data$helpers)
     test <- calculatedFinalEnergy[period %in% timeResReporting & !subsectorL1 %in% c("Walk", "Cycle")]
@@ -93,7 +93,7 @@ harmonizeOutput <- function(REMINDoutput, edgetOutputDir, baseVarSet, data) {
     test <- merge(test, harmMap, by = "all_teEs", all.x = TRUE)
     test <- test[, .(value = sum(value)), by = c("region", "period", "variable")]
     test <- merge(test, REMINDoutputToHarmonize, by = c("region", "period", "variable"), all.x = TRUE)
-    test[, diff := ifelse(!remind < 1e-6 & !value < 1e-6, (value - remind) / value, 0)] 
+    test[, diff := ifelse(!remind < 1e-6 & !value < 1e-6, (value - remind) / value, 0)]
 
     harmonizedVars <- list(
       harmonizedEnergyIntensity = harmonizedEnergyIntensity,
