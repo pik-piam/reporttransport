@@ -44,6 +44,7 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
                        "fleetVehNumbersIterations",
                        "endogenousCostsIterations",
                        "endogenousCosts",
+                       "sectorESdemand",
                        "ESdemandFVsalesLevel",
                        "fleetVehiclesPerTech")) subfolder <- "4_Output"
     if (varName %in% c("REMINDinputData")) subfolder <- "5_REMINDinputData"
