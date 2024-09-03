@@ -54,7 +54,7 @@ reportREMINDinputVarSet <- function(fleetESdemand,
   # See needed inputs in REMIND/modules/35_transport/edge_esm/datainput.gms
   # and REMIND/modules/29_CES_parameters/calibratedatainput.gms
   f35_esCapCost <- reportToREMINDcapitalCosts(fleetCapCosts, fleetESdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
-  f35_fe2es <- reportToREMINDenergyEfficiency(fleetEnergyIntensity, scenSpecLoadFactor, fleetESdemand, hybridElecShare, timeResReporting,
+  f35_fe2es <- reportToREMINDenergyEfficiency(fleetFEdemand, fleetESdemand, hybridElecShare, timeResReporting,
                                               demScen, SSPscen, transportPolScen, helpers)
   f35_demByTech <- reportToREMINDfinalEnergyDemand(fleetFEdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
 
