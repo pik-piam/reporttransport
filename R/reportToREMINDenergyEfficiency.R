@@ -1,7 +1,6 @@
 #'Report to REMIND f35_fe2es
 #'
-#' @param fleetEnergyIntensity energy intensity on fleet level
-#' @param scenSpecLoadFactor scenario specific load factor data
+#' @param fleetFEdemand final energy demand on fleet level
 #' @param fleetESdemand energy service demand on fleet level
 #' @param hybridElecShare share of electric driving for hybrid electric vehicles
 #' @param timeResReporting time resolution reporting
