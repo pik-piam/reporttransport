@@ -41,7 +41,7 @@ and would calculate a different FE value compared to EDGE-T that reserves a part
 to the active modes.
 }
 \details{
-Solution: split and evenly distribute the energy service demand of active modes across all technologies to calculate energy efficiency and capital cost per pkm.
+Solution: split and distribute the energy service demand of active modes across all technologies to calculate energy efficiency and capital cost per pkm.
 Consequence: This leads to the fact that in REMIND energy service demand, energy efficiencies, an capital costs on technology level are rather abstract values that are not technically correct.
 Hence, they should not be reported on technology level by REMIND (only by EDGE-T). The FE values on technology level are represented correctly as well as the energy service demand on CES node level.
 The decision of the technology share is anyway made by EDGE-T and not by REMIND.
