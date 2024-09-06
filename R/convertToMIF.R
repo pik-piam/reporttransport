@@ -53,7 +53,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
 
   # Prepare vars that are not aggregated over modes
   if (!is.null(noAggregationvars$GDPppp)){
-    noAggregationvars$GDPppp[, variable := "GDP|PPP"][, value := value * 1e-3][, unit := "billion constant 2005 Int$PPP"]
+    noAggregationvars$GDPppp[, variable := "GDP|PPP"][, value := value * 1e-3][, unit := "billion constant 2017 Int$PPP"]
     noAggregationvars$population[, variable := "Population"][, unit := "million"]
     noAggregationvars <- rbindlist(noAggregationvars, fill = TRUE, use.names = TRUE)
   }

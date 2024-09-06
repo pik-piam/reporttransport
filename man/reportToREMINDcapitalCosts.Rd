@@ -33,7 +33,7 @@ reportToREMINDcapitalCosts(
 \item{helpers}{list of helpers}
 }
 \value{
-Capital Costs per CES node in [2005US$/pkm or 2005US$/tkm]
+Capital Costs per CES node in [US$2017/pkm or US$2017/tkm]
 }
 \description{
 Report to REMIND p35_esCapCost

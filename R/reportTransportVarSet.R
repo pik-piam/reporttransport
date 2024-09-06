@@ -64,7 +64,7 @@ reportTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   setnames(fleetES, "value", "ESdemand")
   fleetYrlCosts <- merge(fleetCost, fleetES,
                          by = intersect(names(fleetCost), names(fleetES)))
-  fleetYrlCosts[, value := value * ESdemand][, unit := "billion US$2005/yr"][, ESdemand := NULL]
+  fleetYrlCosts[, value := value * ESdemand][, unit := "billion US$2017/yr"][, ESdemand := NULL]
   fleetYrlCosts[variable == "Capital costs", variable := "Annualized fleet investments"]
   fleetYrlCosts[variable == "Operating costs (total non-fuel)",
                 variable := "Operating costs fleet (total non-fuel)"]
