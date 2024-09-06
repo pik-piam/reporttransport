@@ -29,7 +29,9 @@ reportToREMINDenergyEfficiency <- function(fleetFEdemand,
   setnames(ES, "value", "ES")
   f35_fe2es <- merge(ES, FE, by = intersect(names(FE), (names(ES))))
   # Insert small number instead of zero
-  f35_fe2es[, value := ifelse(ES < 1e-7 & FE < 1e-7, 1e-7, ES/FE)][, c("ES", "FE") := NULL]
+  f35_fe2es <- f35_fe2es[!ES < 1e-7]
+  f35_fe2es[, value := ES/FE][, c("ES", "FE") := NULL]
+  f35_fe2es <- approx_dt(f35_fe2es, unique(f35_fe2es$tall), "tall", "value", extrapolate = TRUE)
   setcolorder(f35_fe2es, c("all_regi", "tall", "GDP_scenario", "DEM_scenario", "EDGE_scenario", "all_teEs", "value"))
 
   return(f35_fe2es)

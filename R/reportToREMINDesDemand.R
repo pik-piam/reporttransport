@@ -7,7 +7,7 @@
 #' and would calculate a different FE value compared to EDGE-T that reserves a part of the trn_pass energy service demand
 #'to the active modes.
 #'
-#'Solution: split and evenly distribute the energy service demand of active modes across all technologies to calculate energy efficiency and capital cost per pkm.
+#'Solution: split and distribute the energy service demand of active modes across all technologies to calculate energy efficiency and capital cost per pkm.
 #'Consequence: This leads to the fact that in REMIND energy service demand, energy efficiencies, an capital costs on technology level are rather abstract values that are not technically correct.
 #'Hence, they should not be reported on technology level by REMIND (only by EDGE-T). The FE values on technology level are represented correctly as well as the energy service demand on CES node level.
 #'The decision of the technology share is anyway made by EDGE-T and not by REMIND.
@@ -44,20 +44,18 @@ reportToREMINDesDemand <- function(fleetESdemand, hybridElecShare, timeResReport
   byCols <- byCols[!byCols %in% c("value")]
   fleetESdemand <- fleetESdemandWoHybrid[, .(value = sum(value)), by = eval(byCols)]
 
-  # Split and distribute the active modes energy service demand equally to the technologies as
+  # Split and distribute the active modes energy service demand to the technologies as
   # they are not represented in REMIND (see explanation in function header)
   demandMap <- unique(helpers$mapEdgeToREMIND[, c("all_teEs", "univocalName", "technology")])
   demandMap <- demandMap[!is.na(all_teEs)]
-  techOptions <- length(unique(demandMap[grepl(".*pass_sm", all_teEs)]$all_teEs))
   activeModes <- fleetESdemand[grepl(".*Cycle|Walk.*", subsectorL1)]
   REMINDesDemand <- fleetESdemand[!grepl(".*Cycle|Walk.*", subsectorL1)]
-  activeModes <- activeModes[, .(value = sum(value)), by = c("region", "period", "sector")]
-  activeModes[,  activeESaddition := value/techOptions]
+  activeModes <- activeModes[, .(activeESdemand = sum(value)), by = c("region", "period", "sector")]
   REMINDesDemand <- merge(REMINDesDemand, demandMap, by = c("univocalName", "technology"), all.x = TRUE)                                                      # nolint: object_name_linter
   REMINDesDemand <- REMINDesDemand[, .(value = sum(value)), by = c("region", "period", "sector", "all_teEs")]
-
-  REMINDesDemand <- merge(REMINDesDemand, activeModes[, c("region", "period", "sector", "activeESaddition")], by = c("region", "period", "sector"), all.x = TRUE)
-  REMINDesDemand[sector == "trn_pass", value := value + activeESaddition][, c("activeESaddition", "sector") := NULL]
+  REMINDesDemand[, share := value / sum(value), by = c("region", "period", "sector")]
+  REMINDesDemand <- merge(REMINDesDemand, activeModes[, c("region", "period", "sector", "activeESdemand")], by = c("region", "period", "sector"), all.x = TRUE)
+  REMINDesDemand[sector == "trn_pass", value := value + share * activeESdemand][, c("activeESdemand", "sector", "share") := NULL]
 
   test2 <- REMINDesDemand[grepl(".*pass_sm", all_teEs), .(value = sum(value)), by = c("region", "period")]
   setkey(test, region, period)
