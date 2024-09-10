@@ -7,6 +7,7 @@
 reportToREMINDcapitalCosts(
   fleetCapCosts,
   fleetESdemand,
+  hybridElecShare,
   timeResReporting,
   demScen,
   SSPscen,
@@ -18,6 +19,8 @@ reportToREMINDcapitalCosts(
 \item{fleetCapCosts}{capital costs on fleet level}
 
 \item{fleetESdemand}{energy service demand on fleet level}
+
+\item{hybridElecShare}{share of electric driving for hybrid electric vehicles}
 
 \item{timeResReporting}{time resolution reporting}
 

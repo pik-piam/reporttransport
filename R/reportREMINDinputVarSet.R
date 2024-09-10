@@ -53,8 +53,8 @@ reportREMINDinputVarSet <- function(fleetESdemand,
 
   # See needed inputs in REMIND/modules/35_transport/edge_esm/datainput.gms
   # and REMIND/modules/29_CES_parameters/calibratedatainput.gms
-  f35_esCapCost <- reportToREMINDcapitalCosts(fleetCapCosts, fleetESdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
-  f35_fe2es <- reportToREMINDenergyEfficiency(fleetEnergyIntensity, scenSpecLoadFactor, fleetESdemand, hybridElecShare, timeResReporting,
+  f35_esCapCost <- reportToREMINDcapitalCosts(fleetCapCosts, fleetESdemand, hybridElecShare, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
+  f35_fe2es <- reportToREMINDenergyEfficiency(fleetFEdemand, fleetESdemand, hybridElecShare, timeResReporting,
                                               demScen, SSPscen, transportPolScen, helpers)
   f35_demByTech <- reportToREMINDfinalEnergyDemand(fleetFEdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
 
@@ -72,7 +72,12 @@ reportREMINDinputVarSet <- function(fleetESdemand,
   f29_trpdemand <- merge(fe2es, inputREMIND$f35_demByTech, by = intersect(names(fe2es), names(f35_demByTech)))
   weightESdemand <- f29_trpdemand[, .(value = sum(fe2es * value)), by = c("tall", "all_regi", "GDP_scenario", "DEM_scenario", "EDGE_scenario", "all_teEs")]
   f29_trpdemand <- f29_trpdemand[, .(value = sum(fe2es * value)), by = c("tall", "all_regi", "GDP_scenario", "DEM_scenario", "EDGE_scenario", "all_in")]
-
+  #Check for data consistency
+  test <- reportToREMINDesDemand(fleetESdemand, hybridElecShare, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
+  setcolorder(test, names(weightESdemand))
+  setkey(test, all_regi,tall,  all_teEs)
+  setkey(weightESdemand, all_regi, tall, all_teEs)
+  if (!all.equal(test, weightESdemand[tall %in% unique(test$tall)])) stop("The data set that is reported to REMIND is inconsistent. Please check reportREMINDinputVarSet()")
   inputREMIND[["f29_trpdemand"]] <- f29_trpdemand
   inputREMIND[["weightESdemand"]] <- weightESdemand
 
