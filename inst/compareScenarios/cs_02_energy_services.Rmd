@@ -1,8 +1,24 @@
 # Energy Services
+## Passenger without bunkers
+```{r}
+tot_wobunk <- "ES|Transport edge|Pass"
+items <- c(
+    "ES|Transport|Pass|Domestic Aviation",
+    "ES|Transport|Pass|Rail|HSR",
+    "ES|Transport|Pass|Rail|non-HSR",
+    "ES|Transport|Pass|Road|Bus",
+    "ES|Transport|Pass|Road|LDV|Four Wheelers",
+    "ES|Transport|Pass|Road|LDV|Two Wheelers",
+    "ES|Transport|Pass|Non-motorized|Walk",
+    "ES|Transport|Pass|Non-motorized|Cycle"
+  )
+showAreaAndBarPlots(data, items, tot_wobunk, orderVars = "user")
+showAreaAndBarPlots(data, items, tot_wobunk, fill=TRUE, orderVars = "user")
+```
+
 ## Passenger with bunkers
 ```{r}
 tot_wbunk <- "ES|Transport|Pass with bunkers"
-tot_wobunk <- "ES|Transport edge|Pass"
 items <- c(
     "ES|Transport|Bunkers|Pass|International Aviation",
     "ES|Transport|Pass|Domestic Aviation",
@@ -15,9 +31,7 @@ items <- c(
     "ES|Transport|Pass|Non-motorized|Cycle"
   )
 showAreaAndBarPlots(data, items, tot_wbunk,  orderVars = "user")
-showAreaAndBarPlots(data, items[2:9], tot_wobunk, orderVars = "user")
 showAreaAndBarPlots(data, items, tot_wbunk, fill=TRUE, orderVars = "user")
-showAreaAndBarPlots(data, items[2:9], tot_wobunk, fill=TRUE, orderVars = "user")
 showLinePlots(data, tot_wbunk)
 walk(c( "ES|Transport|Pass|Aviation", tot_wobunk, items[1:5], "ES|Transport|Pass|Road|LDV", items[6:9]), showLinePlots, data = data)
 ```
@@ -99,10 +113,21 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill=TRUE, orderVars = "user")
 ```
 
+## Freight without bunkers
+```{r}
+tot_wobunk <- "ES|Transport edge|Freight"
+items <- c(
+      "ES|Transport|Freight|Domestic Shipping",
+      "ES|Transport|Freight|Rail",
+      "ES|Transport|Freight|Road"
+  )
+showAreaAndBarPlots(data, items, tot_wobunk, orderVars = "user")
+showAreaAndBarPlots(data, items, tot_wobunk, fill=TRUE, orderVars = "user")
+```
+
 ## Freight with bunkers
 ```{r}
 tot_wbunk <- "ES|Transport|Freight with bunkers"
-tot_wobunk <- "ES|Transport|Freight"
 items <- c(
       "ES|Transport|Bunkers|Freight|International Shipping",
       "ES|Transport|Freight|Domestic Shipping",
@@ -110,13 +135,10 @@ items <- c(
       "ES|Transport|Freight|Road"
   )
 showAreaAndBarPlots(data, items, tot_wbunk, orderVars = "user")
-showAreaAndBarPlots(data, items[2:4], tot_wobunk, orderVars = "user")
 showAreaAndBarPlots(data, items, tot_wbunk, fill=TRUE, orderVars = "user")
-showAreaAndBarPlots(data, items[2:4], tot_wobunk, fill=TRUE, orderVars = "user")
 showLinePlots(data, tot_wbunk)
 walk(items, showLinePlots, data=data)
 ```
-
 
 
 ## Freight per Capita
