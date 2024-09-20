@@ -9,7 +9,7 @@
 #' @param transportPolScen transport policy scenario
 #' @param helpers list of helpers
 
-#' @returns Capital Costs per CES node in [2005US$/pkm or 2005US$/tkm]
+#' @returns Capital Costs per CES node in [US$2017/pkm or US$2017/tkm]
 #' @export
 #' @author Johanna Hoppe
 #' @import data.table
@@ -24,7 +24,7 @@ reportToREMINDcapitalCosts <- function(fleetCapCosts, fleetESdemand, hybridElecS
   EDGETesDemand <- fleetESdemand[period %in% timeResReporting][, c("unit", "variable") := NULL]
   setnames(EDGETesDemand, "value", "esDem")
   esCapCost <- merge(esCapCost, EDGETesDemand, by = intersect(names(esCapCost), names(EDGETesDemand)))
-  esCapCost[, value := value * esDem * 1e6] #[2005US$]
+  esCapCost[, value := value * esDem * 1e6] #[US$2017]
   # The absolute costs of hybrids should not get lost so they are attributed acording to the hybridElecShare
   esCapCostWoHybrid <- copy(esCapCost)
   hybrids <- esCapCostWoHybrid[technology == "Hybrid electric"]
@@ -47,7 +47,7 @@ reportToREMINDcapitalCosts <- function(fleetCapCosts, fleetESdemand, hybridElecS
   f35_esCapCost <- merge(esCapCost, REMINDesDemand, by = intersect(names(esCapCost), names(REMINDesDemand)))
   # Filter out zero demand values and interpolate them from other timesteps as they do not mean zero costs (they are not relevant, as the demand is zero)
   f35_esCapCost <- f35_esCapCost[!REMINDesDem < 1e-7]
-  f35_esCapCost[, value := value/REMINDesDem * 1e-9][, REMINDesDem := NULL]#[2005US$/p|tkm]
+  f35_esCapCost[, value := value/REMINDesDem * 1e-9][, REMINDesDem := NULL]#[US$2017/p|tkm]
   f35_esCapCost <- approx_dt(f35_esCapCost, unique(f35_esCapCost$period), "period", "value", extrapolate = TRUE)
 
   checkForNAsAndDups(f35_esCapCost, "f35_esCapCost", "reportToREMINDcapitalCosts()")
