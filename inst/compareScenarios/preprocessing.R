@@ -107,7 +107,7 @@ showLinePlotsByVariable <- function(
 
 pCapVariables <- tribble(
   ~variable, ~newUnit, ~conversionFactor,
-  "GDP|PPP", "kUS$2005", 1e6,
+  "GDP|PPP", "kUS$2017", 1e6,
   "ES|Transport edge|Pass", "pkm/yr", 1e9,
   "ES|Transport|Pass|Aviation", "pkm/yr", 1e9,
   "ES|Transport|Bunkers|Pass|International Aviation", "pkm/yr", 1e9,
