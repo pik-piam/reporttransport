@@ -1,0 +1,198 @@
+---
+title: "Untitled"
+author: "Johanna Hoppe"
+date: "2024-09-05"
+output: html_document
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+
+```{r preprocessing, echo=FALSE, message=FALSE, results='hide'}
+library(ggplot2)
+library(data.table)
+timeResReporting <-  c(seq(2005, 2060, by = 5), seq(2070, 2100, by = 10))
+axisScaling = "free_y" #fixed
+paths = params$mifScen
+paths <- gsub("Transport.mif", "5_REMINDinputData", paths)
+
+files <- list(f29_trpdemand = "f29_trpdemand",
+              f35_demByTech = "f35_demByTech",
+              f35_esCapCost = "f35_esCapCost", 
+              f35_fe2es = "f35_fe2es")
+
+# Load files from all paths
+loaded_files <- lapply(files, function(file_name) {
+  lapply(paths, function(path) {
+    # Load the data using fread
+    if (file.exists(file.path(path, paste0(file_name, ".csv")))) fread(file.path(path, paste0(file_name, ".csv")))
+  })
+})
+
+# Clean the loaded data by applying the required transformations
+loaded_files <- lapply(loaded_files, function(file_list) {
+  lapply(file_list, function(dt) {
+    # If the column V1 exists, remove it
+    if ("V1" %in% colnames(dt)) dt[, V1 := NULL]
+    return(dt)
+  })
+})
+
+# Change scenario name to mifScenNames if applicable
+if (!is.null(params$mifScenNames)) {
+  loaded_files <- lapply(loaded_files, function(file_list) {
+    for (i in 1:length(params$mifScenNames)) {
+      file_list[[i]][, EDGE_scenario := params$mifScenNames[i]] 
+    } 
+    return(file_list)
+  })
+}
+# Combine the corresponding datasets across paths
+combined_files <- setNames(
+  lapply(files, function(file_name) {
+    do.call(rbind, loaded_files[[file_name]])
+  }),
+  files # This will set the names of the resulting list to the filenames
+)
+
+# Select relevant data for different files, based on "tall" column being in "timeResReporting"
+f29_trpdemand <- combined_files[["f29_trpdemand"]][tall %in% timeResReporting]
+f35_fe2es <- combined_files[["f35_fe2es"]][tall %in% timeResReporting]
+f35_esCapCost <- combined_files[["f35_esCapCost"]][tall %in% timeResReporting]
+f35_demByTech <- combined_files[["f35_demByTech"]][tall %in% timeResReporting]
+```
+
+# REMIND input data rom EDGE-T standalone comparison
+
+## Energy service demand on CES node level
+```{r trp_demand, echo=FALSE}
+unique_all_in <- unique(f29_trpdemand$all_in)
+
+# Loop through each unique value of all_teEs and create a plot
+for (allin in unique_all_in) {
+  
+  # Filter data for the current technology/service (all_teEs)
+  filtered_data <- f29_trpdemand[all_in == allin]
+  
+  # Create the ggplot for the current teEs
+  p <- ggplot(filtered_data, aes(x = tall, y = value, color = EDGE_scenario)) +
+    geom_line() +
+    facet_wrap(~ all_regi, scales = axisScaling) +  # Facet by region/country
+    labs(
+      title = paste("Energy service demand for:", allin),
+      x = "Time",
+      y = "Value",
+      color = "EDGE Scenario"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+  
+  # Print the plot (or save it if you want to store the plots)
+  print(p)
+  
+  # Optionally, save the plot to a file
+  # ggsave(paste0("plot_", teEs, ".png"), plot = p, width = 8, height = 6)
+}
+
+```
+
+
+## Energy efficiency per energy service technology
+```{r fe2es, echo=FALSE}
+unique_teEs <- unique(f35_fe2es$all_teEs)
+
+# Loop through each unique value of all_teEs and create a plot
+for (teEs in unique_teEs) {
+  
+  # Filter data for the current technology/service (all_teEs)
+  filtered_data <- f35_fe2es[all_teEs == teEs, ]
+  
+  # Create the ggplot for the current teEs
+  p <- ggplot(filtered_data, aes(x = tall, y = value, color = EDGE_scenario)) +
+    geom_line() +
+    facet_wrap(~ all_regi, scales = axisScaling) +  # Facet by region/country
+    labs(
+      title = paste("Energy efficiency for:", teEs),
+      x = "Time",
+      y = "Value",
+      color = "EDGE Scenario"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+  
+  # Print the plot (or save it if you want to store the plots)
+  print(p)
+  
+  # Optionally, save the plot to a file
+  # ggsave(paste0("plot_", teEs, ".png"), plot = p, width = 8, height = 6)
+}
+
+```
+
+
+## Capital cost per energy service technology
+```{r capital cost, echo=FALSE}
+unique_teEs <- unique(f35_esCapCost$all_teEs)
+
+# Loop through each unique value of all_teEs and create a plot
+for (teEs in unique_teEs) {
+  
+  # Filter data for the current technology/service (all_teEs)
+  filtered_data <- f35_esCapCost[all_teEs == teEs, ]
+  
+  # Create the ggplot for the current teEs
+  p <- ggplot(filtered_data, aes(x = tall, y = value, color = EDGE_scenario)) +
+    geom_line() +
+    facet_wrap(~ all_regi, scales = axisScaling) +  # Facet by region/country
+    labs(
+      title = paste("Capital cost for:", teEs),
+      x = "Time",
+      y = "Value",
+      color = "EDGE Scenario"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+  
+  # Print the plot (or save it if you want to store the plots)
+  print(p)
+  
+  # Optionally, save the plot to a file
+  # ggsave(paste0("plot_", teEs, ".png"), plot = p, width = 8, height = 6)
+}
+
+```
+
+## Final energy demand per energy service technology
+```{r demByTech, echo=FALSE}
+unique_teEs <- unique(f35_demByTech$all_teEs)
+
+# Loop through each unique value of all_teEs and create a plot
+for (teEs in unique_teEs) {
+  
+  # Filter data for the current technology/service (all_teEs)
+  filtered_data <- f35_demByTech[all_teEs == teEs]
+  
+  # Create the ggplot for the current teEs
+  p <- ggplot(filtered_data, aes(x = tall, y = value, color = EDGE_scenario)) +
+    geom_line() +
+    facet_wrap(~ all_regi, scales = axisScaling) +  # Facet by region/country
+    labs(
+      title = paste("Capital cost for:", teEs),
+      x = "Time",
+      y = "Value",
+      color = "EDGE Scenario"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+  
+  # Print the plot (or save it if you want to store the plots)
+  print(p)
+  
+  # Optionally, save the plot to a file
+  # ggsave(paste0("plot_", teEs, ".png"), plot = p, width = 8, height = 6)
+}
+
+```

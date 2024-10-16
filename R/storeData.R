@@ -28,6 +28,8 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
                        "timeValueCosts",
                        "subsidies",
                        "GDPppp",
+                       "GDPpcMER",
+                       "GDPpcPPP",
                        "population",
                        "f29_trpdemand",
                        "helpers")) subfolder <- "1_InputDataRaw"

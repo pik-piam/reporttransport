@@ -42,79 +42,80 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                                 isTransportExtendedReported = FALSE, isAnalyticsReported = FALSE,
                                 isREMINDinputReported = FALSE, isStored = TRUE, ...) {
 
-  # If you want to change timeResReporting to timesteps outside the modeleled timesteps,
-  # please add an interpolation step
-  timeResReporting <-  c(seq(2005, 2060, by = 5), seq(2070, 2110, by = 10), 2130, 2150)
+  applyReportingTimeRes <- function(item, timeRes) {
+    if (typeof(item) %in% c("character", "double") | "decisionTree" %in% names(item)) return(item)
+    else if (is.data.table(item) & ("period" %chin% colnames(item))) item <- item[period %in% timeRes]
+    else if (typeof(item) == "list" & !is.data.table(item)) {
+      item <- lapply(item, applyReportingTimeRes, timeRes)
+    }
+    return(item)
+  }
 
   #########################################################################
   ## Load data for reporting if data is not supplied in function call
   #########################################################################
+  # collect data supplied in the function
   args <- list(...)
   if (is.null(data)) data <- list()
   data <- append(data, args)
 
-  # load files needed for all
+  # Load necessary data that is not yet available
+  ## Define which files are needed for the configuration of switches
+  filesToLoad <- c("hybridElecShare",
+                   "helpers",
+                   "combinedCAPEXandOPEX",
+                   "scenSpecEnIntensity",
+                   "scenSpecLoadFactor",
+                   "fleetSizeAndComposition",
+                   "ESdemandFVsalesLevel")
+  if (isREMINDinputReported) {
+   add <- c("annualMileage", "timeValueCosts", "scenSpecPrefTrends", "initialIncoCosts")
+   filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
+  }
+  if (isTransportReported) {
+    add <- c("upfrontCAPEXtrackedFleet")
+    filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
+
+    if (isTransportExtendedReported) {
+      add <- c("population", "GDPppp", "GDPpcPPP", "GDPpcMER", "annualMileage", "energyIntensityRaw",
+               "loadFactorRaw", "CAPEXother", "nonFuelOPEXother", "nonFuelOPEXtrackedFleet", "subsidies",
+               "timeValueCosts", "scenSpecPrefTrends", "initialIncoCosts")
+      filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
+    }
+    if (isAnalyticsReported) {
+      add <- c("fleetVehNumbersIteration.*", "endogenousCostsIteration.*")
+      filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
+    }
+  }
+  filesToLoad <- c(filesToLoad[!filesToLoad %in% names(data)])
+
+  # Load data
   if (is.null(data$SSPscen)) {
     cfg <- readRDS(file.path(folderPath, "cfg.RDS"))
     data <- append(data, cfg[names(cfg) %in% c("SSPscen", "transportPolScen", "demScen")])
   }
   if (is.null(data$scenarioName)) data$scenarioName <- paste0(data$transportPolScen, " ", data$SSPscen)
   if (is.null(data$modelName)) data$modelName <- "EDGE-T"
-  if (is.null(data$hybridElecShare)) data$hybridElecShare <- readRDS(file.path(folderPath, "1_InputDataRaw", "hybridElecShare.RDS"))
-  if (is.null(data$helpers)) data$helpers <- readRDS(file.path(folderPath, "1_InputDataRaw", "helpers.RDS"))
-  if (is.null(data$combinedCAPEXandOPEX)) data$combinedCAPEXandOPEX <- readRDS(file.path(folderPath, "2_InputDataPolicy", "combinedCAPEXandOPEX.RDS"))
-  if (is.null(data$scenSpecEnIntensity)) data$scenSpecEnIntensity <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecEnIntensity.RDS"))
-  if (is.null(data$scenSpecLoadFactor)) data$scenSpecLoadFactor <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecLoadFactor.RDS"))
-  if (is.null(data$fleetSizeAndComposition)) data$fleetSizeAndComposition <- readRDS(file.path(folderPath, "4_Output", "fleetSizeAndComposition.RDS"))
-  if (is.null(data$ESdemandFVsalesLevel)) data$ESdemandFVsalesLevel <- readRDS(file.path(folderPath, "4_Output", "ESdemandFVsalesLevel.RDS"))
 
-  # load files for standard and extended transport reporting
-  if (isTransportReported) {
-    if (is.null(data$upfrontCAPEXtrackedFleet) & length(list.files(folderPath, "upfrontCAPEXtrackedFleet.RDS", recursive = TRUE, full.names = TRUE)) > 0)
-      data$upfrontCAPEXtrackedFleet <- readRDS(file.path(folderPath, "2_InputDataPolicy", "upfrontCAPEXtrackedFleet.RDS"))
-    if (is.null(data$population) & length(list.files(folderPath, "population.RDS", recursive = TRUE, full.names = TRUE)) > 0)
-      data$population <- readRDS(file.path(folderPath, "1_InputDataRaw", "population.RDS"))
-    if (is.null(data$GDPppp) & length(list.files(folderPath, "GDPppp.RDS", recursive = TRUE, full.names = TRUE)) > 0)
-      data$GDPppp <- readRDS(file.path(folderPath, "1_InputDataRaw", "GDPppp.RDS"))
-    if (is.null(data$gdxPath)) {
-      gdxPath <- list.files(path = folderPath, pattern = "\\.gdx$", full.names = TRUE)
-      # Check if any files were found
-      if (length(gdxPath) > 1) {
-        gdxPath <- gdxPath[1]
-        cat("More than one gdx file found. The following one was chosen\n")
-        cat(gdxPath, sep = "\n")
-      } else if (length(gdxPath) == 0) {
-        stop("No gdx files found in the specified directory.\n")
-      }
-      data$gdxPath <- gdxPath
+  if (is.null(data$gdxPath)) {
+    gdxPath <- list.files(path = folderPath, pattern = "\\.gdx$", full.names = TRUE)
+    # Check if any files were found
+    if (length(gdxPath) > 1) {
+      gdxPath <- gdxPath[1]
+      cat("More than one gdx file found. The following one was chosen\n")
+      cat(gdxPath, sep = "\n")
+    } else if (length(gdxPath) == 0) {
+      stop("No gdx files found in the specified directory.\n")
     }
+    data$gdxPath <- gdxPath
   }
-  if (isAnalyticsReported) {
-    # load files for analytic purposes
-    if (is.null(data$fleetVehNumbersIterations)) {
-      fleetFilesIterations <- list.files(path    = file.path(folderPath, "4_Output"),
-                                       pattern = "fleetVehNumbersIteration.*", full.names = TRUE)
-      if (length(fleetFilesIterations) > 0) {
-        data$fleetVehNumbersIterations <- lapply(fleetFilesIterations, readRDS)
-      }
-    }
-    if (is.null(data$endogenousCostsIterations)) {
-      endogenousCostFilesIterations <- list.files(path       = file.path(folderPath, "4_Output"),
-                                                  pattern    = "endogenousCostsIteration.*",
-                                                  full.names = TRUE)
-      if (length(endogenousCostFilesIterations) > 0) {
-        data$endogenousCostsIterations <- lapply(endogenousCostFilesIterations, readRDS)
-      }
-    }
-  }
-
-  if (isREMINDinputReported) {
-    # load files for REMIND input data only reporting
-    if (is.null(data$annualMileage)) data$annualMileage <- readRDS(file.path(folderPath, "1_InputDataRaw", "annualMileage.RDS"))
-    if (is.null(data$timeValueCosts)) data$timeValueCosts <- readRDS(file.path(folderPath, "1_InputDataRaw", "timeValueCosts.RDS"))
-    if (is.null(data$scenSpecPrefTrends)) data$scenSpecPrefTrends <- readRDS(file.path(folderPath, "2_InputDataPolicy", "scenSpecPrefTrends.RDS"))
-    if (is.null(data$initialIncoCosts)) data$initialIncoCosts <- readRDS(file.path(folderPath, "2_InputDataPolicy", "initialIncoCosts.RDS"))
-  }
+  filePaths <- list.files(folderPath, recursive = TRUE, full.names = TRUE)
+  pathFilesToLoad <- unlist(lapply(filesToLoad, function(x) {filePaths[grepl(paste0(x, ".RDS"), filePaths)]}))
+  itemNames <- basename(pathFilesToLoad)
+  itemNames <- sub("\\.RDS$", "", itemNames)
+  addFiles <- lapply(pathFilesToLoad, readRDS)
+  names(addFiles) <- itemNames
+  data <- c(data, addFiles)
   #########################################################################
   ## Report output variables
   #########################################################################
@@ -123,15 +124,55 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   reporting <- baseVarSet
   outputVars <- baseVarSet
 
+  #########################################################################
+  ## Report REMIND input data
+  #########################################################################
+  if (isREMINDinputReported) {                                                                                          # nolint: object_name_linter
+
+    timeResReporting <- c(seq(1900,1985,5),
+                          seq(1990, 2060, by = 5),
+                          seq(2070, 2110, by = 10),
+                          2130, 2150)
+    REMINDinputData <- reportREMINDinputVarSet(fleetESdemand        = baseVarSet$ext$fleetESdemand,                     # nolint: object_name_linter
+                                               fleetFEdemand        = baseVarSet$ext$fleetFEdemand,
+                                               fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
+                                               fleetCapCosts        = baseVarSet$int$fleetCost[variable == "Capital costs"],
+                                               combinedCAPEXandOPEX = data$combinedCAPEXandOPEX,
+                                               scenSpecLoadFactor   = data$scenSpecLoadFactor,
+                                               scenSpecPrefTrends   = data$scenSpecPrefTrends,
+                                               scenSpecEnIntensity  = data$scenSpecEnIntensity,
+                                               initialIncoCosts     = data$initialIncoCosts,
+                                               annualMileage        = data$annualMileage,
+                                               timeValueCosts       = data$timeValueCosts,
+                                               hybridElecShare      = data$hybridElecShare,
+                                               demScen              = data$demScen,
+                                               SSPscen              = data$SSPscen,
+                                               transportPolScen     = data$transportPolScen,
+                                               timeResReporting     = timeResReporting,
+                                               helpers              = data$helpers)
+
+    reporting <- REMINDinputData
+    if (isStored) storeData(outputFolder = folderPath, REMINDinputData = REMINDinputData)
+  }
+  #########################################################################
+  ## Report transport variables
+  #########################################################################
+  # If you want to change timeResReporting to timesteps outside the modeleled timesteps,
+  # please add an interpolation step
+  timeResReporting <-  c(seq(2005, 2060, by = 5), seq(2070, 2110, by = 10), 2130, 2150)
+  # Apply time resolution that should be reported
+  data <- lapply(data, applyReportingTimeRes, timeResReporting)
+  baseVarSet <- lapply(baseVarSet, applyReportingTimeRes, timeResReporting)
+
   if (isTransportReported) {
     transportVarSet <- reportTransportVarSet(data             = data,
-                                             baseVarSet       = baseVarSet,
-                                             timeResReporting = timeResReporting)
+                                             baseVarSet       = baseVarSet)
     outputVars <- transportVarSet
+
     if (isTransportExtendedReported) {
       extendedTransportVarSet <- reportExtendedTransportVarSet(data             = data,
-                                                               baseVarSet       = baseVarSet,
-                                                               timeResReporting = timeResReporting)
+                                                               baseVarSet       = baseVarSet)
+
       outputVars$ext <- append(outputVars$ext, extendedTransportVarSet$ext)
       outputVars$int <- append(outputVars$int, extendedTransportVarSet$int)
     }
@@ -159,32 +200,6 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                               isTransportExtendedReported = isTransportExtendedReported)
 
     if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))
-  }
-
-  #########################################################################
-  ## Report REMIND input data
-  #########################################################################
-  if (isREMINDinputReported) {                                                                                              # nolint: object_name_linter
-    REMINDinputData <- reportREMINDinputVarSet(fleetESdemand        = baseVarSet$ext$fleetESdemand,                     # nolint: object_name_linter
-                                               fleetFEdemand        = baseVarSet$ext$fleetFEdemand,
-                                               fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
-                                               fleetCapCosts        = baseVarSet$int$fleetCost[variable == "Capital costs"],
-                                               combinedCAPEXandOPEX = data$combinedCAPEXandOPEX,
-                                               scenSpecLoadFactor   = data$scenSpecLoadFactor,
-                                               scenSpecPrefTrends   = data$scenSpecPrefTrends,
-                                               scenSpecEnIntensity  = data$scenSpecEnIntensity,
-                                               initialIncoCosts     = data$initialIncoCosts,
-                                               annualMileage        = data$annualMileage,
-                                               timeValueCosts       = data$timeValueCosts,
-                                               hybridElecShare      = data$hybridElecShare,
-                                               demScen              = data$demScen,
-                                               SSPscen              = data$SSPscen,
-                                               transportPolScen     = data$transportPolScen,
-                                               timeResReporting     = timeResReporting,
-                                               helpers              = data$helpers)
-
-    reporting <- REMINDinputData
-    if (isStored) storeData(outputFolder = folderPath, REMINDinputData = REMINDinputData)
   }
 
   return(reporting)
