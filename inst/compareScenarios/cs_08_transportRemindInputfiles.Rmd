@@ -65,7 +65,7 @@ f35_esCapCost <- combined_files[["f35_esCapCost"]][tall %in% timeResReporting]
 f35_demByTech <- combined_files[["f35_demByTech"]][tall %in% timeResReporting]
 ```
 
-# REMIND input data rom EDGE-T standalone comparison
+# REMIND input data rom EDGE-T standalone
 
 ## Energy service demand on CES node level
 ```{r trp_demand, echo=FALSE}
@@ -73,11 +73,11 @@ unique_all_in <- unique(f29_trpdemand$all_in)
 
 # Loop through each unique value of all_teEs and create a plot
 for (allin in unique_all_in) {
-  
-  # Filter data for the current technology/service (all_teEs)
+
+  # Filter data for the current technology/service
   filtered_data <- f29_trpdemand[all_in == allin]
   
-  # Create the ggplot for the current teEs
+  # Create the ggplot for the current allin
   p <- ggplot(filtered_data, aes(x = tall, y = value, color = EDGE_scenario)) +
     geom_line() +
     facet_wrap(~ all_regi, scales = axisScaling) +  # Facet by region/country
@@ -90,11 +90,9 @@ for (allin in unique_all_in) {
     theme_minimal() +
     theme(legend.position = "bottom")
   
-  # Print the plot (or save it if you want to store the plots)
+  # Print the plot on a new page
   print(p)
-  
-  # Optionally, save the plot to a file
-  # ggsave(paste0("plot_", teEs, ".png"), plot = p, width = 8, height = 6)
+  cat("\n\n")
 }
 
 ```
@@ -106,7 +104,7 @@ unique_teEs <- unique(f35_fe2es$all_teEs)
 
 # Loop through each unique value of all_teEs and create a plot
 for (teEs in unique_teEs) {
-  
+
   # Filter data for the current technology/service (all_teEs)
   filtered_data <- f35_fe2es[all_teEs == teEs, ]
   
@@ -125,9 +123,7 @@ for (teEs in unique_teEs) {
   
   # Print the plot (or save it if you want to store the plots)
   print(p)
-  
-  # Optionally, save the plot to a file
-  # ggsave(paste0("plot_", teEs, ".png"), plot = p, width = 8, height = 6)
+  cat("\n\n")
 }
 
 ```
@@ -158,9 +154,7 @@ for (teEs in unique_teEs) {
   
   # Print the plot (or save it if you want to store the plots)
   print(p)
-  
-  # Optionally, save the plot to a file
-  # ggsave(paste0("plot_", teEs, ".png"), plot = p, width = 8, height = 6)
+  cat("\n\n")
 }
 
 ```
@@ -190,9 +184,7 @@ for (teEs in unique_teEs) {
   
   # Print the plot (or save it if you want to store the plots)
   print(p)
-  
-  # Optionally, save the plot to a file
-  # ggsave(paste0("plot_", teEs, ".png"), plot = p, width = 8, height = 6)
+  cat("\n\n")
 }
 
 ```
