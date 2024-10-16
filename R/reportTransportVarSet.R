@@ -44,7 +44,6 @@ reportTransportVarSet <- function(data, baseVarSet) {
   # Report vehicle sales-----------------------------------------------------------------------------------
   sales <- copy(data$fleetSizeAndComposition$fleetVehNumbersConstrYears[period == constrYear])
   sales[, variable := "Sales"][, constrYear := NULL]
-  sales <- approx_dt(sales, timeResReporting, "period", "value", extrapolate = TRUE)
   sales <- approx_dt(sales, unique(fleetEmissions$period), "period", "value", extrapolate = TRUE)
 
   # Report yearly investment costs-------------------------------------------------------------------------
