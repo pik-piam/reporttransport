@@ -17,7 +17,7 @@ reportAnalyticsVarSet <- function(data, timeResReporting) {
   for (i in seq_along(data$endogenousCostsIterations)) {
     updatedEndogenousCosts[[i]] <- data$endogenousCostsIterations[[i]]$updatedEndogenousCosts
     policyMask[[i]] <- data$endogenousCostsIterations[[i]]$policyMask
-    rawEndogenousCost[[i]] <- data$endogenousCostsIterations[[i]]$rawEndogenousCost
+    rawEndogenousCost[[i]] <- data$endogenousCostsIterations[[i]]$rawEndogenousCosts
   }
 
   updatedEndogenousCosts <- rbindlist(updatedEndogenousCosts)

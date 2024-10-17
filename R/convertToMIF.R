@@ -52,7 +52,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   mapWorld <- unique(vars$ext[[1]][, c("region")])[, aggrReg := "World"]
   worldDataExt <- lapply(vars$ext, function(x, mapWorld) as.data.table(aggregate_map(x, mapWorld, by = "region")), mapWorld)
 
-  weight <- copy(vars$ext$GDPppp)
+  weight <- copy(vars$ext$fleetESdemand)
   weight[, c("variable", "unit") := NULL]
   setnames(weight, "value", "weight")
 
@@ -72,10 +72,10 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
   worldDataInt <- lapply(vars$int, function(x, weight) {
     byCols <- names(x)
     #sharweights include empty columns
-    emptyColumns <- names(vars$int)[sapply(vars$int, function(x) all(is.na(x) | x == ""))]
+    emptyColumns <- names(x)[sapply(x, function(x) all(is.na(x) | x == ""))]
     byCols <- byCols[!byCols %in% c("value") & byCols %in% names(weight) & !byCols %in% emptyColumns]
     weight <- weight[, .(weight = sum(weight)), by = eval(byCols)]
-    weightedInt <- merge(weight, x, by = intersect(names(x), names(weight)), all.x = TRUE)
+    weightedInt <- merge(x, weight, by = intersect(names(x), names(weight)), all.x = TRUE)
     byCols <- names(weightedInt)
     byCols <- byCols[!byCols %in% c("region", "value", "weight")]
     weightedInt[, sum := sum(weight), by = eval(byCols)]
@@ -107,7 +107,9 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
     regSubsetDataInt <- lapply(vars$int, function(x, regSubsetMap, weight) {
       weightedInt <- merge(x, regSubsetMap, by = intersect(names(x), names(regSubsetMap)), all.y = TRUE)
       byCols <- names(x)
-      byCols <- byCols[!byCols %in% c("value") & byCols %in% names(weight)]
+      #sharweights include empty columns
+      emptyColumns <- names(x)[sapply(x, function(x) all(is.na(x) | x == ""))]
+      byCols <- byCols[!byCols %in% c("value") & byCols %in% names(weight) & !byCols %in% emptyColumns]
       weight <- weight[, .(weight = sum(weight)), by = eval(byCols)]
       weightedInt <- merge(weight, weightedInt, by = intersect(names(weightedInt), names(weight)), all.y = TRUE)
       byCols <- names(weightedInt)
