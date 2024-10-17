@@ -38,7 +38,6 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
 
   data$GDPppp[, variable := "GDP|PPP"][, value := value * 1e-3][, unit := "billion constant 2017 Int$PPP"]
   data$population[, variable := "Population"][, unit := "million"]
-  setnames(data$GDPpcPPP, "regionGDPpcPPP", "value", skip_absent=TRUE)
   data$GDPpcPPP[, variable := "GDPpc|PPP"][, value := value * 1e-3][, unit := "billion constant 2017 Int$PPP"]
   data$GDPpcMER[, variable := "GDPpc|MER"][, value := value * 1e-3][, unit := "billion constant 2017 Int$MER"]
 
