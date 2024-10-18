@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{r preprocessing, echo=FALSE, message=FALSE, results='hide'}
+```{r preprocessing, echo=TRUE, message=TRUE}
 library(ggplot2)
 library(data.table)
 timeResReporting <-  c(seq(2005, 2060, by = 5), seq(2070, 2100, by = 10))

@@ -15,7 +15,7 @@ showTransportInputMultiLinePlots <- function(data, vars, scales = "free_y", nrow
   stopifnot(is.character(mainReg) && length(mainReg) == 1)
 
   d <- data %>%
-    filter(.data$Variable %in% .env$vars) %>%
+    filter(.data$variable %in% .env$vars) %>%
     droplevels()
   dMainScen <- d %>%
     filter(.data$region == .env$mainReg, .data$scenario != "historical") %>%
@@ -45,7 +45,7 @@ showTransportInputMultiLinePlots <- function(data, vars, scales = "free_y", nrow
     geom_line(aes(linetype = .data$scenario)) +
     geom_point(data = dRegiHist, aes(shape = .data$model)) +
     geom_line(data = dRegiHist, aes(group = paste0(.data$model, .data$region)), alpha = 0.5) +
-    facet_wrap(vars(.data$Variable), scales = scales, nrow = nrowNum) +
+    facet_wrap(vars(.data$variable), scales = scales, nrow = nrowNum) +
     theme_minimal() +
     scale_color_manual(values = plotstyle(regions)) +
     expand_limits(y = 0) +
@@ -61,12 +61,12 @@ showTransportInputMultiLinePlots <- function(data, vars, scales = "free_y", nrow
 ### Load factor
 #### Pass other
 ```{r}
-vars <- as.character(unique(data$Variable))
+vars <- as.character(unique(data$variable))
 items <- vars[grepl("Load factor raw\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)& !grepl(".*Non-motorized.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Load factor raw|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -75,7 +75,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Four Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Four Wheelers\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -84,7 +84,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Two Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Two Wheelers\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -93,7 +93,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit <- items[grepl(".*Freight.*", items) & !grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(\\|Transport|\\|Pass|\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -102,7 +102,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit<- items[grepl(".*Freight.*", items) & grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -113,7 +113,7 @@ items <- vars[grepl("Energy intensity sales raw\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)& !grepl(".*Non-motorized.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Energy intensity raw|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -122,7 +122,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Four Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Four Wheelers\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -131,7 +131,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Two Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Two Wheelers\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -140,7 +140,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit <- items[grepl(".*Freight.*", items) & !grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(\\|Transport|\\|Pass|\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -149,7 +149,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit<- items[grepl(".*Freight.*", items) & grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -160,7 +160,7 @@ items <- vars[grepl(".*Annual mileage.*", vars)]
 itemsSplit <- items[grepl(".*Four Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Four Wheelers\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -169,7 +169,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Bus.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 #### Trucks
@@ -177,7 +177,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Freight.*", items) & grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -188,7 +188,7 @@ items <- vars[grepl(".*Purchase Price.*", vars)]
 itemsSplit <- items[grepl(".*Four Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Four Wheelers\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -197,7 +197,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Bus.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -206,7 +206,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Freight.*", items) & grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -217,7 +217,7 @@ items <- vars[grepl("Time value costs\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Time value costs|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -226,7 +226,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Four Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Four Wheelers\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -235,7 +235,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Two Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Two Wheelers\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -248,7 +248,7 @@ items <- vars[grepl("TCO sales Capital costs\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)& !grepl(".*Non-motorized.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(TCO sales Capital costs|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -257,7 +257,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Four Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Four Wheelers\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -266,7 +266,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Two Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Two Wheelers\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -275,7 +275,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit <- items[grepl(".*Freight.*", items) & !grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(\\|Transport|\\|Pass|\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -284,7 +284,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit<- items[grepl(".*Freight.*", items) & grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -295,7 +295,7 @@ items <- vars[grepl("TCO sales Operating costs (total non-fuel)\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)& !grepl(".*Non-motorized.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(TCO sales Operating costs (total non-fuel)|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -304,7 +304,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Four Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Four Wheelers\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -313,7 +313,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Two Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Two Wheelers\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -322,7 +322,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit <- items[grepl(".*Freight.*", items) & !grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(\\|Transport|\\|Pass|\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -331,7 +331,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit<- items[grepl(".*Freight.*", items) & grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -342,7 +342,7 @@ items <- vars[grepl("TCO sales Fuel costs\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)& !grepl(".*Non-motorized.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(TCO sales Fuel costs|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -351,7 +351,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Four Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Four Wheelers\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -360,7 +360,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Two Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Two Wheelers\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -369,7 +369,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit <- items[grepl(".*Freight.*", items) & !grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(\\|Transport|\\|Pass|\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -378,19 +378,19 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit<- items[grepl(".*Freight.*", items) & grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
 ### Scenario specific load factor
 #### Pass other
 ```{r}
-vars <- as.character(unique(data$Variable))
+vars <- as.character(unique(data$variable))
 items <- vars[grepl("Load factor\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)& !grepl(".*Non-motorized.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Load factor|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -399,7 +399,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Four Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Four Wheelers\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -408,7 +408,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Two Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Two Wheelers\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -417,7 +417,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit <- items[grepl(".*Freight.*", items) & !grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(\\|Transport|\\|Pass|\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -426,7 +426,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit<- items[grepl(".*Freight.*", items) & grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -437,7 +437,7 @@ items <- vars[grepl("Energy intensity sales\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)& !grepl(".*Non-motorized.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Energy intensity|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -446,7 +446,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Four Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Four Wheelers\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -455,7 +455,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Two Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Two Wheelers\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -464,7 +464,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit <- items[grepl(".*Freight.*", items) & !grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(\\|Transport|\\|Pass|\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -473,7 +473,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 itemsSplit<- items[grepl(".*Freight.*", items) & grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|[A-Za-z]+\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
@@ -485,7 +485,7 @@ items <- vars[grepl("Preference\\|S1S\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Preference\\|S1S|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -495,7 +495,7 @@ items <- vars[grepl("Preference\\|S1S\\|.*", vars)]
 itemsSplit <- items[grepl(".*Freight.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Preference\\|S1S|\\|Transport|\\|Freight\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -505,7 +505,7 @@ items <- vars[grepl("Preference\\|S2S1\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & grepl(".*Bus.*|.*LDV.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Preference\\|S2S1|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit)/5))
 ``` 
 
@@ -515,7 +515,7 @@ items <- vars[grepl("Preference\\|S3S2\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & grepl(".*LDV.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Preference\\|S3S2|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit)/5))
 ``` 
 
@@ -526,7 +526,7 @@ items <- vars[grepl("Preference\\|VS3\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items)& grepl(".*LDV.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|LDV\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -536,7 +536,7 @@ items <- vars[grepl("Preference\\|VS3\\|.*", vars)]
 itemsSplit <- items[grepl(".*Freight.*", items)& grepl(".*Road.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Road\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -547,7 +547,7 @@ items <- vars[grepl("Preference\\|FV\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)& !grepl(".*(Walk|Cycle).*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Preference\\|FV|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -556,7 +556,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit <- items[grepl(".*Two Wheelers.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("^.*\\|Two Wheelers\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 ```  
 
@@ -566,7 +566,7 @@ items <- vars[grepl("Preference\\|FV\\|.*", vars)]
 itemsSplit <- items[grepl(".*Freight.*", items) & !grepl(".*Road.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("(Preference\\|FV|\\|Transport|\\|Freight\\||\\|Bunkers)", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  
 
@@ -575,7 +575,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 itemsSplit<- items[grepl("Preference\\|FV\\|.*", items) & grepl(".*Truck.*", items)]
 plotData <- data[variable %in% itemsSplit]
 plotData[, variable := gsub("Preference\\|FV\\|Transport\\|Freight\\|Road\\|", "", variable)]
-itemsSplit <- as.character(unique(plotData$Variable))
+itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/6))
 ```  
 
