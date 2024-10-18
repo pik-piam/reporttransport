@@ -28,6 +28,7 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
                        "timeValueCosts",
                        "subsidies",
                        "GDPppp",
+                       "GDPMER",
                        "GDPpcMER",
                        "GDPpcPPP",
                        "population",

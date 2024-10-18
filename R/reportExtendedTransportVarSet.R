@@ -39,6 +39,7 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   data$GDPppp[, variable := "GDP|PPP"][, value := value * 1e-3][, unit := "billion constant 2017 Int$PPP"]
   data$population[, variable := "Population"][, unit := "million"]
   data$GDPpcPPP[, variable := "GDPpc|PPP"][, value := value * 1e-3][, unit := "billion constant 2017 Int$PPP"]
+  data$GDPMER[, variable := "GDP|MER"][, value := value * 1e-3][, unit := "billion constant 2017 Int$MER"]
   data$GDPpcMER[, variable := "GDPpc|MER"][, value := value * 1e-3][, unit := "billion constant 2017 Int$MER"]
 
   # Report transport input data if available
@@ -56,6 +57,7 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   outputVarsExt <- list(fleetUEdemand = fleetUEdemand,
                         vintages      = vintages,
                         GDPppp = data$GDPppp,
+                        GDPMER = data$GDPMER,
                         population = data$population)
   outputVarsInt <- list(scenScpecPrefTrends = data$scenSpecPrefTrends[, level := NULL],
                         combinedCAPEXandOPEX = combinedCAPEXandOPEX,
