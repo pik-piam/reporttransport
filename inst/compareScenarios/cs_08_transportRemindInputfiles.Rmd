@@ -5,13 +5,7 @@ date: "2024-09-05"
 output: html_document
 ---
 
-```{r setup, echo=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
-```
-
-
-```{r preprocessing, echo=FALSE, message=FALSE, results='hide'}
+```{r preprocessing, echo=TRUE, message=TRUE}
 library(ggplot2)
 library(data.table)
 timeResReporting <-  c(seq(2005, 2060, by = 5), seq(2070, 2100, by = 10))
@@ -36,7 +30,9 @@ loaded_files <- lapply(files, function(file_name) {
 # Clean the loaded data by applying the required transformations
 loaded_files <- lapply(loaded_files, function(file_list) {
   lapply(file_list, function(dt) {
+    library(data.table)
     # If the column V1 exists, remove it
+    dt <- as.data.table(dt)
     if ("V1" %in% colnames(dt)) dt[, V1 := NULL]
     return(dt)
   })
@@ -69,7 +65,7 @@ f35_demByTech <- combined_files[["f35_demByTech"]][tall %in% timeResReporting]
 # REMIND input data rom EDGE-T standalone
 
 ## Energy service demand on CES node level
-```{r trp_demand, echo=FALSE}
+```{r trp_demand, echo=TRUE, message=TRUE}
 unique_all_in <- unique(f29_trpdemand$all_in)
 
 # Loop through each unique value of all_teEs and create a plot
@@ -100,7 +96,7 @@ for (allin in unique_all_in) {
 
 
 ## Energy efficiency per energy service technology
-```{r fe2es, echo=FALSE}
+```{r fe2es, echo=TRUE, message=TRUE}
 unique_teEs <- unique(f35_fe2es$all_teEs)
 
 # Loop through each unique value of all_teEs and create a plot
@@ -131,7 +127,7 @@ for (teEs in unique_teEs) {
 
 
 ## Capital cost per energy service technology
-```{r capital cost, echo=FALSE}
+```{r capital cost, echo=TRUE, message=TRUE}
 unique_teEs <- unique(f35_esCapCost$all_teEs)
 
 # Loop through each unique value of all_teEs and create a plot
@@ -161,7 +157,7 @@ for (teEs in unique_teEs) {
 ```
 
 ## Final energy demand per energy service technology
-```{r demByTech, echo=FALSE}
+```{r demByTech, echo=TRUE, message=TRUE}
 unique_teEs <- unique(f35_demByTech$all_teEs)
 
 # Loop through each unique value of all_teEs and create a plot
