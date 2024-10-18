@@ -23,8 +23,6 @@ files <- list(f29_trpdemand = "f29_trpdemand",
 loaded_files <- lapply(files, function(file_name) {
   lapply(paths, function(path) {
     # Load the data using fread
-    print(file.exists(file.path(path, paste0(file_name, ".csv"))))
-    print(file.path(path,     paste0(file_name, ".csv")))
     if (file.exists(file.path(path, paste0(file_name, ".csv")))) fread(file.path(path,     paste0(file_name, ".csv")))
   })
 })
@@ -33,6 +31,7 @@ loaded_files <- lapply(files, function(file_name) {
 loaded_files <- lapply(loaded_files, function(file_list) {
   lapply(file_list, function(dt) {
     # If the column V1 exists, remove it
+    dt <- as.data.table(dt)
     if ("V1" %in% colnames(dt)) dt[, V1 := NULL]
     return(dt)
   })
