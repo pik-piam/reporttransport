@@ -30,6 +30,7 @@ loaded_files <- lapply(files, function(file_name) {
 # Clean the loaded data by applying the required transformations
 loaded_files <- lapply(loaded_files, function(file_list) {
   lapply(file_list, function(dt) {
+    library(data.table)
     # If the column V1 exists, remove it
     dt <- as.data.table(dt)
     if ("V1" %in% colnames(dt)) dt[, V1 := NULL]

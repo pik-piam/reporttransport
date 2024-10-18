@@ -61,6 +61,7 @@ showTransportInputMultiLinePlots <- function(data, vars, scales = "free_y", nrow
 ### Load factor
 #### Pass other
 ```{r, echo=TRUE, message=TRUE}
+library(data.table)
 data <- as.data.table(data)
 
 vars <- as.character(unique(data$variable))
