@@ -3,6 +3,7 @@
 ```{r}
 library(data.table)
 data <- as.data.table(data)
+typeOf(data)
 showTransportInputMultiLinePlots <- function(data, vars, scales = "free_y", nrowNum = 1,  mainReg = getOption("mip.mainReg")) {
 
    data <- as.quitte(data)

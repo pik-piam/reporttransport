@@ -18,6 +18,7 @@ timeResReporting <-  c(seq(2005, 2060, by = 5), seq(2070, 2100, by = 10))
 axisScaling = "free_y" #fixed
 paths = params$mifScen
 paths <- gsub("Transport.mif", "5_REMINDinputData", paths)
+print(paths)
 
 files <- list(f29_trpdemand = "f29_trpdemand",
               f35_demByTech = "f35_demByTech",
@@ -28,7 +29,7 @@ files <- list(f29_trpdemand = "f29_trpdemand",
 loaded_files <- lapply(files, function(file_name) {
   lapply(paths, function(path) {
     # Load the data using fread
-    if (file.exists(file.path(path, paste0(file_name, ".csv")))) fread(file.path(path, paste0(file_name, ".csv")))
+    if (file.exists(file.path(path, paste0(file_name, ".csv")))) fread(file.path(path,     paste0(file_name, ".csv")))
   })
 })
 

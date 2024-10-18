@@ -123,17 +123,17 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
     noAggregationvars <- rbind(rbindlist(vars$int[c("GDPpcPPP", "GDPpcMER")], fill = TRUE, use.names = TRUE),
                                rbindlist(regSubsetDataInt[c("GDPpcPPP", "GDPpcMER")], fill = TRUE, use.names = TRUE),
                                rbindlist(worldDataInt[c("GDPpcPPP", "GDPpcMER")], fill = TRUE, use.names = TRUE),
-                               rbindlist(vars$ext[c("GDPppp", "population")], fill = TRUE, use.names = TRUE),
-                               rbindlist(regSubsetDataExt[c("GDPppp", "population")], fill = TRUE, use.names = TRUE),
-                               rbindlist(worldDataExt[c("GDPppp", "population")], fill = TRUE, use.names = TRUE))
+                               rbindlist(vars$ext[c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE),
+                               rbindlist(regSubsetDataExt[c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE),
+                               rbindlist(worldDataExt[c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE))
 
     varsToMIFint <- rbind(rbindlist(vars$int[!names(vars$int) %in% c("GDPpcPPP", "GDPpcMER")], fill = TRUE, use.names = TRUE),
                           rbindlist(regSubsetDataInt[!names(regSubsetDataInt) %in% c("GDPpcPPP", "GDPpcMER")], fill = TRUE, use.names = TRUE),
                           rbindlist(worldDataInt[!names(worldDataInt) %in% c("GDPpcPPP", "GDPpcMER")], fill = TRUE, use.names = TRUE))
 
-    varsToMIFext <- rbind(rbindlist(vars$ext[!names(vars$ext) %in% c("GDPppp", "population")], fill = TRUE, use.names = TRUE),
-                          rbindlist(regSubsetDataExt[!names(regSubsetDataExt) %in% c("GDPppp", "population")], fill = TRUE, use.names = TRUE),
-                          rbindlist(worldDataExt[!names(worldDataExt) %in% c("GDPppp", "population")], fill = TRUE, use.names = TRUE))
+    varsToMIFext <- rbind(rbindlist(vars$ext[!names(vars$ext) %in% c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE),
+                          rbindlist(regSubsetDataExt[!names(regSubsetDataExt) %in% c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE),
+                          rbindlist(worldDataExt[!names(worldDataExt) %in% c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE))
   }
 
   # Apply variable naming convention----------------------------------------------------------
