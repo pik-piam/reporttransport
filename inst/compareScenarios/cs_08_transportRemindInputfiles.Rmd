@@ -5,12 +5,6 @@ date: "2024-09-05"
 output: html_document
 ---
 
-```{r setup, echo=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
-```
-
-
 ```{r preprocessing, echo=TRUE, message=TRUE}
 library(ggplot2)
 library(data.table)
@@ -29,6 +23,8 @@ files <- list(f29_trpdemand = "f29_trpdemand",
 loaded_files <- lapply(files, function(file_name) {
   lapply(paths, function(path) {
     # Load the data using fread
+    print(file.exists(file.path(path, paste0(file_name, ".csv"))))
+    print(file.path(path,     paste0(file_name, ".csv")))
     if (file.exists(file.path(path, paste0(file_name, ".csv")))) fread(file.path(path,     paste0(file_name, ".csv")))
   })
 })
@@ -69,7 +65,7 @@ f35_demByTech <- combined_files[["f35_demByTech"]][tall %in% timeResReporting]
 # REMIND input data rom EDGE-T standalone
 
 ## Energy service demand on CES node level
-```{r trp_demand, echo=FALSE}
+```{r trp_demand, echo=TRUE, message=TRUE}
 unique_all_in <- unique(f29_trpdemand$all_in)
 
 # Loop through each unique value of all_teEs and create a plot
@@ -100,7 +96,7 @@ for (allin in unique_all_in) {
 
 
 ## Energy efficiency per energy service technology
-```{r fe2es, echo=FALSE}
+```{r fe2es, echo=TRUE, message=TRUE}
 unique_teEs <- unique(f35_fe2es$all_teEs)
 
 # Loop through each unique value of all_teEs and create a plot
@@ -131,7 +127,7 @@ for (teEs in unique_teEs) {
 
 
 ## Capital cost per energy service technology
-```{r capital cost, echo=FALSE}
+```{r capital cost, echo=TRUE, message=TRUE}
 unique_teEs <- unique(f35_esCapCost$all_teEs)
 
 # Loop through each unique value of all_teEs and create a plot
@@ -161,7 +157,7 @@ for (teEs in unique_teEs) {
 ```
 
 ## Final energy demand per energy service technology
-```{r demByTech, echo=FALSE}
+```{r demByTech, echo=TRUE, message=TRUE}
 unique_teEs <- unique(f35_demByTech$all_teEs)
 
 # Loop through each unique value of all_teEs and create a plot
