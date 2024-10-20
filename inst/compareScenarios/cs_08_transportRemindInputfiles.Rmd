@@ -170,7 +170,7 @@ for (teEs in unique_teEs) {
     geom_line() +
     facet_wrap(~ all_regi, scales = axisScaling) +  # Facet by region/country
     labs(
-      title = paste("Capital cost for:", teEs),
+      title = paste("Final energy for:", teEs),
       x = "Time",
       y = "Value",
       color = "EDGE Scenario"
