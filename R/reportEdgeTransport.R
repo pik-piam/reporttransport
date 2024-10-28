@@ -83,7 +83,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
     }
     if (isAnalyticsReported) {
-      add <- c("fleetVehNumbersIteration.*", "endogenousCostsIteration.*")
+      add <- c("fleetVehNumbersIteration[0-9]+", "endogenousCostsIteration[0-9]+", "costsDiscreteChoiceIteration[0-9]+")
       filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
     }
   }
@@ -109,13 +109,16 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     }
     data$gdxPath <- gdxPath
   }
-  filePaths <- list.files(folderPath, recursive = TRUE, full.names = TRUE)
-  pathFilesToLoad <- unlist(lapply(filesToLoad, function(x) {filePaths[grepl(paste0(x, ".RDS"), filePaths)]}))
-  itemNames <- basename(pathFilesToLoad)
-  itemNames <- sub("\\.RDS$", "", itemNames)
-  addFiles <- lapply(pathFilesToLoad, readRDS)
-  names(addFiles) <- itemNames
-  data <- c(data, addFiles)
+
+  if (length(filesToLoad) > 0) {
+    filePaths <- list.files(folderPath, recursive = TRUE, full.names = TRUE)
+    pathFilesToLoad <- unlist(lapply(filesToLoad, function(x) {filePaths[grepl(paste0(x, ".RDS"), filePaths)]}))
+    itemNames <- basename(pathFilesToLoad)
+    itemNames <- sub("\\.RDS$", "", itemNames)
+    addFiles <- lapply(pathFilesToLoad, readRDS)
+    names(addFiles) <- itemNames
+    data <- c(data, addFiles)
+  }
   #########################################################################
   ## Report output variables
   #########################################################################
@@ -177,9 +180,9 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       outputVars$int <- append(outputVars$int, extendedTransportVarSet$int)
     }
     if (isAnalyticsReported) {
-      if (!is.null(data$endogenousCostsIterations)) {
+      if (!is.null(data$endogenousCostsIteration1)) {
         analyticsVarSet <- reportAnalyticsVarSet(data = data, timeResReporting = timeResReporting)
-        outputVars$analytic <- analyticsVarSet
+        outputVars$int <- c(outputVars$int, analyticsVarSet)
       } else {
         message("Analytics data not stored in the run folder. Analytics reporting is skipped.")
       }
