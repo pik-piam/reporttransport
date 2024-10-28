@@ -9,6 +9,7 @@
 #' @export
 
 reportAnalyticsVarSet <- function(data, timeResReporting) {
+
   updatedEndogenousCosts <- list()
   policyMask <- list()
   rawEndogenousCost <- list()
@@ -43,8 +44,21 @@ reportAnalyticsVarSet <- function(data, timeResReporting) {
     allCostsS2S1[[i]] <- costsDiscreteChoiceData[[i]]$allCostsS2S1
     allCostsS1S[[i]] <- costsDiscreteChoiceData[[i]]$allCostsS1S
   }
-  analyticsData <- list(updatedEndogenousCosts, policyMask, rawEndogenousCost, fleetVehNumbersIterations, allCostsFV,
-                        allCostsVS3, allCostsS3S2, allCostsS2S1, allCostsS1S)
 
+  allCostsFV <- rbindlist(allCostsFV)
+  allCostsVS3 <- rbindlist(allCostsVS3)
+  allCostsS3S2 <- rbindlist(allCostsS3S2)
+  allCostsS2S1 <- rbindlist(allCostsS2S1)
+  allCostsS1S <- rbindlist(allCostsS1S)
+
+  analyticsData <- list(updatedEndogenousCosts = updatedEndogenousCosts,
+                        policyMask = policyMask,
+                        rawEndogenousCost = rawEndogenousCost,
+                        fleetVehNumbersIterations = fleetVehNumbersIterations,
+                        allCostsFV = allCostsFV,
+                        allCostsVS3 = allCostsVS3,
+                        allCostsS3S2 = allCostsS3S2,
+                        allCostsS2S1 = allCostsS2S1,
+                        allCostsS1S = allCostsS1S)
   return(analyticsData)
 }

@@ -101,8 +101,9 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   exclude <- c("Load factor", "Load factor raw", "Preference|FV", "Preference|S1S", "Preference|S2S1",
                "Preference|S3S2", "Preference|VS3", "TCO sales Operating costs (total non-fuel)", "TCO sales Fuel costs", "TCO sales Capital costs", "Time value costs",
                "Annual mileage", "Energy intensity sales", "Energy intensity sales raw", "Purchase Price")
-  aggregatedvars <- createVariableEntry(vars[variable %in% exclude], aggrOrder)
-  vars <- vars[!variable %in% exclude]
+
+  aggregatedvars <- createVariableEntry(vars[variable %in% exclude | grepl(".*Iteration.*", variable)], aggrOrder)
+  vars <- vars[!(variable %in% exclude | grepl(".*Iteration.*", variable))]
 
   # Aggregate each level of the decision tree --------------------------------------------------------------------
   for (i in seq(0, length(aggrOrder) - 1)) {
