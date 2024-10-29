@@ -100,7 +100,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   # Exclude vars that are not aggregated and create solely the variable entry
   exclude <- c("Load factor", "Load factor raw", "Preference|FV", "Preference|S1S", "Preference|S2S1",
                "Preference|S3S2", "Preference|VS3", "TCO sales Operating costs (total non-fuel)", "TCO sales Fuel costs", "TCO sales Capital costs", "Time value costs",
-               "Annual mileage", "Energy intensity sales", "Energy intensity sales raw", "Purchase Price")
+               "Annual mileage", "Energy intensity sales", "Energy intensity (raw)", "Purchase Price", "Load factor (raw)")
 
   aggregatedvars <- createVariableEntry(vars[variable %in% exclude | grepl(".*Iteration.*", variable)], aggrOrder)
   vars <- vars[!(variable %in% exclude | grepl(".*Iteration.*", variable))]
@@ -292,8 +292,8 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
 
   if (anyNA(aggregatedvars)) stop("Output variable contains NAs.
-                                  Please check reportAndAggregatedMIF()")
+                                  Please check aggregateVariables()")
   if (anyDuplicated(aggregatedvars[, c("region", "period", "variable")])) stop("Output variable contains Duplicates.
-                                         Please check reportAndAggregatedMIF()")
+                                         Please check aggregateVariables()")
   return(aggregatedvars)
 }

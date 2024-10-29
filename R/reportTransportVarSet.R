@@ -84,8 +84,8 @@ reportTransportVarSet <- function(data, baseVarSet) {
                         sales = sales,
                         stock = data$fleetSizeAndComposition$fleetVehNumbers,
                         fleetYrlCosts = fleetYrlCosts)
-  outputVarsInt <- list(upfrontCAPEXtrackedFleet = upfrontCAPEXtrackedFleet,
-                        fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity)
+  outputVarsInt <- list(fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity)
+  if (!is.null(data$upfrontCAPEXtrackedFleet)) outputVarsInt <- c(outputVarsInt, list(upfrontCAPEXtrackedFleet = upfrontCAPEXtrackedFleet))
   outputVars <- list(ext = outputVarsExt,
                      int = outputVarsInt)
 

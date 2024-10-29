@@ -62,7 +62,7 @@ showTransportInputMultiLinePlots <- function(data, vars, scales = "free_y", nrow
 #### Pass other
 ```{r}
 vars <- as.character(unique(data$variable))
-items <- vars[grepl("Load factor raw\\|.*", vars)]
+items <- vars[grepl("Load factor (raw)\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*|.*Two Wheelers.*|.*Non-motorized.*", items)]
 plotData <- data %>%
   filter(variable %in% itemsSplit) %>%
@@ -114,11 +114,11 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 ### Energy intensity
 #### Pass other
 ```{r}
-items <- vars[grepl("Energy intensity sales raw\\|.*", vars)]
+items <- vars[grepl("Energy intensity (raw)\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*|.*Two Wheelers.*|.*Non-motorized.*", items)]
 plotData <- data %>%
   filter(variable %in% itemsSplit) %>%
-  mutate(variable = gsub("(Energy intensity raw|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable))
+  mutate(variable = gsub("(Energy intensity (raw)|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable))
 itemsSplit <- unique(plotData$variable)
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit) / 5))
 ```
@@ -451,7 +451,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 ```{r}
 items <- vars[grepl("Energy intensity sales\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)& !grepl(".*Non-motorized.*", items)]
-plotData <- data %>%   filter(variable %in% itemsSplit) %>%   mutate(variable = gsub("(Energy intensity|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable))
+plotData <- data %>%   filter(variable %in% itemsSplit) %>%   mutate(variable = gsub("(Energy intensity sales|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable))
 itemsSplit <- as.character(unique(plotData$variable))
 showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(itemsSplit )/5))
 ```  

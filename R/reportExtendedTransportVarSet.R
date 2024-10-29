@@ -14,6 +14,9 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
 
   constrYear <- variable <- period <- . <- value <- NULL
 
+  outputVarsExt <- list()
+  outputVarsInt <- list()
+
   # Report useful energy-----------------------------------------------------------------------
   fleetUEdemand <- reportUE(FEdemand = baseVarSet$ext$fleetFEdemand,
                                 helpers = data$helpers)
@@ -36,41 +39,51 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
                                                         names(data$helpers$decisionTree)))
   combinedCAPEXandOPEX[, variable := paste0("TCO sales ", variable)]
 
-  data$GDPppp[, variable := "GDP|PPP"][, value := value * 1e-3][, unit := "billion constant 2017 Int$PPP"]
-  data$population[, variable := "Population"][, unit := "million"]
-  data$GDPpcPPP[, variable := "GDPpc|PPP"][, value := value * 1e-3][, unit := "billion constant 2017 Int$PPP"]
-  data$GDPMER[, variable := "GDP|MER"][, value := value * 1e-3][, unit := "billion constant 2017 Int$MER"]
-  data$GDPpcMER[, variable := "GDPpc|MER"][, value := value * 1e-3][, unit := "billion constant 2017 Int$MER"]
+  if (!is.null(data$GDPppp)) {
+    data$GDPppp[grepl("mil\\..*", unit), value := value * 1e-3][, unit := gsub("mil\\.", "billion", unit)]
+    outputVarsExt <- c(outputVarsExt, list(GDPppp = data$GDPppp))
+  }
+  if (!is.null(data$GDPpcPPP)) {
+    data$GDPpcPPP[grepl("mil\\..*", unit), value := value * 1e-3][, unit := gsub("mil\\.", "billion", unit)]
+    outputVarsInt <- c(outputVarsInt, list(GDPpcPPP = data$GDPpcPPP))
+  }
+  if (!is.null(data$GDPMER)) {
+    data$GDPMER[grepl("mil\\..*", unit), value := value * 1e-3][, unit := gsub("mil\\.", "billion", unit)]
+    outputVarsExt <- c(outputVarsExt, list(GDPMER = data$GDPMER))
+  }
+  if (!is.null(data$GDPpcMER)) {
+    data$GDPpcMER[grepl("mil\\..*", unit), value := value * 1e-3][, unit := gsub("mil\\.", "billion", unit)]
+    outputVarsInt <- c(outputVarsInt, list(GDPpcMER = data$GDPpcMER))
+  }
+  if (!is.null(data$population)) {
+    outputVarsExt <- c(outputVarsExt, list(population = data$population))
+  }
 
   # Report transport input data if available
-  inputData <- c("CAPEXother", "nonFuelOPEXtrackedFleet", "subsidies", "timeValueCosts", "annualMileage", "scenSpecLoadFactor",
+  inputData <- c("timeValueCosts", "annualMileage", "scenSpecLoadFactor",
                  "loadFactorRaw", "scenSpecEnIntensity", "energyIntensityRaw")
   inputData <- inputData[inputData %in% names(data)]
-  inputData <- lapply(copy(data[inputData]), function(item, decisionTree) {item <- merge(item, decisionTree,
+
+  if (!is.null(inputData)) {
+    inputData <- lapply(copy(data[inputData]), function(item, decisionTree) {item <- merge(item, decisionTree,
                                                                             by = intersect(names(item),
                                                                             names(decisionTree)), allow.cartesian = TRUE)},
                                                                             data$helpers$decisionTree)
-  inputData$loadFactorRaw[, variable := paste0(variable, " raw")]
-  inputData$energyIntensityRaw[, variable := paste0(variable, " raw")]
+    outputVarsInt <- c(outputVarsInt, inputData)
+  }
+
+
 
   # Split extensive and intensive variables ---------------------------------------------------
-  outputVarsExt <- list(fleetUEdemand = fleetUEdemand,
-                        vintages      = vintages,
-                        GDPppp = data$GDPppp,
-                        GDPMER = data$GDPMER,
-                        population = data$population)
-  outputVarsInt <- list(scenScpecPrefTrends = data$scenSpecPrefTrends[, level := NULL],
-                        combinedCAPEXandOPEX = combinedCAPEXandOPEX,
-                        CAPEXother = inputData$CAPEXother,
-                        nonFuelOPEXtrackedFleet = inputData$nonFuelOPEXtrackedFleet,
-                        timeValueCosts = inputData$timeValueCosts,
-                        annualMileage = inputData$annualMileage,
-                        loadFactor = inputData$scenSpecLoadFactor,
-                        loadFactorRaw = inputData$loadFactorRaw,
-                        energyIntensity = inputData$scenSpecEnIntensity,
-                        energyIntensityRaw = inputData$energyIntensityRaw,
-                        GDPpcPPP = data$GDPpcPPP,
-                        GDPpcMER = data$GDPpcMER)
+  outputVarsExt <- c(outputVarsExt,
+                     list(fleetUEdemand = fleetUEdemand,
+                          vintages      = vintages)
+  )
+
+  outputVarsInt <- c(outputVarsInt,
+                     list(scenScpecPrefTrends = data$scenSpecPrefTrends[, level := NULL],
+                          combinedCAPEXandOPEX = combinedCAPEXandOPEX)
+  )
   outputVars <- list(ext = outputVarsExt,
                      int = outputVarsInt)
   return(outputVars)
