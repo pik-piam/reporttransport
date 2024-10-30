@@ -4,14 +4,12 @@
 \alias{reportTransportVarSet}
 \title{Report detailed transport variable set}
 \usage{
-reportTransportVarSet(data, baseVarSet, timeResReporting)
+reportTransportVarSet(data, baseVarSet)
 }
 \arguments{
 \item{data}{List that contains the model results to report the detailed transport variable set}
 
 \item{baseVarSet}{Basic output variable set}
-
-\item{timeResReporting}{Timesteps to be reported}
 }
 \value{
 Detailed transport output variable set

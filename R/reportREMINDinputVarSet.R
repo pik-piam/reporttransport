@@ -44,11 +44,6 @@ reportREMINDinputVarSet <- function(fleetESdemand,
 
   DEM_scenario <- GDP_scenario <- EDGE_scenario <- value <- sumES <- variable <- univocalName <- ESdemand <- NULL
 
-  timeResReporting <- c(seq(1900,1985,5),
-    seq(1990, 2060, by = 5),
-    seq(2070, 2110, by = 10),
-    2130, 2150)
-
   ## Input data for transport module GAMS code----------------------------------------------------------------------------
 
   # See needed inputs in REMIND/modules/35_transport/edge_esm/datainput.gms
