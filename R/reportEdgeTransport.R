@@ -97,7 +97,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   if (is.null(data$scenarioName)) data$scenarioName <- paste0(data$transportPolScen, " ", data$SSPscen)
   if (is.null(data$modelName)) data$modelName <- "EDGE-T"
 
-  if (is.null(data$gdxPath)) {
+  if (is.null(data$gdxPath) & isTransportExtendedReported) {
     gdxPath <- list.files(path = folderPath, pattern = "\\.gdx$", full.names = TRUE)
     # Check if any files were found
     if (length(gdxPath) > 1) {
