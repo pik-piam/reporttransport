@@ -53,8 +53,10 @@ items <- c(
     "ES|Transport|Pass|Non-motorized|Walk pCap",
     "ES|Transport|Pass|Non-motorized|Cycle pCap"
     )
-showMultiLinePlots(data, items)
-showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap")
+showMultiLinePlots(data, items[1:6], nrowNum = 2)
+showMultiLinePlots(data, items[7:12], nrowNum = 2)
+showMultiLinePlotsByVariable(data, items[1:6], "GDP|PPP pCap", nrowNum = 2)
+showMultiLinePlotsByVariable(data, items[7:12], "GDP|PPP pCap", nrowNum = 2)
 walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
 ```
 
