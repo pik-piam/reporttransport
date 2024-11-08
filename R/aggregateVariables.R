@@ -75,6 +75,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   # Test for duplicated entries to prevent double counting in the aggregation
   test <- copy(vars)
   test[, value := NULL]
+
   if (anyDuplicated(test)) stop("Variables for aggregation contain duplicates.
                                 Check reportEdgeTransport() to prevent double counting")
 
@@ -95,6 +96,14 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
     weight[, c("variable", "unit") := NULL]
     setnames(weight, "value", "weight")
   }
+
+  # Exclude vars that are not aggregated and create solely the variable entry
+  exclude <- c("Load factor", "Load factor raw", "Preference|FV", "Preference|S1S", "Preference|S2S1",
+               "Preference|S3S2", "Preference|VS3", "TCO sales Operating costs (total non-fuel)", "TCO sales Fuel costs", "TCO sales Capital costs", "Time value costs",
+               "Annual mileage", "Energy intensity sales", "Energy intensity (raw)", "Purchase Price", "Load factor (raw)")
+
+  aggregatedvars <- createVariableEntry(vars[variable %in% exclude | grepl(".*Iteration.*", variable)], aggrOrder)
+  vars <- vars[!(variable %in% exclude | grepl(".*Iteration.*", variable))]
 
   # Aggregate each level of the decision tree --------------------------------------------------------------------
   for (i in seq(0, length(aggrOrder) - 1)) {
@@ -135,7 +144,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
     }
   }
 
-  exclude <- c("Sales", "Vintages", "Stock", "Load factor")
+  exclude <- c("Sales", "Vintages", "Stock")
   varsForFurtherAggregation <- vars[!variable %in% exclude]
 
   # Aggregate Pass with bunkers --------------------------------------------------------------------
@@ -283,8 +292,8 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
 
   if (anyNA(aggregatedvars)) stop("Output variable contains NAs.
-                                  Please check reportAndAggregatedMIF()")
+                                  Please check aggregateVariables()")
   if (anyDuplicated(aggregatedvars[, c("region", "period", "variable")])) stop("Output variable contains Duplicates.
-                                         Please check reportAndAggregatedMIF()")
+                                         Please check aggregateVariables()")
   return(aggregatedvars)
 }

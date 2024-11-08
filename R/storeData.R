@@ -28,6 +28,9 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
                        "timeValueCosts",
                        "subsidies",
                        "GDPppp",
+                       "GDPMER",
+                       "GDPpcMER",
+                       "GDPpcPPP",
                        "population",
                        "f29_trpdemand",
                        "helpers")) subfolder <- "1_InputDataRaw"
@@ -42,6 +45,7 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
     if (varName %in% c("histPrefs")) subfolder <- "3_Calibration"
     if (varName %in% c("fleetSizeAndComposition",
                        "vehSalesAndModeShares",
+                       "costsDiscreteChoiceIterations",
                        "fleetVehNumbersIterations",
                        "endogenousCostsIterations",
                        "endogenousCosts",
@@ -117,6 +121,13 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
     for (i in seq_along(vars$endogenousCostsIterations)) {
       saveRDS(vars$endogenousCostsIterations[[i]], file.path(outputFolder, "4_Output",
                                                              paste0("endogenousCostsIteration", i, ".RDS")))
+    }
+    vars <- vars[!names(vars) %in% c("endogenousCostsIterations")]
+  }
+  if (!is.null(vars$costsDiscreteChoiceIterations)) {
+    for (i in seq_along(vars$costsDiscreteChoiceIterations)) {
+      saveRDS(vars$costsDiscreteChoiceIterations[[i]], file.path(outputFolder, "4_Output",
+                                                             paste0("costsDiscreteChoiceIteration", i, ".RDS")))
     }
     vars <- vars[!names(vars) %in% c("endogenousCostsIterations")]
   }
