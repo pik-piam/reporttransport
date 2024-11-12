@@ -1,5 +1,8 @@
 # Energy Services
-## Passenger without bunkers
+
+## Passenger
+### Energy Services by mode 
+#### Without bunkers
 ```{r}
 totWoBunk <- "ES|Transport edge|Pass"
 items <- c(
@@ -16,7 +19,7 @@ showAreaAndBarPlots(data, items, totWoBunk, orderVars = "user")
 showAreaAndBarPlots(data, items, totWoBunk, fill = TRUE, orderVars = "user")
 ```
 
-## Passenger with bunkers
+#### With bunkers
 ```{r}
 totBunk <- "ES|Transport|Pass with bunkers"
 items <- c(
@@ -37,7 +40,20 @@ walk(c("ES|Transport|Pass|Aviation", totWoBunk, items[1:5], "ES|Transport|Pass|R
      showLinePlots, data = data)
 ```
 
-## Passenger per Capita
+#### Four Wheelers
+```{r}
+tot <- "ES|Transport|Pass|Road|LDV|Four Wheelers"
+items <- c(
+       "ES|Transport|Pass|Road|LDV|Four Wheelers|Large",
+       "ES|Transport|Pass|Road|LDV|Four Wheelers|Medium",
+       "ES|Transport|Pass|Road|LDV|Four Wheelers|Small"
+)
+
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE,  orderVars = "user")
+```
+
+### Per Capita - Energy Service by mode - with bunkers
 ```{r}
 items <- c(
     "ES|Transport edge|Pass pCap",
@@ -53,29 +69,27 @@ items <- c(
     "ES|Transport|Pass|Non-motorized|Walk pCap",
     "ES|Transport|Pass|Non-motorized|Cycle pCap"
     )
-showMultiLinePlots(data, items[1:6], nrowNum = 2)
-showMultiLinePlots(data, items[7:12], nrowNum = 2)
+#showMultiLinePlots(data, items[1:6], nrowNum = 2)
+#showMultiLinePlots(data, items[7:12], nrowNum = 2)
+showMultiLinePlots(data, items[1])
+showMultiLinePlots(data, items[2])
+showMultiLinePlots(data, items[3])
+showMultiLinePlots(data, items[4])
+showMultiLinePlots(data, items[5])
+showMultiLinePlots(data, items[6])
+showMultiLinePlots(data, items[7])
+showMultiLinePlots(data, items[8])
+showMultiLinePlots(data, items[9])
+showMultiLinePlots(data, items[10])
+showMultiLinePlots(data, items[11])
+showMultiLinePlots(data, items[12])
 showMultiLinePlotsByVariable(data, items[1:6], "GDP|PPP pCap", nrowNum = 2)
 showMultiLinePlotsByVariable(data, items[7:12], "GDP|PPP pCap", nrowNum = 2)
 walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
 ```
 
-## LDV Four Wheelers 
-
-### By vehicle size
-```{r}
-tot <- "ES|Transport|Pass|Road|LDV|Four Wheelers"
-items <- c(
-       "ES|Transport|Pass|Road|LDV|Four Wheelers|Large",
-       "ES|Transport|Pass|Road|LDV|Four Wheelers|Medium",
-       "ES|Transport|Pass|Road|LDV|Four Wheelers|Small"
-)
-
-showAreaAndBarPlots(data, items, tot, orderVars = "user")
-showAreaAndBarPlots(data, items, tot, fill = TRUE,  orderVars = "user")
-```
-
-### By technology
+### Energy Service by technology
+#### Four Wheelers
 ```{r}
 tot <- "ES|Transport|Pass|Road|LDV|Four Wheelers"
 items <- c(
@@ -90,7 +104,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## LDV 2-Wheelers by technology
+#### LDV 2-Wheelers
 ```{r}
 tot <- "ES|Transport|Pass|Road|LDV|Two Wheelers"
 items <- c(
@@ -102,7 +116,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## Busses by technology
+#### Busses
 ```{r}
 tot <- "ES|Transport|Pass|Road|Bus"
 items <- c(
@@ -116,7 +130,9 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## Freight without bunkers
+## Freight 
+### Energy Services by mode 
+#### Without bunkers
 ```{r}
 totWoBunk <- "ES|Transport edge|Freight"
 items <- c(
@@ -128,7 +144,7 @@ showAreaAndBarPlots(data, items, totWoBunk, orderVars = "user")
 showAreaAndBarPlots(data, items, totWoBbunk, fill = TRUE, orderVars = "user")
 ```
 
-## Freight with bunkers
+#### With bunkers
 ```{r}
 totBunk <- "ES|Transport|Freight with bunkers"
 items <- c(
@@ -143,25 +159,7 @@ showLinePlots(data, totBunk)
 walk(items, showLinePlots, data = data)
 ```
 
-
-## Freight per Capita
-```{r}
-
-items <- c(
-      "ES|Transport edge|Freight pCap",
-      "ES|Transport|Bunkers|Freight|International Shipping pCap",
-      "ES|Transport|Freight|Domestic Shipping pCap",
-      "ES|Transport|Freight|Rail pCap",
-      "ES|Transport|Freight|Road pCap"
-    )
-showMultiLinePlots(data, items)
-showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap")
-walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
-```
-
-## Trucks
-
-### By vehicle size
+#### Trucks
 ```{r}
 tot <- "ES|Transport|Freight|Road"
 items <- c(
@@ -176,7 +174,24 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-### By technology
+
+### Per Capita - Energy Service by mode - Freight with bunkers
+```{r}
+
+items <- c(
+      "ES|Transport edge|Freight pCap",
+      "ES|Transport|Bunkers|Freight|International Shipping pCap",
+      "ES|Transport|Freight|Domestic Shipping pCap",
+      "ES|Transport|Freight|Rail pCap",
+      "ES|Transport|Freight|Road pCap"
+    )
+showMultiLinePlots(data, items, nrowNum = 2)
+showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap", nrowNum = 2)
+walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
+```
+
+
+### Energy Service by technology - Trucks
 ```{r}
 tot <-  "ES|Transport|Freight|Road"
 items <- c(
