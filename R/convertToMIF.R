@@ -98,6 +98,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
         "EU27" = c("ENC", "EWN", "ECS", "ESC", "ECE", "FRA", "DEU", "ESW")
       ))
     }
+
     # Create Mapping for region Aggregation out of region SubsetList
     namesReg <- names(regionSubsetList)
     regSubsetMap <- data.table()
@@ -138,7 +139,18 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, gdx,  isTranspo
     varsToMIFext <- rbind(varsToMIFext,
                           rbindlist(regSubsetDataExt[!names(regSubsetDataExt) %in% c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE),
                           rbindlist(worldDataExt[!names(worldDataExt) %in% c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE))
-  }
+   } else {
+    noAggregationvars <- rbind(noAggregationvars,
+                               rbindlist(worldDataInt[c("GDPpcPPP", "GDPpcMER")], fill = TRUE, use.names = TRUE),
+                               rbindlist(vars$ext[c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE),
+                               rbindlist(worldDataExt[c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE))
+
+    varsToMIFint <- rbind(varsToMIFint,
+                          rbindlist(worldDataInt[!names(worldDataInt) %in% c("GDPpcPPP", "GDPpcMER")], fill = TRUE, use.names = TRUE))
+
+    varsToMIFext <- rbind(varsToMIFext,
+                          rbindlist(worldDataExt[!names(worldDataExt) %in% c("GDPppp", "population", "GDPMER")], fill = TRUE, use.names = TRUE))
+  } # close additional regions
 
   # Apply variable naming convention----------------------------------------------------------
   varsToMIFext <- applyReportingNames(varsToMIFext, helpers$reportingNames)
