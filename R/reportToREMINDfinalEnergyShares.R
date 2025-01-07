@@ -15,9 +15,9 @@ reportToREMINDfinalEnergyShares <- function(fleetFEdemand, timeResReporting, dem
 
   FEdemByTech <- reportToREMINDfinalEnergyDemand(fleetFEdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
   FEshares <- FEdemByTech[, value := value/sum(value), by = c("tall", "all_regi", "all_in")]
-  ## 7 decimals the lowest accepted value
-  FEshares[, value := round(value, digits = 7)]
-  FEshares[, value := ifelse(value == 0, 1e-7, value)]
+  ## 15 decimals the lowest accepted value
+  FEshares[, value := round(value, digits = 15)]
+  FEshares[, value := ifelse(value == 0, 1e-15, value)]
   FEshares[, sumvalue := sum(value), by = c("tall", "all_regi", "all_in")]
   FEshares[, maxtech := ifelse(value == max(value), TRUE, FALSE), by =c("tall", "all_regi", "all_in")]
 
