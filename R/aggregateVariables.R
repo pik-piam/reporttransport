@@ -266,7 +266,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   aggrvars[grepl("US\\$2017/pkm|US\\$2017/tkm", unit), unit := "US$2017/(p|t)km"]
   byCols <- c("region", "technology", "fuel", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
-  aggrvars[, variable := paste0(variable, "|Transport|Rail", technology, "|", fuel)][, c("technology", "fuel") := NULL]
+  aggrvars[, variable := paste0(variable, "|Transport|Rail", technology, fuel)][, c("technology", "fuel") := NULL]
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
 
   # Aggregate aviation --------------------------------------------------------------------
@@ -288,7 +288,7 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
   aggrvars <- aggrvars[grepl(".*Aviation.*", subsectorL1) & !is.na(fuel)]
   byCols <- c("region", "technology", "fuel", "variable", "unit", "period")
   aggrvars <- aggregateLevel(aggrvars, byCols, weight)
-  aggrvars[, variable := paste0(variable, "|Transport|Pass|Aviation", technology, "|", fuel)][, c("technology", "fuel") := NULL]
+  aggrvars[, variable := paste0(variable, "|Transport|Pass|Aviation", technology, fuel)][, c("technology", "fuel") := NULL]
   aggregatedvars <- rbind(aggregatedvars, aggrvars)
 
   if (anyNA(aggregatedvars)) stop("Output variable contains NAs.
