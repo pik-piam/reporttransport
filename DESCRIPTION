@@ -1,10 +1,14 @@
 Type: Package
 Package: reporttransport
 Title: Reporting package for edgeTransport
-Version: 0.7.1
-Date: 2025-01-21
+Version: 0.8.0
+Date: 2025-01-22
 Authors@R:
-    person("Johanna", "Hoppe", , "johanna.hoppe@pik-potsdam.de", role = c("aut", "cre"))
+    c(
+    person("Johanna", "Hoppe", , "johanna.hoppe@pik-potsdam.de", role = c("aut", "cre")),
+    person("Jarusch", "Muessel", email = "jarusch.muessel@pik-potsdam.de", role = c("aut"),
+           comment = c(ORCID = "0000-0002-1857-7866")),
+    person("Alex K.", "Hagen",email = "alex.hagen@pik-potsdam.de", role = c("aut"), comment = c(ORCID = "0000-0003-4793-8664")))
 Description: This package contains edgeTransport-specific routines to
     report model results. The main functionality is to generate transport
     reporting variables in MIF format from a given edgeTransport model run
