@@ -5,8 +5,7 @@
 \title{Report to REMIND f35_fe2es}
 \usage{
 reportToREMINDenergyEfficiency(
-  fleetEnergyIntensity,
-  scenSpecLoadFactor,
+  fleetFEdemand,
   fleetESdemand,
   hybridElecShare,
   timeResReporting,
@@ -17,9 +16,7 @@ reportToREMINDenergyEfficiency(
 )
 }
 \arguments{
-\item{fleetEnergyIntensity}{energy intensity on fleet level}
-
-\item{scenSpecLoadFactor}{scenario specific load factor data}
+\item{fleetFEdemand}{final energy demand on fleet level}
 
 \item{fleetESdemand}{energy service demand on fleet level}
 

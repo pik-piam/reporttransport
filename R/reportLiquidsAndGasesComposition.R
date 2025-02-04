@@ -3,7 +3,6 @@
 #' @param dtFE Final energy data for liquids and gases
 #' @param gdxPath Path to REMIND gdx, which contains the share of the various production routes
 #'                for liquid and gaseous energy carriers
-#' @param timeResReporting Time resolution for variable reporting
 #' @param helpers List of helpers
 #'
 #' @returns Final energy for liquids and gases split into fossil|bio|hydrogen
@@ -13,13 +12,13 @@
 #' @import data.table
 #' @export
 
-reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting, helpers) {
+reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, helpers) {
 
   all <- value <- Fossil <- Biomass <- Hydrogen <- variable <- type <- from <- bioToSynShareOverall <-
     synToBioShareOverall <- fuel <- technology <- univocalName <- share <- emiSectors <- period <-
       to <- from <- sumbio <- sumsyn <- . <- region <- unit <- NULL
 
-  calcSplit <- function(REMINDsegment, dataREMIND, splitOverall, timeResReporting) {                                     # nolint: object_name_linter
+  calcSplit <- function(REMINDsegment, dataREMIND, splitOverall) {                                     # nolint: object_name_linter
 
     # Final energy carrier types liquids and gases consist of the following secondary energy carrier types in REMIND
     mixedCarrierTypes <- c("seliqfos", "seliqbio", "seliqsyn", "segafos", "segabio", "segasyn")
@@ -78,8 +77,6 @@ reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting, he
       shares <- sharesLiquids
     }
 
-    # apply low time resolution
-    shares <- approx_dt(shares, timeResReporting, "period", "value", extrapolate = TRUE)
     shares[, sum := sum(value), by = c("region", "period", "technology")]
 
     if (anyNA(shares) | nrow(shares[(sum < 0.9999 | sum > 1.0001) & sum != 0])) {
@@ -152,12 +149,13 @@ reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, timeResReporting, he
   splitTransportOverall <- list(liqBioToSyn = liqBioToSyn, gasesBioToSyn = gasesBioToSyn)
 
   REMINDsegments <- c("LDVs", "nonLDVs", "bunker")                                                                     # nolint: object_name_linter
-  splitShares <- sapply(REMINDsegments, calcSplit, demFeSector, splitTransportOverall, timeResReporting,               # nolint: undesirable_function_linter
+  splitShares <- sapply(REMINDsegments, calcSplit, demFeSector, splitTransportOverall,               # nolint: undesirable_function_linter
                         simplify = FALSE, USE.NAMES = TRUE)
 
   # Make sure that only Liquids are supplied
   dtFE <- copy(dtFE)
   dtFE <- dtFE[technology %in% c("Liquids", "Gases")]
+  splitShares <- lapply(splitShares, approx_dt, xdata = unique(dtFE$period), xcol = "period", ycol = "value", extrapolate = TRUE)
   splittedCarriers <- rbindlist(lapply(REMINDsegments, applySplit, dtFE, splitShares, helpers))
   splitShares[["LDVs"]][, variable := paste0(variable, "Transport|LDV")]
   splitShares[["nonLDVs"]][, variable := paste0(variable, "Transport|Other")]

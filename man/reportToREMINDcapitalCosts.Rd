@@ -7,6 +7,7 @@
 reportToREMINDcapitalCosts(
   fleetCapCosts,
   fleetESdemand,
+  hybridElecShare,
   timeResReporting,
   demScen,
   SSPscen,
@@ -19,6 +20,8 @@ reportToREMINDcapitalCosts(
 
 \item{fleetESdemand}{energy service demand on fleet level}
 
+\item{hybridElecShare}{share of electric driving for hybrid electric vehicles}
+
 \item{timeResReporting}{time resolution reporting}
 
 \item{demScen}{demand scenario}
@@ -30,7 +33,7 @@ reportToREMINDcapitalCosts(
 \item{helpers}{list of helpers}
 }
 \value{
-Capital Costs per CES node in [2005US$/pkm or 2005US$/tkm]
+Capital Costs per CES node in [US$2017/pkm or US$2017/tkm]
 }
 \description{
 Report to REMIND p35_esCapCost

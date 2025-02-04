@@ -28,9 +28,12 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
                        "timeValueCosts",
                        "subsidies",
                        "GDPppp",
+                       "GDPMER",
+                       "GDPpcMER",
+                       "GDPpcPPP",
                        "population",
-                       "helpers",
-                       "f29_trpdemand")) subfolder <- "1_InputDataRaw"
+                       "f29_trpdemand",
+                       "helpers")) subfolder <- "1_InputDataRaw"
     if (varName %in% c("scenSpecPrefTrends",
                        "REMINDfuelCosts",
                        "REMINDfuelCostIterations",
@@ -42,14 +45,13 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
     if (varName %in% c("histPrefs")) subfolder <- "3_Calibration"
     if (varName %in% c("fleetSizeAndComposition",
                        "vehSalesAndModeShares",
+                       "costsDiscreteChoiceIterations",
                        "fleetVehNumbersIterations",
                        "endogenousCostsIterations",
                        "endogenousCosts",
                        "sectorESdemand",
                        "ESdemandFVsalesLevel",
-                       "fleetVehiclesPerTech",
-                       "harmFactors",
-                       "sharedVarsAfterHarmonization")) subfolder <- "4_Output"
+                       "fleetVehiclesPerTech")) subfolder <- "4_Output"
     if (varName %in% c("REMINDinputData")) subfolder <- "5_REMINDinputData"
     if (is.null(subfolder)) stop(paste0("No subfolder assigned to ", varName))
 
@@ -63,7 +65,7 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
 
   storeCSV <- function(varName, vars, outputFolder, subfolder = NULL) {
     if (is.null(subfolder)) subfolder <- allocateFile(varName)
-    write.csv(vars[[varName]], file.path(outputFolder, subfolder, paste0(varName, ".csv")), row.names = FALSE)
+    write.csv(vars[[varName]], file.path(outputFolder, subfolder, paste0(varName, ".csv")))
   }
   vars <- list()
   if (!is.null(varsList)) vars <- varsList
@@ -119,6 +121,13 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
     for (i in seq_along(vars$endogenousCostsIterations)) {
       saveRDS(vars$endogenousCostsIterations[[i]], file.path(outputFolder, "4_Output",
                                                              paste0("endogenousCostsIteration", i, ".RDS")))
+    }
+    vars <- vars[!names(vars) %in% c("endogenousCostsIterations")]
+  }
+  if (!is.null(vars$costsDiscreteChoiceIterations)) {
+    for (i in seq_along(vars$costsDiscreteChoiceIterations)) {
+      saveRDS(vars$costsDiscreteChoiceIterations[[i]], file.path(outputFolder, "4_Output",
+                                                             paste0("costsDiscreteChoiceIteration", i, ".RDS")))
     }
     vars <- vars[!names(vars) %in% c("endogenousCostsIterations")]
   }

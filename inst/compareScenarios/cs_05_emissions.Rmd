@@ -1,6 +1,6 @@
 # Emissions
 
-## Tailpipe Emissions Passenger
+## Tailpipe Emissions Passenger - with bunkers
 ```{r}
 tot <- "Emi|CO2|Energy|Tailpipe|Transport|Pass"
 items <- c(
@@ -11,7 +11,7 @@ items <- c(
       "Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|LDV|Four Wheelers",
       "Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|LDV|Two Wheelers")
 
-showAreaAndBarPlots(data, items[2:6], tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items[2:6], tot, fill = TRUE, orderVars = "user")
 showLinePlots(data, tot)
 walk(c(items,"Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|LDV"
@@ -33,7 +33,7 @@ showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)
 ```
 
-## Tailpipe Emissions Freight
+## Tailpipe Emissions Freight - with bunkers
 ```{r}
 tot <- "Emi|CO2|Energy|Tailpipe|Transport|Freight"
 items <- c(
@@ -42,7 +42,7 @@ items <- c(
       "Emi|CO2|Energy|Tailpipe|Transport|Freight|Rail",
       "Emi|CO2|Energy|Tailpipe|Transport|Freight|Road"
   )
-showAreaAndBarPlots(data, items[2:4], tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items[2:4], tot, fill = TRUE, orderVars = "user")
 showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)
@@ -64,7 +64,7 @@ showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)
 ```      
       
-## Demand (netto) Emissions Passenger
+## Demand (netto) Emissions Passenger - with bunkers
 ```{r}
 tot <- "Emi|CO2|Energy|Demand|Transport|Pass"
 items <- c(
@@ -75,7 +75,7 @@ items <- c(
       "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Four Wheelers",
       "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Two Wheelers")
 
-showAreaAndBarPlots(data, items[2:6], tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items[2:6], tot, fill = TRUE, orderVars = "user")
 showLinePlots(data, tot)
 walk(c(items,"Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV"
@@ -97,7 +97,7 @@ showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)
 ```
 
-## Demand (netto) Emissions Freight
+## Demand (netto) Emissions Freight - with bunkers
 ```{r}
 tot <- "Emi|CO2|Energy|Demand|Transport|Freight"
 items <- c(
@@ -106,7 +106,7 @@ items <- c(
       "Emi|CO2|Energy|Demand|Transport|Freight|Rail",
       "Emi|CO2|Energy|Demand|Transport|Freight|Road"
   )
-showAreaAndBarPlots(data, items[2:4], tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items[2:4], tot, fill = TRUE, orderVars = "user")
 showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)

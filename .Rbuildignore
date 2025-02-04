@@ -1,3 +1,4 @@
+^pull_request_template.md
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.buildlibrary$

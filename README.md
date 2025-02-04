@@ -1,8 +1,8 @@
 # Reporting package for edgeTransport
 
-R package **reporttransport**, version **0.1.0**
+R package **reporttransport**, version **0.8.0**
 
-[![CRAN status](https://www.r-pkg.org/badges/version/reporttransport)](https://cran.r-project.org/package=reporttransport)  [![R build status](https://github.com/pik-piam/reporttransport/workflows/check/badge.svg)](https://github.com/pik-piam/reporttransport/actions) [![codecov](https://codecov.io/gh/pik-piam/reporttransport/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/reporttransport) [![r-universe](https://pik-piam.r-universe.dev/badges/reporttransport)](https://pik-piam.r-universe.dev/builds)
+[![CRAN status](https://www.r-pkg.org/badges/version/reporttransport)](https://cran.r-project.org/package=reporttransport) [![R build status](https://github.com/pik-piam/reporttransport/workflows/check/badge.svg)](https://github.com/pik-piam/reporttransport/actions) [![codecov](https://codecov.io/gh/pik-piam/reporttransport/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/reporttransport) [![r-universe](https://pik-piam.r-universe.dev/badges/reporttransport)](https://pik-piam.r-universe.dev/builds)
 
 ## Purpose and Functionality
 
@@ -41,16 +41,15 @@ In case of questions / problems please contact Johanna Hoppe <johanna.hoppe@pik-
 
 To cite package **reporttransport** in publications use:
 
-Hoppe J (2024). _reporttransport: Reporting package for edgeTransport_. R package version 0.1.0, <https://github.com/pik-piam/reporttransport>.
+Hoppe J, Muessel J, Hagen A (2025). "reporttransport: Reporting package for edgeTransport - Version 0.8.0."
 
 A BibTeX entry for LaTeX users is
 
  ```latex
-@Manual{,
-  title = {reporttransport: Reporting package for edgeTransport},
-  author = {Johanna Hoppe},
-  year = {2024},
-  note = {R package version 0.1.0},
-  url = {https://github.com/pik-piam/reporttransport},
+@Misc{,
+  title = {reporttransport: Reporting package for edgeTransport - Version 0.8.0},
+  author = {Johanna Hoppe and Jarusch Muessel and Alex K. Hagen},
+  date = {2025-01-22},
+  year = {2025},
 }
 ```

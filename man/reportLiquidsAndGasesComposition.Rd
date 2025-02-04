@@ -4,15 +4,13 @@
 \alias{reportLiquidsAndGasesComposition}
 \title{Report the split of liquids and gases into fossil|bio|hydrogen}
 \usage{
-reportLiquidsAndGasesComposition(dtFE, gdxPath, timeResReporting, helpers)
+reportLiquidsAndGasesComposition(dtFE, gdxPath, helpers)
 }
 \arguments{
 \item{dtFE}{Final energy data for liquids and gases}
 
 \item{gdxPath}{Path to REMIND gdx, which contains the share of the various production routes
 for liquid and gaseous energy carriers}
-
-\item{timeResReporting}{Time resolution for variable reporting}
 
 \item{helpers}{List of helpers}
 }

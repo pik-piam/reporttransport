@@ -4,7 +4,7 @@
 ```{r}
 tot <- "Stock|Transport|Pass|Road|LDV"
 items <- c("Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car",
-           "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|LargeCar and SUV",
+           "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV",
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Van",
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Medium|Compact Car",
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Medium|Midsize Car",
@@ -15,7 +15,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## LDV Sales by vehicle size
+## LDV Sales by vehicle size 
 ```{r}
 tot <- "Sales|Transport|Pass|Road|LDV"
 items <- c("Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car",
@@ -32,6 +32,30 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 
 ## LDV Stock by technology
 ```{r}
+tot <- "Stock|Transport|Pass|Road|LDV"
+items <- c("Stock|Transport|Pass|Road|LDV|BEV",
+           "Stock|Transport|Pass|Road|LDV|FCEV",
+           "Stock|Transport|Pass|Road|LDV|Hybrid electric",
+           "Stock|Transport|Pass|Road|LDV|Liquids",
+           "Stock|Transport|Pass|Road|LDV|Gases")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+## LDV Sales by technology
+```{r}
+tot <- "Sales|Transport|Pass|Road|LDV"
+items <- c("Sales|Transport|Pass|Road|LDV|BEV",
+           "Sales|Transport|Pass|Road|LDV|FCEV",
+           "Sales|Transport|Pass|Road|LDV|Hybrid electric",
+           "Sales|Transport|Pass|Road|LDV|Liquids",
+           "Sales|Transport|Pass|Road|LDV|Gases")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+## LDV Stock by technology - Subcompact Car
+```{r}
 tot <- "Stock|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car"
 items <- c("Stock|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|BEV",
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|FCEV",
@@ -42,7 +66,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## LDV Sales by technology
+## LDV Sales by technology - Subcompact Car
 ```{r}
 tot <- "Sales|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car"
 items <- c("Sales|Transport|Pass|Road|LDV|Four Wheelers|Small|Subcompact Car|BEV",
@@ -54,7 +78,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## LDV Stock by technology
+## LDV Stock by technology - Large Car and SUV
 ```{r}
 tot <- "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV"
 items <- c("Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|BEV",
@@ -66,7 +90,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## LDV Sales by technology
+## LDV Sales by technology - Large Car and SUV
 ```{r}
 tot <- "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV"
 items <- c("Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|BEV",
@@ -78,7 +102,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## Busses
+## Busses Stock by technology
 ```{r}
 tot <- "Stock|Transport|Pass|Road|Bus"
 items <- c("Stock|Transport|Pass|Road|Bus|BEV",
@@ -113,7 +137,29 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## Small Truck stock by technology
+## Truck stock by technology
+```{r}
+tot <- "Stock|Transport|Freight|Road"
+items <- c("Stock|Transport|Freight|Road|BEV",
+           "Stock|Transport|Freight|Road|FCEV",
+           "Stock|Transport|Freight|Road|Liquids",
+           "Stock|Transport|Freight|Road|Gases")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+## Truck sales by technology
+```{r}
+tot <- "Sales|Transport|Freight|Road"
+items <- c("Sales|Transport|Freight|Road|BEV",
+           "Sales|Transport|Freight|Road|FCEV",
+           "Sales|Transport|Freight|Road|Liquids",
+           "Sales|Transport|Freight|Road|Gases")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+## Truck stock by technology - small
 ```{r}
 tot <- "Stock|Transport|Freight|Road|Light|Truck(0-3_5t)"
 items <- c("Stock|Transport|Freight|Road|Light|Truck(0-3_5t)|BEV",
@@ -124,7 +170,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## Small Truck sales by technology
+## Truck sales by technology - small
 ```{r}
 tot <- "Sales|Transport|Freight|Road|Light|Truck(0-3_5t)"
 items <- c("Sales|Transport|Freight|Road|Light|Truck(0-3_5t)|BEV",
@@ -135,7 +181,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## Large Truck stock by technology
+## Truck stock by technology - large
 ```{r}
 tot <- "Stock|Transport|Freight|Road|Heavy|Truck(40t)"
 items <- c("Stock|Transport|Freight|Road|Heavy|Truck(40t)|BEV",
@@ -146,7 +192,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## Large Truck sales by technology
+## Truck sales by technology - large
 ```{r}
 tot <- "Sales|Transport|Freight|Road|Heavy|Truck(40t)"
 items <- c("Sales|Transport|Freight|Road|Heavy|Truck(40t)|BEV",
