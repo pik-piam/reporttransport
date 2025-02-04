@@ -89,6 +89,10 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
     }
   }
+  if (isHarmonized) {
+    add <- c("vehSalesAndModeShares", "vehicleDepreciationFactors")
+    filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
+  }
   filesToLoad <- c(filesToLoad[!filesToLoad %in% names(data)])
 
   # Load data
@@ -130,12 +134,13 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
 
   if (isHarmonized) {
-    browser()
+
     gdx <- file.path(".", "fulldata.gdx")
     REMINDsectorESdemand <- toolLoadREMINDesDemand(gdx, data$helpers)
     ESdemandFVsalesLevel <- toolCalculateFVdemand(REMINDsectorESdemand,
-                                                  vehSalesAndModeShares$shares,
-                                                  helpers)
+                                                  data$vehSalesAndModeShares[period %in% REMINDsectorESdemand$period],
+                                                  data$helpers)
+    ESdemandFVsalesLevel <- rbind(ESdemandFVsalesLevel, data$ESdemandFVsalesLevel[period %in% unique(ESdemandFVsalesLevel)])
     # Calculate vehicle stock for cars, trucks and busses -------
     fleetSizeAndComposition <- toolCalculateFleetComposition(ESdemandFVsalesLevel,
                                                              vehicleDepreciationFactors,
@@ -143,6 +148,8 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                                                              inputData$annualMileage,
                                                              inputData$scenSpecLoadFactor,
                                                              helpers)
+    data$ESdemandFVsalesLevel <- ESdemandFVsalesLevel
+    data$fleetSizeAndComposition <- fleetSizeAndComposition
     baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
   }
 
@@ -228,6 +235,13 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                               isTransportExtendedReported = isTransportExtendedReported)
 
     if (isHarmonized) {
+      browser()
+      #Load REMIND reporting
+      #Select matching variables
+      #Check for consistency
+
+
+
       sharedVarsAfterHarmonization <- reporting[variable %in% REMINDoutput$variable]
       if (nrow(sharedVarsAfterHarmonization) > 0) {
         reporting <- reporting[!variable %in% REMINDoutput$variable]
