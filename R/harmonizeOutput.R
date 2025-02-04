@@ -17,7 +17,7 @@
 #' @export
 
 harmonizeOutput <- function(REMINDoutput, edgetOutputDir, baseVarSet, data) {
-
+    browser()
     ## Calculate FE harmonization factors that are then applied to the energy intensity
     harmMap <- tribble(
       ~variable,                                                  ~ all_teEs,

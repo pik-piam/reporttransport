@@ -117,21 +117,32 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     if (is.null(data$initialIncoCosts)) data$initialIncoCosts <- readRDS(file.path(folderPath, "2_InputDataPolicy", "initialIncoCosts.RDS"))
   }
 
+
   #########################################################################
   ## Report output variables
   #########################################################################
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
   baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
-  # Harmonize final energy for coupled EDGE-T/REMIND model output
+
   if (isHarmonized) {
-    REMINDoutput <- as.data.table(read.quitte(data$remindReportingFile))
-    harmonizedVars <- harmonizeOutput(REMINDoutput = REMINDoutput,
-                                      edgetOutputDir = edgetOutputDir,
-                                      baseVarSet = baseVarSet,
-                                      data = data)
-    baseVarSet$int$fleetEnergyIntensity <- harmonizedVars$harmonizedEnergyIntensity
-    baseVarSet$ext$fleetFEdemand <- harmonizedVars$harmonizedFinalEnergy
+    browser()
+    gdx <- file.path(".", "fulldata.gdx")
+    REMINDsectorESdemand <- toolLoadREMINDesDemand(gdx, data$helpers)
+    ESdemandFVsalesLevel <- toolCalculateFVdemand(REMINDsectorESdemand,
+                                                  vehSalesAndModeShares$shares,
+                                                  helpers)
+    # Calculate vehicle stock for cars, trucks and busses -------
+    fleetSizeAndComposition <- toolCalculateFleetComposition(ESdemandFVsalesLevel,
+                                                             vehicleDepreciationFactors,
+                                                             vehSalesAndModeShares$shares,
+                                                             inputData$annualMileage,
+                                                             inputData$scenSpecLoadFactor,
+                                                             helpers)
+    baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
   }
+
+  # Harmonize energy service demand for coupled EDGE-T/REMIND model output
+
 
   reporting <- baseVarSet
   outputVars <- baseVarSet
@@ -192,7 +203,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   #########################################################################
   ## Report REMIND input data
   #########################################################################
-  if (isREMINDinputReported) {                                                                                              # nolint: object_name_linter
+  if (isREMINDinputReported) {                                                                                          # nolint: object_name_linter
     REMINDinputData <- reportREMINDinputVarSet(fleetESdemand        = baseVarSet$ext$fleetESdemand,                     # nolint: object_name_linter
                                                fleetFEdemand        = baseVarSet$ext$fleetFEdemand,
                                                fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
