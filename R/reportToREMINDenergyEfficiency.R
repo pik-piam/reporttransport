@@ -28,7 +28,7 @@ reportToREMINDenergyEfficiency <- function(fleetFEdemand,
   setnames(FE, "value", "FE")
   setnames(ES, "value", "ES")
   f35_fe2es <- merge(ES, FE, by = intersect(names(FE), (names(ES))))
-  # Insert small number instead of zero
+  # Remove and Extrapolate too small datapoints
   f35_fe2es <- f35_fe2es[!ES < 1e-15]
   f35_fe2es[, value := ES/FE][, c("ES", "FE") := NULL]
   f35_fe2es <- approx_dt(f35_fe2es, unique(f35_fe2es$tall), "tall", "value", extrapolate = TRUE)

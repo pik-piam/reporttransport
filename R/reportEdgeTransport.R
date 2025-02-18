@@ -90,7 +90,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     }
   }
   if (isHarmonized) {
-    add <- c("vehSalesAndModeShares", "vehicleDepreciationFactors")
+    add <- c("vehSalesAndModeShares", "vehicleDepreciationFactors", "annualMileage")
     filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
   }
   filesToLoad <- c(filesToLoad[!filesToLoad %in% names(data)])
@@ -134,25 +134,24 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
 
   if (isHarmonized) {
-
     gdx <- file.path(".", "fulldata.gdx")
-    REMINDsectorESdemand <- toolLoadREMINDesDemand(gdx, data$helpers)
-    ESdemandFVsalesLevel <- toolCalculateFVdemand(REMINDsectorESdemand,
-                                                  data$vehSalesAndModeShares[period %in% REMINDsectorESdemand$period],
+    harmREMINDdemand <- toolLoadREMINDesDemand(gdx, data$helpers)
+    harmESdemandFV <- toolCalculateFVdemand(harmREMINDdemand,
+                                                  data$vehSalesAndModeShares[period %in% harmREMINDdemand$period],
                                                   data$helpers)
-    ESdemandFVsalesLevel <- rbind(ESdemandFVsalesLevel, data$ESdemandFVsalesLevel[period %in% unique(ESdemandFVsalesLevel)])
+    harmESdemandFV <- rbind(harmESdemandFV, data$ESdemandFVsalesLevel[!period %in% unique(harmESdemandFV$period)])
     # Calculate vehicle stock for cars, trucks and busses -------
-    fleetSizeAndComposition <- toolCalculateFleetComposition(ESdemandFVsalesLevel,
-                                                             vehicleDepreciationFactors,
-                                                             vehSalesAndModeShares$shares,
-                                                             inputData$annualMileage,
-                                                             inputData$scenSpecLoadFactor,
-                                                             helpers)
-    data$ESdemandFVsalesLevel <- ESdemandFVsalesLevel
+    fleetSizeAndComposition <- toolCalculateFleetComposition(harmESdemandFV,
+                                                             data$vehicleDepreciationFactors,
+                                                             data$vehSalesAndModeShares,
+                                                             data$annualMileage,
+                                                             data$scenSpecLoadFactor,
+                                                             data$helpers)
+    data$ESdemandFVsalesLevel <- harmESdemandFV
     data$fleetSizeAndComposition <- fleetSizeAndComposition
     baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
   }
-
+  browser()
   # Harmonize energy service demand for coupled EDGE-T/REMIND model output
 
 
@@ -236,20 +235,28 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
 
     if (isHarmonized) {
       browser()
+      remindEDGEvarMap <- fread(system.file("commonVarsEDGETremind.csv",
+                                             package = "reporttransport"), skip = 1)
+      remindEDGEvarMap <- remindEDGEvarMap[!is.na(variable)]
       #Load REMIND reporting
+      mifs <- list.files(".", recursive = FALSE, full.names = TRUE)
+      mif <- mifs[grepl(".*withoutPlus\\.mif", mifs)]
       #Select matching variables
+      REMINDvars <- as.data.table(read.quitte(mif))
+      setnames(REMINDvars, c("variable", "value"),
+               c("REMINDvar", "REMINDval"))
+      REMINDvars <-  merge(REMINDvars, remindEDGEvarMap, by = "REMINDvar")
       #Check for consistency
-
-
-
-      sharedVarsAfterHarmonization <- reporting[variable %in% REMINDoutput$variable]
-      if (nrow(sharedVarsAfterHarmonization) > 0) {
-        reporting <- reporting[!variable %in% REMINDoutput$variable]
-        setnames(sharedVarsAfterHarmonization, "value", "edge")
-        setnames(REMINDoutput, "value", "remind")
-        sharedVarsAfterHarmonization <- merge(sharedVarsAfterHarmonization, REMINDoutput,
-         by = intersect(names(sharedVarsAfterHarmonization), names(REMINDoutput)), all.x = TRUE)
-        sharedVarsAfterHarmonization[, diff := (remind-edge)/remind]
+      test <- merge(reporting, REMINDvars, by = intersect(names(reporting), names(REMINDvars)))
+      #Exclude World from the harmonization, as the bunkers aggregation works differently there
+      #Exclude data after 2100 from the harmonization as it cause
+      test <- test[!region == "World" & period <= 2100]
+      if (nrow(test) > 0) {
+        test[, diff := (REMINDval - value) / REMINDval]
+        sharedVarsBeforeHarmonization <- reporting[variable %in% remindEDGEvarMap$variable]
+        setnames(sharedVarsBeforeHarmonization, "value", "edgetBeforeHarm")
+        test <- merge(sharedVarsBeforeHarmonization, test, by = intersect(names(sharedVarsBeforeHarmonization), names(test)))
+        test[, factor := REMINDval / edgetBeforeHarm]
         storeData(edgetOutputDir, list(sharedVarsAfterHarmonization = sharedVarsAfterHarmonization))
         message("The following variables will be dropped from the EDGE-Transport reporting because
                 they are in the REMIND reporting: ", paste(unique(sharedVarsAfterHarmonization$variable), collapse = ", "))
