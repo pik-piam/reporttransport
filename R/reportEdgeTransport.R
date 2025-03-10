@@ -134,24 +134,29 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
 
   if (isHarmonized) {
+    # Read in energy service demand from last REMIND iteration
     gdx <- file.path(".", "fulldata.gdx")
     harmREMINDdemand <- toolLoadREMINDesDemand(gdx, data$helpers)
+    # Apply vehicle sales and mode shares from last edge-t iteration
     harmESdemandFV <- toolCalculateFVdemand(harmREMINDdemand,
                                                   data$vehSalesAndModeShares[period %in% harmREMINDdemand$period],
                                                   data$helpers)
+
     harmESdemandFV <- rbind(harmESdemandFV, data$ESdemandFVsalesLevel[!period %in% unique(harmESdemandFV$period)])
-    # Calculate vehicle stock for cars, trucks and busses -------
+
+    # Calculate vehicle stock for cars, trucks and busses again
     fleetSizeAndComposition <- toolCalculateFleetComposition(harmESdemandFV,
                                                              data$vehicleDepreciationFactors,
                                                              data$vehSalesAndModeShares,
                                                              data$annualMileage,
                                                              data$scenSpecLoadFactor,
                                                              data$helpers)
+    # Replace unharmonized data
     data$ESdemandFVsalesLevel <- harmESdemandFV
     data$fleetSizeAndComposition <- fleetSizeAndComposition
     baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
   }
-  browser()
+
   # Harmonize energy service demand for coupled EDGE-T/REMIND model output
 
 
@@ -233,8 +238,10 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                               gdx                         = data$gdxPath,
                               isTransportExtendedReported = isTransportExtendedReported)
 
+    if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))
+
     if (isHarmonized) {
-      browser()
+      # Load shared variables of REMIND and edge-t (reported by remind2 and reporttransport)
       remindEDGEvarMap <- fread(system.file("commonVarsEDGETremind.csv",
                                              package = "reporttransport"), skip = 1)
       remindEDGEvarMap <- remindEDGEvarMap[!is.na(variable)]
@@ -249,21 +256,17 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       #Check for consistency
       test <- merge(reporting, REMINDvars, by = intersect(names(reporting), names(REMINDvars)))
       #Exclude World from the harmonization, as the bunkers aggregation works differently there
-      #Exclude data after 2100 from the harmonization as it cause
+      #Exclude data after 2100 from the harmonization as edget only runs until 2100
       test <- test[!region == "World" & period <= 2100]
       if (nrow(test) > 0) {
-        test[, diff := (REMINDval - value) / REMINDval]
-        sharedVarsBeforeHarmonization <- reporting[variable %in% remindEDGEvarMap$variable]
-        setnames(sharedVarsBeforeHarmonization, "value", "edgetBeforeHarm")
-        test <- merge(sharedVarsBeforeHarmonization, test, by = intersect(names(sharedVarsBeforeHarmonization), names(test)))
-        test[, factor := REMINDval / edgetBeforeHarm]
-        storeData(edgetOutputDir, list(sharedVarsAfterHarmonization = sharedVarsAfterHarmonization))
+        test[, diffAbs := abs(REMINDval - value)]
+        test[, diffRel := abs(REMINDval - value) / REMINDval]
+        reporting <- reporting[!variable %in% unique(remindEDGEvarMap$variable)]
         message("The following variables will be dropped from the EDGE-Transport reporting because
-                they are in the REMIND reporting: ", paste(unique(sharedVarsAfterHarmonization$variable), collapse = ", "))
-
+                they are in the REMIND reporting: ", paste(unique(remindEDGEvarMap$variable), collapse = ","))
       }
     }
-    if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))
+
   }
 
   return(reporting)
