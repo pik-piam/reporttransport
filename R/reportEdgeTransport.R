@@ -36,7 +36,6 @@
 #'          enabled or the transport data in MIF format
 #' @author Johanna Hoppe
 #' @importFrom quitte write.mif
-#' @importFrom tibble tribble
 #' @import data.table
 #' @export
 
