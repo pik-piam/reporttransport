@@ -133,7 +133,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
 
   if (isHarmonized) {
-    # Read in energy service demand from last REMIND iteration
+    #Read in energy service demand from last REMIND iteration
     gdx <- file.path(".", "fulldata.gdx")
     harmREMINDdemand <- toolLoadREMINDesDemand(gdx, data$helpers)
     # Apply vehicle sales and mode shares from last edge-t iteration
@@ -244,26 +244,28 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       remindEDGEvarMap <- fread(system.file("commonVarsEDGETremind.csv",
                                              package = "reporttransport"), skip = 1)
       remindEDGEvarMap <- remindEDGEvarMap[!is.na(variable)]
-      #Load REMIND reporting
-      mifs <- list.files(".", recursive = FALSE, full.names = TRUE)
-      mif <- mifs[grepl(".*withoutPlus\\.mif", mifs)]
-      #Select matching variables
-      REMINDvars <- as.data.table(read.quitte(mif))
-      setnames(REMINDvars, c("variable", "value"),
-               c("REMINDvar", "REMINDval"))
-      REMINDvars <-  merge(REMINDvars, remindEDGEvarMap, by = "REMINDvar")
-      #Check for consistency
-      test <- merge(reporting, REMINDvars, by = intersect(names(reporting), names(REMINDvars)))
-      #Exclude World from the harmonization, as the bunkers aggregation works differently there
-      #Exclude data after 2100 from the harmonization as edget only runs until 2100
-      test <- test[!region == "World" & period <= 2100]
-      if (nrow(test) > 0) {
+      if (nrow(remindEDGEvarMap) > 0) {
+        #Load REMIND reporting
+        mifs <- list.files(".", recursive = FALSE, full.names = TRUE)
+        mif <- mifs[grepl(".*withoutPlus\\.mif", mifs)]
+        #Select matching variables
+        REMINDvars <- as.data.table(read.quitte(mif))
+        setnames(REMINDvars, c("variable", "value"),
+                 c("REMINDvar", "REMINDval"))
+        REMINDvars <-  merge(REMINDvars, remindEDGEvarMap, by = "REMINDvar")
+        #Check for consistency
+        test <- merge(reporting, REMINDvars, by = intersect(names(reporting), names(REMINDvars)))
+        #Exclude World from the harmonization, as the bunkers aggregation works differently there
+        #Exclude data after 2100 from the harmonization as edget only runs until 2100
+        test <- test[!region == "World" & period <= 2100]
+
         test[, diffAbs := abs(REMINDval - value)]
         test[, diffRel := abs(REMINDval - value) / REMINDval]
         reporting <- reporting[!variable %in% unique(remindEDGEvarMap$variable)]
-        message("The following variables will be dropped from the EDGE-Transport reporting because
-                they are in the REMIND reporting: ", paste(unique(remindEDGEvarMap$variable), collapse = ","))
+        message("Transport variables reported by reporttransport were harmonized to last REMIND iteration.")
       }
+      # Store the new data after the harmonization
+      storeData(outputFolder = folderPath, data[c("ESdemandFVsalesLevel", "fleetSizeAndComposition")])
     }
 
   }
