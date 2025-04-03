@@ -1,4 +1,4 @@
-"** This file contains a mapping of the variables reported by remind2 for the GAMS side of transport in REMIND and the variables reported by reporttransport for the coupled transport sector model EDGE-T. Under ""variable"" the equivalent names in EDGE-T are listed. The list of transport variables reported by remind2 is comprehensive. Variables that do not have an equivalent in reporttransport get NA. date = 06-02-2025"	
+** This file contains a mapping of the variables reported by remind2 for the GAMS side of transport in REMIND and the variables reported by reporttransport for the coupled transport sector model EDGE-T. Under variable the equivalent names in EDGE-T are listed. The list of transport variables reported by remind2 is comprehensive. Variables that do not have an equivalent in reporttransport get NA. date = 06-02-2025	
 REMINDvar	variable
 ES|Transport|Freight                                     	ES|Transport|Freight with bunkers
 ES|Transport|Freight|Long distance                       	ES|Transport|Bunkers|Freight
@@ -80,7 +80,7 @@ FE|Transport|Pass|Electricity                            	FE|Transport|Pass with
 FE|Transport|Pass|Gases                                  	FE|Transport|Pass with bunkers|Gases     
 FE|Transport|Pass|Hydrogen                               	FE|Transport|Pass with bunkers|Hydrogen     
 FE|Transport|Pass|Liquids                                	FE|Transport|Pass with bunkers|Liquids
-FE|Transport|Pass|Long distance|Diesel Liquids           	FE|Transport|Bunkers|Pass|Liquids
+FE|Transport|Pass|Long distance|Diesel Liquids           	FE|Transport|Bunkers|Pass
 FE|Transport|Pass|Short-Medium distance|Diesel Liquids   	NA
 FE|Transport|Pass|Short-Medium distance|Electricity      	FE|Transport|Pass|Electricity      
 FE|Transport|Pass|Short-Medium distance|Gases            	FE|Transport|Pass|Gases     
