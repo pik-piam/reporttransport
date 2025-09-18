@@ -13,10 +13,18 @@
 #' @export
 
 reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, helpers) {
-
   all <- value <- Fossil <- Biomass <- Hydrogen <- variable <- type <- from <- bioToSynShareOverall <-
-    synToBioShareOverall <- fuel <- technology <- univocalName <- share <- emiSectors <- period <-
-      to <- from <- sumbio <- sumsyn <- . <- region <- unit <- NULL
+  synToBioShareOverall <- fuel <- technology <- univocalName <- share <- emiSectors <- period <-
+  to <- from <- sumbio <- sumsyn <- . <- region <- unit <- NULL
+
+  disaggregateShare <- function(REMINDsegmentShare, mapping) {
+    setnames(REMINDsegmentShare, "region", "regionCode12")
+    share <- merge(REMINDsegmentShare, mapping,
+                   by = "regionCode12", allow.cartesian = TRUE)
+    setnames(share, "regionCode21", "region")
+    share <- share[, regionCode12 := NULL]
+    return(share)
+  }
 
   calcSplit <- function(REMINDsegment, dataREMIND, splitOverall) {                                     # nolint: object_name_linter
 
@@ -49,7 +57,7 @@ reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, helpers) {
     # the fossil share is kept constant, the remaining amount is distributed according to the
     # biotosynshareoverall and the synToBioShareOverall
     # e.g. 500 -> 300 is disrtributed to fossil (in accordance to fossil share)
-    # remaining 200 is distributed liked this: bio -> 200 * biotosynshareoverall, syn <- 200 * synToBioShareOverall
+    # remaining 200 is distributed liked this: bio <- 200 * biotosynshareoverall, syn <- 200 * synToBioShareOverall
     dataLiquids[, Fossil := value[from == "seliqfos"] / sum(value), by = c("region", "period")]
     dataLiquids[, Biomass := sum(value[from %in% c("seliqbio", "seliqsyn")]) /
                   sum(value) * bioToSynShareOverall, by = c("region", "period")]
@@ -79,7 +87,7 @@ reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, helpers) {
 
     shares[, sum := sum(value), by = c("region", "period", "technology")]
 
-    if (anyNA(shares) | nrow(shares[(sum < 0.9999 | sum > 1.0001) & sum != 0])) {
+    if (anyNA(shares) || nrow(shares[(sum < 0.9999 | sum > 1.0001) & sum != 0])) {
       stop("Something went wrong with the mixed carrier splitting. Please check calcSplit()")
     }
     shares[, c("sum") := NULL]
@@ -149,10 +157,32 @@ reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, helpers) {
   splitTransportOverall <- list(liqBioToSyn = liqBioToSyn, gasesBioToSyn = gasesBioToSyn)
 
   REMINDsegments <- c("LDVs", "nonLDVs", "bunker")                                                                     # nolint: object_name_linter
+
+  numberOfRegions <- length(gdx::readGDX(gdxPath, "all_regi"))
+  if (numberOfRegions == 12) {
+    # store data of IND as an example of a non-aggregated region for testing
+    testIND <- copy(liqBioToSyn)[region == "IND"]
+
+    # de-aggregate from 12 to 21 regions if needed
+    # using same share for all sub regions
+    map <- unique(helpers$regionmappingISOto21to12[, c("regionCode12", "regionCode21")])
+    splitTransportOverall <- lapply(splitTransportOverall, disaggregateShare, map)
+    demFeSector <- disaggregateShare(demFeSector, map)
+
+    # test: share for IND should stay unchanged
+    # use data.frame for comparison to ignore keys, reorder cols
+    testINDafter <- as.data.frame(splitTransportOverall[["liqBioToSyn"]][region == "IND"])
+    cols <- names(testINDafter)
+    testIND <- as.data.frame(testIND[, ..cols])
+    if (!isTRUE(all.equal(testIND, testINDafter))) {
+      stop("Error in deaggregation of FE shares in reportLiquidsAndGasesComposition()")
+    }
+  }
+
   splitShares <- sapply(REMINDsegments, calcSplit, demFeSector, splitTransportOverall,               # nolint: undesirable_function_linter
                         simplify = FALSE, USE.NAMES = TRUE)
 
-  # Make sure that only Liquids are supplied
+  # Make sure that only Liquids are supplied (should it say: liquids and gases?)
   dtFE <- copy(dtFE)
   dtFE <- dtFE[technology %in% c("Liquids", "Gases")]
   splitShares <- lapply(splitShares, approx_dt, xdata = unique(dtFE$period), xcol = "period", ycol = "value", extrapolate = TRUE)

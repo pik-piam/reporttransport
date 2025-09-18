@@ -53,24 +53,71 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE,  orderVars = "user")
 ```
 
-### Per Capita - Energy Service by mode - with bunkers
+
 ```{r}
-items <- c(
+indicators <- c(
     "ES|Transport edge|Pass pCap",
+    "ES|Transport|Pass with bunkers pCap",
     "ES|Transport|Pass|Aviation pCap",
     "ES|Transport|Bunkers|Pass|International Aviation pCap",
     "ES|Transport|Pass|Domestic Aviation pCap",
+    "ES|Transport|Pass|Rail pCap",
+    "ES|Transport|Pass|Road|LDV|Four Wheelers pCap",
     "ES|Transport|Pass|Rail|HSR pCap",
     "ES|Transport|Pass|Rail|non-HSR pCap",
     "ES|Transport|Pass|Road|Bus pCap",
+    "ES|Transport|Pass|Road pCap",
     "ES|Transport|Pass|Road|LDV pCap",
-    "ES|Transport|Pass|Road|LDV|Four Wheelers pCap",
     "ES|Transport|Pass|Road|LDV|Two Wheelers pCap",
     "ES|Transport|Pass|Non-motorized|Walk pCap",
-    "ES|Transport|Pass|Non-motorized|Cycle pCap"
+    "ES|Transport|Pass|Non-motorized|Cycle pCap",
+    "ES|Transport|Pass|Non-motorized pCap",
+    "Stock|Transport|Pass|Road|LDV|Four Wheelers pCap"
+    )
+```
+
+### Energy Service by mode line plot
+```{r, results = 'asis'}
+for (i in indicators) {
+  i_total <- sub(" pCap", "", i)
+  cat("\n\n####", i_total, "\n")
+  showLinePlots(data, i_total)
+}
+```
+
+### PerCap Energy Service by mode - line - Time domain
+```{r, results = 'asis'}
+for (i in indicators) {
+  cat("\n\n####", sub("(\\|per-capita)|( pCap)", "", i), "\n")
+  showLinePlots(data, i, scales = "fixed")
+}
+```
+
+### PerCap Energy Service by mode - line - GDP domain
+```{r}
+items <- c(
+    "ES|Transport edge|Pass pCap",
+    "ES|Transport|Pass with bunkers pCap",
+    "ES|Transport|Pass|Aviation pCap",
+    "ES|Transport|Bunkers|Pass|International Aviation pCap",
+    "ES|Transport|Pass|Domestic Aviation pCap",
+    "ES|Transport|Pass|Rail pCap",
+    "ES|Transport|Pass|Road|LDV|Four Wheelers pCap",
+    "ES|Transport|Pass|Rail|HSR pCap",
+    "ES|Transport|Pass|Rail|non-HSR pCap",
+    "ES|Transport|Pass|Road pCap",
+    "ES|Transport|Pass|Road|Bus pCap",
+    "ES|Transport|Pass|Road|LDV pCap",
+    "ES|Transport|Pass|Road|LDV|Two Wheelers pCap",
+    "ES|Transport|Pass|Non-motorized|Walk pCap",
+    "ES|Transport|Pass|Non-motorized|Cycle pCap",
+    "ES|Transport|Pass|Non-motorized pCap",
+    "Stock|Transport|Pass|Road|LDV|Four Wheelers pCap"
     )
 #showMultiLinePlots(data, items[1:6], nrowNum = 2)
 #showMultiLinePlots(data, items[7:12], nrowNum = 2)
+
+
 showMultiLinePlots(data, items[1])
 showMultiLinePlots(data, items[2])
 showMultiLinePlots(data, items[3])
@@ -83,8 +130,15 @@ showMultiLinePlots(data, items[9])
 showMultiLinePlots(data, items[10])
 showMultiLinePlots(data, items[11])
 showMultiLinePlots(data, items[12])
-showMultiLinePlotsByVariable(data, items[1:6], "GDP|PPP pCap", nrowNum = 2)
-showMultiLinePlotsByVariable(data, items[7:12], "GDP|PPP pCap", nrowNum = 2)
+showMultiLinePlots(data, items[13])
+showMultiLinePlots(data, items[14])
+showMultiLinePlots(data, items[15])
+showMultiLinePlots(data, items[16])
+showMultiLinePlots(data, items[17])
+
+showMultiLinePlotsByVariable(data, items[c(1:7,11)], "GDP|PPP pCap", nrowNum = 2)
+showMultiLinePlotsByVariable(data, items[c(8:15)], "GDP|PPP pCap", nrowNum = 2)
+showMultiLinePlotsByVariable(data, items[c(16,17)], "GDP|PPP pCap", nrowNum = 2)
 walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
 ```
 
@@ -175,11 +229,31 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
 
+```{r}
+indicators <- c(
+      "ES|Transport edge|Freight pCap",
+      "ES|Transport|Freight with bunkers pCap",
+      "ES|Transport|Bunkers|Freight|International Shipping pCap",
+      "ES|Transport|Freight|Domestic Shipping pCap",
+      "ES|Transport|Freight|Rail pCap",
+      "ES|Transport|Freight|Road pCap"
+    )
+```
+
+### Per Capita - Energy Service by mode - with bunkers Time domain
+```{r, results = 'asis'}
+for (i in indicators) {
+  cat("\n\n####", sub("(\\|per-capita)|( pCap)", "", i), "\n")
+  showLinePlots(data, i, scales = "fixed")
+}
+```
+
 ### Per Capita - Energy Service by mode - Freight with bunkers
 ```{r}
 
 items <- c(
       "ES|Transport edge|Freight pCap",
+      "ES|Transport|Freight with bunkers pCap",
       "ES|Transport|Bunkers|Freight|International Shipping pCap",
       "ES|Transport|Freight|Domestic Shipping pCap",
       "ES|Transport|Freight|Rail pCap",

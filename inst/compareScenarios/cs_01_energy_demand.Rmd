@@ -4,7 +4,7 @@
 ## Final Energy by carrier
 
 ### Total with bunkers
-```{r}
+```{r Total w/ bunkers}
 tot <- "FE|Transport with bunkers"
 items <- c(
   "FE|Transport with bunkers|Electricity",
@@ -18,8 +18,8 @@ showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)
 ```
 
-### Total 
-```{r}
+### Total w/o bunkers
+```{r Total w/o bunkers}
 tot <- "FE|Transport edge"
 items <- c(
   "FE|Transport edge|Electricity",
@@ -32,6 +32,19 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)
 ```
+
+### Bunkers
+```{r Bunkers}
+tot <- "FE|Transport|Bunkers"
+items <- c(
+  "FE|Transport|Bunkers|Freight|Liquids",
+  "FE|Transport|Bunkers|Pass|Liquids"
+  )
+showAreaAndBarPlots(data, items, orderVars = "user")
+showAreaAndBarPlots(data, items, fill = TRUE, orderVars = "user")
+walk(items, showLinePlots, data = data)
+```
+
 
 ### Road
 ```{r}
@@ -134,20 +147,22 @@ walk(items, showLinePlots, data = data)
 
 ### Passenger Aviation
 
-```{r}
-# Only available in NEW
-# tot <- "FE|Transport|Pass|Aviation"
-# items <- c(
-#   "FE|Transport|Pass|Aviation|Hydrogen",
-#   "FE|Transport|Pass|Aviation|Liquids"
-#  )
-# showAreaAndBarPlots(data, items, tot, orderVars = "user")
-# showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
-# showLinePlots(data, tot)
-# walk(items, showLinePlots, data = data)
+```{r Passenger Aviation}
+
+ tot <- "FE|Transport|Pass|Aviation"
+ items <- c(
+   "FE|Transport|Pass|Aviation|Hydrogen",
+   "FE|Transport|Pass|Aviation|Liquids"
+  )
+ showAreaAndBarPlots(data, items, tot, orderVars = "user")
+ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+ showLinePlots(data, tot)
+ walk(items, showLinePlots, data = data)
 ```
 
-```{r}
+### Passenger Domestic Aviation
+
+```{r Passenger Domestic Aviation}
 tot <- "FE|Transport|Pass|Domestic Aviation"
 items <- c(
   "FE|Transport|Pass|Domestic Aviation|Hydrogen",
@@ -159,7 +174,9 @@ showLinePlots(data, tot)
 walk(items, showLinePlots, data = data)
 ```
 
-```{r}
+### Passenger International Aviation
+
+```{r Passenger International Aviation}
 tot <- "FE|Transport|Bunkers|Pass|International Aviation"
 items <- c(
   "FE|Transport|Bunkers|Pass|International Aviation|Liquids|Hydrogen",
