@@ -99,6 +99,7 @@ reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, helpers) {
     # map EDGE-T categories on segements
     modes <- list(
       LDVs = c(helpers$filterEntries$trn_pass_road_LDV_4W,
+                helpers$filterEntries$trn_pass_road_LDV_3W,
                helpers$filterEntries$trn_pass_road_LDV_2W),
       nonLDVs = c(helpers$filterEntries$trn_freight_road, "Domestic Ship",
                   "Freight Rail", "Domestic Aviation", "Passenger Rail", "HSR", "Bus"),

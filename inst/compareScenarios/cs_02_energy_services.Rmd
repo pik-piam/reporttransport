@@ -11,6 +11,7 @@ items <- c(
     "ES|Transport|Pass|Rail|non-HSR",
     "ES|Transport|Pass|Road|Bus",
     "ES|Transport|Pass|Road|LDV|Four Wheelers",
+    "ES|Transport|Pass|Road|LDV|Three Wheelers",
     "ES|Transport|Pass|Road|LDV|Two Wheelers",
     "ES|Transport|Pass|Non-motorized|Walk",
     "ES|Transport|Pass|Non-motorized|Cycle"
@@ -29,6 +30,7 @@ items <- c(
     "ES|Transport|Pass|Rail|non-HSR",
     "ES|Transport|Pass|Road|Bus",
     "ES|Transport|Pass|Road|LDV|Four Wheelers",
+    "ES|Transport|Pass|Road|LDV|Three Wheelers",
     "ES|Transport|Pass|Road|LDV|Two Wheelers",
     "ES|Transport|Pass|Non-motorized|Walk",
     "ES|Transport|Pass|Non-motorized|Cycle"
@@ -69,6 +71,7 @@ indicators <- c(
     "ES|Transport|Pass|Road pCap",
     "ES|Transport|Pass|Road|LDV pCap",
     "ES|Transport|Pass|Road|LDV|Two Wheelers pCap",
+    "ES|Transport|Pass|Road|LDV|Three Wheelers pCap",
     "ES|Transport|Pass|Non-motorized|Walk pCap",
     "ES|Transport|Pass|Non-motorized|Cycle pCap",
     "ES|Transport|Pass|Non-motorized pCap",
@@ -109,6 +112,7 @@ items <- c(
     "ES|Transport|Pass|Road|Bus pCap",
     "ES|Transport|Pass|Road|LDV pCap",
     "ES|Transport|Pass|Road|LDV|Two Wheelers pCap",
+    "ES|Transport|Pass|Road|LDV|Three Wheelers pCap",
     "ES|Transport|Pass|Non-motorized|Walk pCap",
     "ES|Transport|Pass|Non-motorized|Cycle pCap",
     "ES|Transport|Pass|Non-motorized pCap",
@@ -158,9 +162,10 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-#### LDV 2-Wheelers
+#### LDV 2-3-Wheelers
 ```{r}
-tot <- "ES|Transport|Pass|Road|LDV|Two Wheelers"
+tot <- c("ES|Transport|Pass|Road|LDV|Two Wheelers",
+        "ES|Transport|Pass|Road|LDV|Three Wheelers")
 items <- c(
      "ES|Transport|Pass|Road|LDV|Two Wheelers|BEV",
      "ES|Transport|Pass|Road|LDV|Two Wheelers|Liquids"

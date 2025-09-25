@@ -129,6 +129,7 @@ pCapVariables <- tribble(
   "ES|Transport|Pass|Road|LDV", "pkm/yr", 1e9,
   "ES|Transport|Pass|Road", "pkm/yr", 1e9,
   "ES|Transport|Pass|Road|LDV|Four Wheelers", "pkm/yr", 1e9,
+  "ES|Transport|Pass|Road|LDV|Three Wheelers", "pkm/yr", 1e9,
   "ES|Transport|Pass|Road|LDV|Two Wheelers", "pkm/yr", 1e9,
   "ES|Transport|Pass|Road|LDV|BEV", "pkm/yr", 1e9,
   "ES|Transport|Pass|Road|LDV|FCEV", "pkm/yr", 1e9,

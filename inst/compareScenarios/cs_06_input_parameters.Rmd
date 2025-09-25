@@ -63,7 +63,7 @@ showTransportInputMultiLinePlots <- function(data, vars, scales = "free_y", nrow
 ```{r}
 vars <- as.character(unique(data$variable))
 items <- vars[grepl("Load factor \\(raw\\)\\|.*", vars)]
-itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*|.*Two Wheelers.*|.*Non-motorized.*", items)]
+itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*|.*Two Wheelers.*|.*Three Wheelers.*|.*Non-motorized.*", items)]
 plotData <- data %>%
   filter(variable %in% itemsSplit) %>%
   mutate(variable = gsub("(Load factor raw|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable))

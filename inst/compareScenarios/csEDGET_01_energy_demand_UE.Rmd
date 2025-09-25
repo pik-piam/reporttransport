@@ -56,6 +56,7 @@ items <- c(
     "UE|Transport|Pass|Rail|non-HSR",
     "UE|Transport|Pass|Road|Bus",
     "UE|Transport|Pass|Road|LDV|Four Wheelers",
+    "UE|Transport|Pass|Road|LDV|Three Wheelers",
     "UE|Transport|Pass|Road|LDV|Two Wheelers"
   )
 walk(items, showLinePlots, data = data)

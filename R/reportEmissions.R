@@ -74,8 +74,10 @@ reportEmissions <- function(dtFE, gdxPath, prefix, helpers) {
   ## attribute explicitly fuel used to the FE values
   dtFE <- copy(dtFE)
   dtFE[univocalName %in% c(helpers$filterEntries$trn_pass_road_LDV_4W,
+                           helpers$filterEntries$trn_pass_road_LDV_3W,
                            helpers$filterEntries$trn_pass_road_LDV_2W) & technology == "Liquids", to := "fepet"]
   dtFE[!(univocalName %in% c(helpers$filterEntries$trn_pass_road_LDV_4W,
+                             helpers$filterEntries$trn_pass_road_LDV_3W,
                              helpers$filterEntries$trn_pass_road_LDV_2W)) & technology == "Liquids", to := "fedie"]
   dtFE[technology == "Gases", to := "fegas"]
 
