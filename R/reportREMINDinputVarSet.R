@@ -9,7 +9,7 @@
 #' @param scenSpecPrefTrends scenario specific preference trends in high temporal resolution
 #' @param scenSpecEnIntensity scenario specific energy intensity in high temporal resolution
 #' @param initialIncoCosts initial inconvenience cost
-#' @param annualMileage annual mileage in high temporal resolution
+#' @param scenSpecAnnualMileage annual mileage in high temporal resolution
 #' @param timeValueCosts time value cost equivalent in high temporal resolution
 #' @param hybridElecShare share of electric driving for hybrid electric vehicles
 #' @param demScen demand scenario
@@ -28,12 +28,12 @@ reportREMINDinputVarSet <- function(fleetESdemand,
                                     fleetFEdemand,
                                     fleetEnergyIntensity,
                                     scenSpecLoadFactor,
+                                    scenSpecAnnualMileage,
                                     fleetCapCosts,
                                     combinedCAPEXandOPEX,
                                     scenSpecPrefTrends,
                                     scenSpecEnIntensity,
                                     initialIncoCosts,
-                                    annualMileage,
                                     timeValueCosts,
                                     hybridElecShare,
                                     demScen,
