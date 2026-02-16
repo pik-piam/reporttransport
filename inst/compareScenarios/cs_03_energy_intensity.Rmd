@@ -8,6 +8,7 @@ items <- c(
           "Energy intensity|Transport|Pass|Road",
           "Energy intensity|Transport|Pass|Road|LDV",
           "Energy intensity|Transport|Pass|Road|LDV|Four Wheelers",
+          "Energy intensity|Transport|Pass|Road|LDV|Three Wheelers",
           "Energy intensity|Transport|Pass|Road|LDV|Two Wheelers",
           "Energy intensity|Transport|Pass|Road|Bus"
   )

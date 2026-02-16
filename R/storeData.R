@@ -88,20 +88,24 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
   ## than transferred in vars)
   #########################################################################
   # general data
-  if (!(is.null(vars$SSPscen) & is.null(vars$transportPolScen) & is.null(vars$demScen))) {                          # nolint: vector_logic_linter
+
+  if (!(is.null(vars$SSPscen) & is.null(vars$transportPolScen) & is.null(vars$demScen) & is.null(vars$startyear))) {
+    # nolint: vector_logic_linter
     cfg <- list(
       SSPscen = vars$SSPscen,
       transportPolScen = vars$transportPolScen,
       demScen = vars$demScen,
+      cm_startyear = vars$startyear,
       timeStamp = format(Sys.time(), "%Y-%m-%d_%H.%M")
     )
     saveRDS(cfg, file.path(outputFolder, "cfg.RDS"))
-    vars <- vars[!names(vars) %in% c("SSPscen", "transportPolScen", "demScen")]
+    vars <- vars[!names(vars) %in% c("SSPscen", "transportPolScen", "demScen", "startyear")]
   }
   if (!is.null(vars$gdxPath)) {
     file.copy(vars$gdxPath, file.path(outputFolder))
-    vars <- vars[!names(vars) %in% c("gdxPath")]
   }
+
+  vars <- vars[names(vars) != "gdxPath"]
 
   # store calibration data if provided
   if (!is.null(vars$histPrefs)) {

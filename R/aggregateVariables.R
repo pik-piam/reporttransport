@@ -15,7 +15,6 @@
 #' @export
 
 aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
-
   rownum <- sum <- toKeep <- sum <- variableName <- variable <- cols <- value <-
     . <- fuel <- sector <- technology <- subsectorL1 <- NULL
 
@@ -59,7 +58,6 @@ aggregateVariables <- function(vars, mapAggregation, weight = NULL) {
     }
     return(aggrvars)
   }
-
   createVariableEntry <- function(aggrvars, cols) {
     varNameCols <- c(cols)
     varNames <- unique(aggrvars[, ..cols])

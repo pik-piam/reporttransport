@@ -76,43 +76,11 @@ reportREMINDinputVarSet <- function(fleetESdemand,
   inputREMIND[["f29_trpdemand"]] <- f29_trpdemand
   inputREMIND[["weightESdemand"]] <- weightESdemand
 
-  ## Input data for edgeTransport iterative that is coupled to REMIND--------------------------------------------------------
-
-  # CAPEXandNonFuelOPEX
-  # Fuel costs are added from the fulldata.gdx of the last REMIND iteration in the iterative script
-  CAPEXandNonFuelOPEX <- copy(combinedCAPEXandOPEX)                                                                                     # nolint: object_name_linter
-  CAPEXandNonFuelOPEX <- CAPEXandNonFuelOPEX[!variable == "Fuel costs"]                                                                 # nolint: object_name_linter
-  checkForNAsAndDups(CAPEXandNonFuelOPEX, "CAPEXandNonFuelOPEX", "reportREMINDinputDataVarSet()")
-  # scenSpecPrefTrends
-  checkForNAsAndDups(scenSpecPrefTrends, "scenSpecPrefTrends", "reportREMINDinputDataVarSet()")
-  # scenSpecLoadFactor
-  checkForNAsAndDups(scenSpecLoadFactor, "scenSpecLoadFactor", "reportREMINDinputDataVarSet()")
-  # scenSpecEnIntensity
-  checkForNAsAndDups(scenSpecEnIntensity, "scenSpecEnIntensity", "reportREMINDinputDataVarSet()")
-  # initialIncoCosts
-  checkForNAsAndDups(initialIncoCosts, "initialIncoCosts", "reportREMINDinputDataVarSet()")
-  # annualMileage
-  checkForNAsAndDups(annualMileage, "annualMileage", "reportREMINDinputDataVarSet()")
-  # timeValueCosts
-  checkForNAsAndDups(timeValueCosts, "timeValueCosts", "reportREMINDinputDataVarSet()")
-
   ## Additional information used from EDGE-T standalone in pik-piam---------------------------------------------------------
   shares_LDV_transport <- toolReportsharesLDVtransport(fleetFEdemand, timeResReporting, demScen,
                                                        SSPscen, transportPolScen, helpers)
 
-  inputIterative <- list(
-    CAPEXandNonFuelOPEX = CAPEXandNonFuelOPEX,
-    scenSpecPrefTrends = scenSpecPrefTrends,
-    scenSpecLoadFactor = scenSpecLoadFactor,
-    scenSpecEnIntensity = scenSpecEnIntensity,
-    initialIncoCosts = initialIncoCosts,
-    annualMileage = annualMileage,
-    timeValueCosts = timeValueCosts
-  )
+  inputREMIND <- append(inputREMIND, list(shares_LDV_transport = shares_LDV_transport))
 
-  inputIterative <- lapply(inputIterative, prepareForREMIND, demScen, SSPscen, transportPolScen)
-  input <- append(inputREMIND, inputIterative)
-  input <- append(input, list(shares_LDV_transport = shares_LDV_transport))
-
-  return(input)
+  return(inputREMIND)
 }

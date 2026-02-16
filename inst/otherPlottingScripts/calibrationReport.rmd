@@ -1,0 +1,167 @@
+---
+title: "Calibration Report"
+author: "Johanna Hoppe"
+date: "2026-01-12"
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(data.table)
+library(ggplot2)
+```
+
+
+```{r read in data, echo=FALSE}
+#path to runs that shall be evaluated
+path <- ""
+files <- list.files(path, pattern = ".*calibrationReport.RDS", full.names = TRUE, recursive = TRUE)
+
+data <- rbindlist(lapply(files, function(x){
+  calibrationReport <- readRDS(x)
+  caseName <- gsub("/3_Calibration.*", "", x)
+  caseName <- gsub(".*/", "", caseName)
+  calibrationReport[, case := caseName]
+  }))
+
+regions <- unique(data$region)
+
+#test only a specific region or vehicle type:
+
+#reg <- "MEA"
+#data <- data[region == reg]
+#vehType <- "Truck (0-3_5t)"
+#data <- data[vehicleType == vehType]
+
+```
+
+
+# FV
+```{r FV, echo=FALSE, results='asis'}
+
+for (reg in regions) {
+  cat("\n\n## Region:", reg, "\n\n")
+  FVdata <- data[region == reg & level == "FV"]
+  for (vehType in unique(FVdata$vehicleType)) {
+    cat("\n\n### Vehicle type:", vehType, "\n\n")
+    branchData <- FVdata[vehicleType == vehType]
+    for (tech in unique(branchData$technology)) {
+      plotData <- branchData[technology == tech]
+      p <- ggplot(plotData) +
+            geom_line(aes(x = period, y = shareCheck, linetype = case), linewidth = 1.2, color = "red") +
+            geom_line(aes(x = period, y = share), linewidth = 1.2, color = "black") +
+      labs(
+      title = tech,
+      x = "Year",
+      y = "Share"
+      ) +
+      theme_minimal()
+      print(p)
+    }
+  }
+}
+
+```
+
+# VS3
+```{r VS3, echo=FALSE, results='asis'}
+for (reg in regions) {
+  cat("\n\n## Region:", reg, "\n\n")
+  VS3data <- data[region == reg & level == "VS3"]
+  for (L3 in unique(VS3data$subsectorL3)) {
+    cat("\n\n### subsector L3:", L3, "\n\n")
+    branchData <- VS3data[subsectorL3 == L3]
+    for (vehType in unique(branchData$vehicleType)) {
+      plotData <- branchData[vehicleType == vehType]
+      p <- ggplot(plotData) +
+            geom_line(aes(x = period, y = shareCheck, linetype = case), linewidth = 1.2, color = "red") +
+            geom_line(aes(x = period, y = share), linewidth = 1.2, color = "black") +
+      labs(
+      title = vehType,
+      x = "Year",
+      y = "Share"
+      ) +
+      theme_minimal()
+      print(p)
+    }
+  }
+}
+```
+
+# S3S2
+```{r S1S2, echo=FALSE, results='asis'}
+for (reg in regions) {
+  cat("\n\n## Region:", reg, "\n\n")
+  S3S2data <- data[region == reg & level == "S1S2"]
+  for (L2 in unique(S3S2data$subsectorL2)) {
+    cat("\n\n### subsector L2:", L2, "\n\n")
+    branchData <- S3S2data[subsectorL2 == L2]
+    for (L3 in unique(branchData$subsectorL3)) {
+      plotData <- branchData[subsectorL3 == L3]
+      p <- ggplot(plotData) +
+            geom_line(aes(x = period, y = shareCheck, linetype = case), linewidth = 1.2, color = "red") +
+            geom_line(aes(x = period, y = share), linewidth = 1.2, color = "black") +
+      labs(
+      title = L3,
+      x = "Year",
+      y = "Share"
+      ) +
+      theme_minimal()
+      print(p)
+    }
+  }
+}
+```
+
+# S2S1
+```{r S2S3, echo=FALSE, results='asis'}
+for (reg in regions) {
+  cat("\n\n## Region:", reg, "\n\n")
+  S2S1data <- data[region == reg & level == "S2S1"]
+  for (L1 in unique(S2S1data$subsectorL1)) {
+    cat("\n\n### subsector L1:", L1, "\n\n")
+    branchData <- S2S1data[subsectorL1 == L1]
+    for (L2 in unique(branchData$subsectorL2)) {
+      plotData <- branchData[subsectorL2 == L2]
+      p <- ggplot(plotData) +
+            geom_line(aes(x = period, y = shareCheck, linetype = case), linewidth = 1.2, color = "red") +
+            geom_line(aes(x = period, y = share), linewidth = 1.2, color = "black") +
+      labs(
+      title = L2,
+      x = "Year",
+      y = "Share"
+      ) +
+      theme_minimal()
+      print(p)
+    }
+  }
+}
+```
+
+# S1S
+```{r S3S, echo=FALSE, results='asis'}
+for (reg in regions) {
+  cat("\n\n## Region:", reg, "\n\n")
+  S1Sdata <- data[region == reg & level == "S1S"]
+  for (sec in unique(S1Sdata$sector)) {
+    cat("\n\n### sector:", sec, "\n\n")
+    branchData <- S1Sdata[sector == sec]
+    for (L1 in unique(branchData$subsectorL1)) {
+      plotData <- branchData[subsectorL1 == L1]
+      p <- ggplot(plotData) +
+            geom_line(aes(x = period, y = shareCheck, linetype = case), linewidth = 1.2, color = "red") +
+            geom_line(aes(x = period, y = share), linewidth = 1.2, color = "black") +
+      labs(
+      title = L1,
+      x = "Year",
+      y = "Share"
+      ) +
+      theme_minimal()
+      print(p)
+    }
+  }
+}
+```

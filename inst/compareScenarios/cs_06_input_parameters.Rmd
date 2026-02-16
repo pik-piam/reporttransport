@@ -62,8 +62,8 @@ showTransportInputMultiLinePlots <- function(data, vars, scales = "free_y", nrow
 #### Pass other
 ```{r}
 vars <- as.character(unique(data$variable))
-items <- vars[grepl("Load factor (raw)\\|.*", vars)]
-itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*|.*Two Wheelers.*|.*Non-motorized.*", items)]
+items <- vars[grepl("Load factor \\(raw\\)\\|.*", vars)]
+itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*|.*Two Wheelers.*|.*Three Wheelers.*|.*Non-motorized.*", items)]
 plotData <- data %>%
   filter(variable %in% itemsSplit) %>%
   mutate(variable = gsub("(Load factor raw|\\|Transport|\\|Pass\\||\\|Bunkers)", "", variable))
@@ -103,7 +103,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = 2)
 
 #### Freight Trucks
 ```{r}
-itemsSplit <- items[grepl(".*Freight.*", .) & grepl(".*Truck.*", .)]
+itemsSplit <- items[grepl(".*Freight.*", items) & grepl(".*Truck.*", items)]
 plotData <- data %>%
   filter(variable %in% itemsSplit) %>%
   mutate(variable = gsub("^.*\\|Road\\|[A-Za-z]+\\|", "", variable))
@@ -114,7 +114,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 ### Energy intensity
 #### Pass other
 ```{r}
-items <- vars[grepl("Energy intensity (raw)\\|.*", vars)]
+items <- vars[grepl("Energy intensity \\(raw\\)\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*|.*Two Wheelers.*|.*Non-motorized.*", items)]
 plotData <- data %>%
   filter(variable %in% itemsSplit) %>%
@@ -230,7 +230,7 @@ showTransportInputMultiLinePlots(plotData, itemsSplit, nrowNum = ceiling(length(
 ### Time value costs
 #### Pass other
 ```{r}
-items <- vars[grepl("Time value costs\\|.*", vars)]
+items <- vars[grepl("^Time value costs\\|.*", vars)]
 itemsSplit <- items[grepl(".*Pass.*", items) & !grepl(".*Four Wheelers.*", items) & !grepl(".*Two Wheelers.*", items)]
 plotData <- data %>%
   filter(variable %in% itemsSplit) %>%

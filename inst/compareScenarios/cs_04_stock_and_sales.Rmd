@@ -2,7 +2,7 @@
 
 ## LDV Stock by vehicle size
 ```{r}
-tot <- "Stock|Transport|Pass|Road|LDV"
+tot <- "Stock|Transport|Pass|Road|LDV|Four Wheelers"
 items <- c("Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car",
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV",
            "Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Van",
@@ -17,7 +17,7 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 
 ## LDV Sales by vehicle size 
 ```{r}
-tot <- "Sales|Transport|Pass|Road|LDV"
+tot <- "Sales|Transport|Pass|Road|LDV|Four Wheelers"
 items <- c("Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car",
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV",
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Van",

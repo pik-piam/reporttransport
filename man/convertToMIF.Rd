@@ -10,7 +10,6 @@ convertToMIF(
   helpers,
   scenario,
   model,
-  gdx,
   isTransportExtendedReported = FALSE
 )
 }
@@ -24,8 +23,6 @@ convertToMIF(
 \item{scenario}{Scenario name in MIF entry}
 
 \item{model}{Model name in MIF entry}
-
-\item{gdx}{GDX file containing further regional aggregation levels}
 
 \item{isTransportExtendedReported}{Switch to enable the extended transport variable set}
 }

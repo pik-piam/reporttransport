@@ -99,10 +99,11 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     cfg <- readRDS(file.path(folderPath, "cfg.RDS"))
     data <- append(data, cfg[names(cfg) %in% c("SSPscen", "transportPolScen", "demScen")])
   }
-  if (is.null(data$scenarioName)) data$scenarioName <- paste0(data$transportPolScen, " ", data$SSPscen)
+  if (is.null(data$scenarioName)) data$scenarioName <- paste0(data$transportPolScen[2], " ", data$SSPscen[2])
   if (is.null(data$modelName)) data$modelName <- "EDGE-T"
 
-  if (is.null(data$gdxPath) & isTransportExtendedReported) {
+  if (isTransportReported && is.null(data$gdxPath)) {
+    message("Trying to find a gdx for transport reporting..")
     gdxPath <- list.files(path = folderPath, pattern = "\\.gdx$", full.names = TRUE)
     # Check if any files were found
     if (length(gdxPath) > 1) {
@@ -110,7 +111,15 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       cat("More than one gdx file found. The following one was chosen\n")
       cat(gdxPath, sep = "\n")
     } else if (length(gdxPath) == 0) {
-      stop("No gdx files found in the specified directory.\n")
+
+      # path to the gdx file on the REMIND cluster
+      message("Trying fallback path ..")
+      gdxPath <- "/p/projects/rd3mod/inputdata/sources/REMINDinputForTransportStandalone/v1.2/fulldata.gdx"
+
+      if (!file.exists(gdxPath)) {
+        stop("No gdx file found.\n")
+      }
+
     }
     data$gdxPath <- gdxPath
   }
@@ -184,9 +193,9 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                                                annualMileage        = data$annualMileage,
                                                timeValueCosts       = data$timeValueCosts,
                                                hybridElecShare      = data$hybridElecShare,
-                                               demScen              = data$demScen,
-                                               SSPscen              = data$SSPscen,
-                                               transportPolScen     = data$transportPolScen,
+                                               demScen              = data$demScen[2],
+                                               SSPscen              = data$SSPscen[2],
+                                               transportPolScen     = data$transportPolScen[2],
                                                timeResReporting     = timeResReporting,
                                                helpers              = data$helpers)
 
@@ -235,7 +244,6 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                               helpers                     = data$helpers,
                               scenario                    = data$scenarioName,
                               model                       = data$modelName,
-                              gdx                         = data$gdxPath,
                               isTransportExtendedReported = isTransportExtendedReported)
 
     if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))

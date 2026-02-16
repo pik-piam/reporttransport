@@ -9,7 +9,9 @@ items <- c(
       "Emi|CO2|Energy|Tailpipe|Transport|Pass|Rail",
       "Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|Bus",
       "Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|LDV|Four Wheelers",
-      "Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|LDV|Two Wheelers")
+      "Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|LDV|Two Wheelers",
+      "Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|LDV|Three Wheelers"
+)
 
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items[2:6], tot, fill = TRUE, orderVars = "user")
@@ -73,7 +75,9 @@ items <- c(
       "Emi|CO2|Energy|Demand|Transport|Pass|Rail",
       "Emi|CO2|Energy|Demand|Transport|Pass|Road|Bus",
       "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Four Wheelers",
-      "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Two Wheelers")
+      "Emi|CO2|Energy|Demand|Transport|Pass|Road|LDV|Three Wheelers",
+      "Emi|CO2|Energy|Tailpipe|Transport|Pass|Road|LDV|Two Wheelers"
+)
 
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items[2:6], tot, fill = TRUE, orderVars = "user")
