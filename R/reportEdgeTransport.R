@@ -88,10 +88,6 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
     }
   }
-  if (isHarmonized) {
-    add <- c("vehSalesAndModeShares", "vehicleDepreciationFactors", "annualMileage")
-    filesToLoad <- c(filesToLoad, add[!add %in% filesToLoad])
-  }
   filesToLoad <- c(filesToLoad[!filesToLoad %in% names(data)])
 
   # Load data
@@ -139,6 +135,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   ## Report output variables
   #########################################################################
   if (isHarmonized) {
+    browser()
     # EDGE-T does not run after the last REMIND iteration
     # Therefore the Energy service demand on CES node level differs between REMIND and EDGE-T.
     # We want to harmonize ES und FE to equal the REMIND values.
@@ -149,19 +146,14 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     # Read in energy service demand from last REMIND iteration
     gdx <- file.path(".", "fulldata.gdx")
     harmREMINDdemand <- toolLoadREMINDesDemand(gdx, data$helpers)
-    # Apply vehicle sales and mode shares from last edge-t iteration
-    harmESdemandFV <- toolCalculateFVdemand(harmREMINDdemand,
-                                                  data$vehSalesAndModeShares[period %in% harmREMINDdemand$period],
-                                                  data$helpers)
 
-    harmESdemandFV <- rbind(harmESdemandFV, data$ESdemandFVsalesLevel[!period %in% unique(harmESdemandFV$period)])
-    # Calculate vehicle stock for cars, trucks and busses based on ES demand of last REMIND iteration
-    fleetSizeAndComposition <- toolCalculateFleetComposition(harmESdemandFV,
-                                                             data$vehicleDepreciationFactors,
-                                                             data$vehSalesAndModeShares,
-                                                             data$annualMileage,
-                                                             data$scenSpecLoadFactor,
-                                                             data$helpers)
+    fleetESdemand <- rbind(data$ESdemandFVsalesLevel[!grepl("Bus.*|.*4W|.*freight_road.*", subsectorL3)],
+                           data$fleetSizeAndComposition$fleetESdemand)
+    # Rescale fleet demand to top node energy service demand
+    # Rework base reporting to receive fleet ESdemand directly
+    # Replace old fleet ESdemand
+
+
     # Replace unharmonized data
     data$ESdemandFVsalesLevel <- harmESdemandFV
     data$fleetSizeAndComposition <- fleetSizeAndComposition
@@ -252,6 +244,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
 
     if (isHarmonized) {
       # Load shared variables of REMIND and edge-t (reported by remind2 and reporttransport)
+      browser()
       remindEDGEvarMap <- fread(system.file("commonVarsEDGETremind.csv",
                                              package = "reporttransport"), skip = 1)
       remindEDGEvarMap <- remindEDGEvarMap[!is.na(variable)]
