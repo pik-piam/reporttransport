@@ -12,7 +12,6 @@
 #' @export
 #'
 reportToREMINDfinalEnergyShares <- function(fleetFEdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers) {
-
   FEdemByTech <- reportToREMINDfinalEnergyDemand(fleetFEdemand, timeResReporting, demScen, SSPscen, transportPolScen, helpers)
   FEshares <- FEdemByTech[, value := value/sum(value), by = c("tall", "all_regi", "all_in")]
   ## 15 decimals the lowest accepted value
@@ -25,6 +24,7 @@ reportToREMINDfinalEnergyShares <- function(fleetFEdemand, timeResReporting, dem
   FEshares[sumvalue != 1 & maxtech == TRUE, value := value + (1 - sumvalue), by = c("tall", "all_regi")]
   ## remove temporary columns
   FEshares[, c("sumvalue", "maxtech") := NULL]#
-
+  test <- FEshares[, sumvalue := sum(value), by = c("tall", "all_regi", "all_in")]
+  if (nroww(test[!sumvalue==1] > 0)) stop("Something went wrong in reportToREMINDfinalEnergyShares()")
   return(FEshares)
 }

@@ -30,6 +30,7 @@
 #' @param isAnalyticsReported Switch for activating reporting of model analytics data
 #' @param isREMINDinputReported Switch for activating reporting of REMIND input data
 #' @param isStored Switch for activating data storage and creating the transport.MIF file
+#' @param isHarmonized Switch for activating ouput harmonization with REMIND
 #'
 #' @returns The function either returns the REMINDinputData if isREMINDinputReported is
 #'          enabled or the transport data in MIF format
@@ -40,7 +41,7 @@
 
 reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, isTransportReported = TRUE,
                                 isTransportExtendedReported = FALSE, isAnalyticsReported = FALSE,
-                                isREMINDinputReported = FALSE, isStored = TRUE, ...) {
+                                isREMINDinputReported = FALSE, isStored = TRUE, isHarmonized = FALSE, ...) {
 
   applyReportingTimeRes <- function(item, timeRes) {
     if (typeof(item) %in% c("character", "double") | "decisionTree" %in% names(item)) return(item)
@@ -128,11 +129,40 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     names(addFiles) <- itemNames
     data <- c(data, addFiles)
   }
+
+
   #########################################################################
   ## Report output variables
   #########################################################################
-  # Base variable set that is needed to report REMIND input data and additional detailed transport data
-  baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
+  if (isHarmonized) {
+    browser()
+    # EDGE-T does not run after the last REMIND iteration
+    # Therefore the Energy service demand on CES node level differs between REMIND and EDGE-T.
+    # We want to harmonize ES und FE to equal the REMIND values.
+    # Consequently, we want the detailed transport variables to be reported using the ES demand on CES node level from the
+    # last REMIND iteration. We want to keep the energy intensity of REMIND, which is the energy intensity from the last EDGE-T run.
+    # Therefore, we don't want to take the fuel prices from the last REMIND iteration and keep the vehicle sales and mode shares as they are
+
+    # Read in energy service demand from last REMIND iteration
+    gdx <- file.path(".", "fulldata.gdx")
+    harmREMINDdemand <- toolLoadREMINDesDemand(gdx, data$helpers)
+
+    fleetESdemand <- rbind(data$ESdemandFVsalesLevel[!grepl("Bus.*|.*4W|.*freight_road.*", subsectorL3)],
+                           data$fleetSizeAndComposition$fleetESdemand)
+    # Rescale fleet demand to top node energy service demand
+    # Rework base reporting to receive fleet ESdemand directly
+    # Replace old fleet ESdemand
+
+
+    # Replace unharmonized data
+    data$ESdemandFVsalesLevel <- harmESdemandFV
+    data$fleetSizeAndComposition <- fleetSizeAndComposition
+    baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
+  } else {
+    # Base variable set that is needed to report REMIND input data and additional detailed transport data
+    baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
+  }
+
   reporting <- baseVarSet
   outputVars <- baseVarSet
 
@@ -211,6 +241,70 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                               isTransportExtendedReported = isTransportExtendedReported)
 
     if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))
+
+    if (isHarmonized) {
+      # Load shared variables of REMIND and edge-t (reported by remind2 and reporttransport)
+      browser()
+      remindEDGEvarMap <- fread(system.file("commonVarsEDGETremind.csv",
+                                             package = "reporttransport"), skip = 1)
+      remindEDGEvarMap <- remindEDGEvarMap[!is.na(variable)]
+      if (nrow(remindEDGEvarMap) > 0) {
+        #Load REMIND reporting
+        mifs <- list.files(".", recursive = FALSE, full.names = TRUE)
+        mif <- mifs[grepl(".*withoutPlus\\.mif", mifs)]
+        #Select matching variables
+        REMINDvars <- as.data.table(read.quitte(mif))
+        setnames(REMINDvars, c("variable", "value"),
+                 c("REMINDvar", "REMINDval"))
+        REMINDvars <-  merge(REMINDvars, remindEDGEvarMap, by = "REMINDvar")
+        #Check for consistency
+        test <- merge(reporting, REMINDvars, by = intersect(names(reporting), names(REMINDvars)))
+        #Exclude World from the harmonization, as the bunkers aggregation works differently there
+        #Exclude data after 2100 from the harmonization as edget only runs until 2100
+        test <- test[period <= 2100]
+        test[, diffAbs := abs(REMINDval - value)]
+
+        factors <- tribble(
+          ~REMIND, ~EDGET,
+          'FE|Transport|Pass|Long distance|Diesel Liquids', 'FE|Transport|Bunkers|Pass',
+
+
+        )
+
+
+        #Summation check
+        allScens <-  tribble(
+          ~sum,         ~subterms,
+          'FE|Transport',        'FE|Transport|Bunkers|Freight|International Shipping',
+          'FE|Transport',        'FE|Transport|Bunkers|Pass|International Aviation',
+          'FE|Transport',        'FE|Transport|Pass|Road',
+          'FE|Transport',        'FE|Transport|Pass|Rail',
+          'FE|Transport',        'FE|Transport|Pass|Domestic Aviation',
+          'FE|Transport',        'FE|Transport|Freight|Rail',
+          'FE|Transport',        'FE|Transport|Freight|Road',
+          'FE|Transport',        'FE|Transport|Freight|Domestic Shipping',
+
+          'ES|Transport',        'ES|Transport|Bunkers|Freight|International Shipping',
+          'ES|Transport',        'ES|Transport|Bunkers|Pass|International Aviation',
+          'ES|Transport',        'ES|Transport|Pass|Road',
+          'ES|Transport',        'ES|Transport|Pass|Non-motorized',
+          'ES|Transport',        'ES|Transport|Pass|Rail',
+          'ES|Transport',        'ES|Transport|Pass|Domestic Aviation',
+          'ES|Transport',        'ES|Transport|Freight|Rail',
+          'ES|Transport',        'ES|Transport|Freight|Road',
+          'ES|Transport',        'ES|Transport|Freight|Domestic Shipping',
+
+          'Emi|CO2|Energy|Demand|Transport|w/ bunkers',  'Emi|CO2|Energy|Demand|Transport',
+          'Emi|CO2|Energy|Demand|Transport|w/ bunkers',  'Emi|CO2|Energy|Demand|Transport|Bunkers'
+        )
+
+        reporting <- reporting[!variable %in% unique(remindEDGEvarMap$variable)]
+        message("Transport variables reported by reporttransport were harmonized to last REMIND iteration.")
+      }
+      # Store the new data after the harmonization
+      storeData(outputFolder = folderPath, data[c("ESdemandFVsalesLevel", "fleetSizeAndComposition")])
+    }
+
   }
 
   return(reporting)
