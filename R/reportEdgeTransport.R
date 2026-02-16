@@ -136,10 +136,8 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     # Consequently, we want the detailed transport variables to be reported using the ES demand on CES node level from the
     # last REMIND iteration. We want to keep the energy intensity of REMIND, which is the energy intensity from the last EDGE-T run.
     # Therefore, we don't want to take the fuel prices from the last REMIND iteration and keep the vehicle sales and mode shares as they are
-
     # Read in energy service demand from last REMIND iteration
-    gdx <- file.path(".", "fulldata.gdx")
-    harmREMINDdemand <- toolLoadREMINDesDemand(gdx, data$helpers)
+    harmREMINDdemand <- toolLoadREMINDesDemand(data$gdxPath, data$helpers)
     # Apply vehicle sales and mode shares from last edge-t iteration
     harmESdemandFV <- toolCalculateFVdemand(harmREMINDdemand,
                                                   data$vehSalesAndModeShares[period %in% harmREMINDdemand$period],
