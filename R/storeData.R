@@ -33,7 +33,8 @@ storeData <- function(outputFolder, varsList = NULL, ...) {
                        "GDPpcPPP",
                        "population",
                        "f29_trpdemand",
-                       "helpers")) subfolder <- "1_InputDataRaw"
+                       "helpers",
+                       "vehicleDepreciationFactors")) subfolder <- "1_InputDataRaw"
     if (varName %in% c("scenSpecPrefTrends",
                        "REMINDfuelCosts",
                        "REMINDfuelCostIterations",

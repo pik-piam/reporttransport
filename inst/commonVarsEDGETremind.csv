@@ -1,0 +1,109 @@
+** This file contains a mapping of the variables reported by remind2 for the GAMS side of transport in REMIND and the variables reported by reporttransport for the coupled transport sector model EDGE-T. Under variable the equivalent names in EDGE-T are listed. The list of transport variables reported by remind2 is comprehensive. Variables that do not have an equivalent in reporttransport get NA. date = 06-02-2025	
+REMINDvar	variable
+ES|Transport|Freight                                     	ES|Transport|Freight with bunkers
+ES|Transport|Freight|Long distance                       	ES|Transport|Bunkers|Freight
+ES|Transport|Freight|Short-Medium distance               	ES|Transport|Freight
+ES|Transport|Pass                                        	ES|Transport|Pass with bunkers
+ES|Transport|Pass|Long distance                          	ES|Transport|Bunkers|Pass
+ES|Transport|Pass|Short-Medium distance                  	ES|Transport|Pass
+FE|Transport                                             	FE|Transport with bunkers
+FE|Transport|Electricity                                 	FE|Transport with bunkers|Electricity  
+FE|Transport|Gases                                       	FE|Transport with bunkers|Gases 
+FE|Transport|Hydrogen                                    	FE|Transport with bunkers|Hydrogen  
+FE|Transport|Liquids                                     	FE|Transport with bunkers|Liquids 
+FE|Transport|ESR                                         	NA
+FE|Transport|Outside ETS and ESR                         	NA
+FE|Transport|Bunkers                                     	FE|Transport|Bunkers
+FE|Transport|Bunkers|Electricity                         	NA
+FE|Transport|Bunkers|Gases                               	NA
+FE|Transport|Bunkers|Hydrogen                            	NA
+FE|Transport|Bunkers|Liquids                             	NA
+FE|Transport|Bunkers|Gases|Biomass                       	NA
+FE|Transport|Bunkers|Gases|Fossil                        	NA
+FE|Transport|Bunkers|Gases|Hydrogen                      	NA
+FE|Transport|Bunkers|Liquids|Biomass                     	NA
+FE|Transport|Bunkers|Liquids|Fossil                      	NA
+FE|Transport|Bunkers|Liquids|Hydrogen                    	NA
+FE|Transport|Diesel Liquids                              	NA
+FE|Transport|ESR|Electricity                             	NA
+FE|Transport|ESR|Gases                                   	NA
+FE|Transport|ESR|Hydrogen                                	NA
+FE|Transport|ESR|Liquids                                 	NA
+FE|Transport|ESR|Gases|Biomass                           	NA
+FE|Transport|ESR|Gases|Fossil                            	NA
+FE|Transport|ESR|Gases|Hydrogen                          	NA
+FE|Transport|ESR|Liquids|Biomass                         	NA
+FE|Transport|ESR|Liquids|Fossil                          	NA
+FE|Transport|ESR|Liquids|Hydrogen                        	NA
+FE|Transport|Freight                                     	FE|Transport|Freight with bunkers
+FE|Transport|Freight|Electricity                         	FE|Transport|Freight with bunkers|Electricity      
+FE|Transport|Freight|Gases                               	FE|Transport|Freight with bunkers|Gases     
+FE|Transport|Freight|Hydrogen                            	FE|Transport|Freight with bunkers|Hydrogen     
+FE|Transport|Freight|Liquids                             	FE|Transport|Freight with bunkers|Liquids
+FE|Transport|Freight|Long distance|Diesel Liquids        	FE|Transport|Bunkers|Freight
+FE|Transport|Freight|Short-Medium distance|Diesel Liquids	FE|Transport|Freight|Liquids
+FE|Transport|Freight|Short-Medium distance|Electricity   	FE|Transport|Freight|Electricity      
+FE|Transport|Freight|Short-Medium distance|Gases         	FE|Transport|Freight|Gases     
+FE|Transport|Freight|Short-Medium distance|Hydrogen      	FE|Transport|Freight|Hydrogen     
+FE|Transport|Fuels                                       	NA
+FE|Transport|Gases|Biomass                               	NA
+FE|Transport|Gases|Fossil                                	NA
+FE|Transport|Gases|Hydrogen                              	NA
+FE|Transport|Gases|Fossil|Coal                           	NA
+FE|Transport|Gases|Fossil|Natural Gas                    	NA
+FE|Transport|LDV|Liquids                                 	NA
+FE|Transport|LDV|Liquids|Biomass                         	NA
+FE|Transport|LDV|Liquids|Fossil                          	NA
+FE|Transport|LDV|Liquids|Hydrogen                        	NA
+FE|Transport|Liquids|Biomass                             	NA
+FE|Transport|Liquids|Fossil                              	NA
+FE|Transport|Liquids|Hydrogen                            	NA
+FE|Transport|Liquids|Fossil|Coal                         	NA
+FE|Transport|Liquids|Fossil|Gas                          	NA
+FE|Transport|Liquids|Fossil|Oil                          	NA
+FE|Transport|non-LDV|Liquids                             	NA
+FE|Transport|non-LDV|Liquids|Biomass                     	NA
+FE|Transport|non-LDV|Liquids|Fossil                      	NA
+FE|Transport|non-LDV|Liquids|Hydrogen                    	NA
+FE|Transport|Outside ETS and ESR|Electricity             	NA
+FE|Transport|Outside ETS and ESR|Gases                   	NA
+FE|Transport|Outside ETS and ESR|Hydrogen                	NA
+FE|Transport|Outside ETS and ESR|Liquids                 	NA
+FE|Transport|Outside ETS and ESR|Gases|Biomass           	NA
+FE|Transport|Outside ETS and ESR|Gases|Fossil            	NA
+FE|Transport|Outside ETS and ESR|Gases|Hydrogen          	NA
+FE|Transport|Outside ETS and ESR|Liquids|Biomass         	NA
+FE|Transport|Outside ETS and ESR|Liquids|Fossil          	NA
+FE|Transport|Outside ETS and ESR|Liquids|Hydrogen        	NA
+FE|Transport|Pass                                        	FE|Transport|Pass with bunkers
+FE|Transport|Pass|Electricity                            	FE|Transport|Pass with bunkers|Electricity      
+FE|Transport|Pass|Gases                                  	FE|Transport|Pass with bunkers|Gases     
+FE|Transport|Pass|Hydrogen                               	FE|Transport|Pass with bunkers|Hydrogen     
+FE|Transport|Pass|Liquids                                	FE|Transport|Pass with bunkers|Liquids
+FE|Transport|Pass|Long distance|Diesel Liquids           	FE|Transport|Bunkers|Pass
+FE|Transport|Pass|Short-Medium distance|Diesel Liquids   	NA
+FE|Transport|Pass|Short-Medium distance|Electricity      	FE|Transport|Pass|Electricity      
+FE|Transport|Pass|Short-Medium distance|Gases            	FE|Transport|Pass|Gases     
+FE|Transport|Pass|Short-Medium distance|Hydrogen         	FE|Transport|Pass|Hydrogen     
+FE|Transport|Pass|Short-Medium distance|Petrol Liquids   	NA
+FE|Transport|w/o Bunkers                                 	FE|Transport
+FE|Transport|w/o Bunkers|Electricity                     	FE|Transport|Electricity      
+FE|Transport|w/o Bunkers|Gases                           	FE|Transport|Gases     
+FE|Transport|w/o Bunkers|Hydrogen                        	FE|Transport|Hydrogen     
+FE|Transport|w/o Bunkers|Liquids                         	FE|Transport|Liquids
+FE|Transport|w/o Bunkers|Gases|Biomass                   	NA
+FE|Transport|w/o Bunkers|Gases|Fossil                    	NA
+FE|Transport|w/o Bunkers|Gases|Hydrogen                  	NA
+FE|Transport|w/o Bunkers|Liquids|Biomass                 	NA
+FE|Transport|w/o Bunkers|Liquids|Fossil                  	NA
+FE|Transport|w/o Bunkers|Liquids|Hydrogen                	NA
+SE|Input|Electricity|Transport	NA
+Emi|CO2|Energy|Demand|Transport|w/o bunkers	Emi|CO2|Energy|Demand|Transport
+Emi|CO2|Energy|Demand|Transport|International Bunkers	Emi|CO2|Energy|Demand|Transport|Bunkers
+Emi|CO2|Energy|Demand|Transport|w/ bunkers	Emi|CO2|Energy|Demand|Transport with bunkers
+Emi|CO2|Energy|Demand|Transport	Emi|CO2|Energy|Demand|Transport with bunkers
+Emi|CO2|Energy|Demand|Transport|Gases	Emi|CO2|Energy|Demand|Transport with bunkers|Gases
+Emi|CO2|Energy|Demand|Transport|Liquids	Emi|CO2|Energy|Demand|Transport with bunkers|Liquids
+FE|Transport|Pass	FE|Transport|Pass
+FE|Transport|Pass|Liquids	FE|Transport|Pass|Liquids
+FE|Transport|Freight	FE|Transport|Freight

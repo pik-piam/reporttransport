@@ -25,6 +25,7 @@ reportToREMINDfinalEnergyDemand <- function(fleetFEdemand, timeResReporting, dem
   demByTechMap <- demByTechMap[!is.na(all_teEs)]
   demByTechMap[technology %in% c("BEV", "Electric"), technology := "Electricity"]
   demByTechMap[technology == "FCEV", technology := "Hydrogen"]
+
   f35_demByTech <- merge(f35_demByTech, demByTechMap, by = c("univocalName", "technology"), all.x = TRUE)# nolint: object_name_linter
   f35_demByTech <- f35_demByTech[, .(value = sum(value)), by = c("region", "period", "all_enty", "all_in", "all_teEs")]
   checkForNAsAndDups(f35_demByTech, "f35_demByTech", "reportToREMINDfinalEnergyDemand()")
