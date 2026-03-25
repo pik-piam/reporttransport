@@ -1,6 +1,6 @@
 # Reporting package for edgeTransport
 
-R package **reporttransport**, version **1.2.1**
+R package **reporttransport**, version **1.3.0**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/reporttransport)](https://cran.r-project.org/package=reporttransport) [![R build status](https://github.com/pik-piam/reporttransport/workflows/check/badge.svg)](https://github.com/pik-piam/reporttransport/actions) [![codecov](https://codecov.io/gh/pik-piam/reporttransport/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/reporttransport) [![r-universe](https://pik-piam.r-universe.dev/badges/reporttransport)](https://pik-piam.r-universe.dev/builds)
 
@@ -41,15 +41,17 @@ In case of questions / problems please contact Johanna Hoppe <johanna.hoppe@pik-
 
 To cite package **reporttransport** in publications use:
 
-Hoppe J, Muessel J, Hagen A (2026). "reporttransport: Reporting package for edgeTransport - Version 1.2.1."
+Hoppe J, Muessel J, Hagen A (2026). "reporttransport: Reporting package for edgeTransport." Version: 1.3.0, <https://github.com/pik-piam/reporttransport>.
 
 A BibTeX entry for LaTeX users is
 
  ```latex
 @Misc{,
-  title = {reporttransport: Reporting package for edgeTransport - Version 1.2.1},
+  title = {reporttransport: Reporting package for edgeTransport},
   author = {Johanna Hoppe and Jarusch Muessel and Alex K. Hagen},
-  date = {2026-02-10},
+  date = {2026-03-25},
   year = {2026},
+  url = {https://github.com/pik-piam/reporttransport},
+  note = {Version: 1.3.0},
 }
 ```

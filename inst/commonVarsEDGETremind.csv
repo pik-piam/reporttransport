@@ -101,8 +101,6 @@ SE|Input|Electricity|Transport;NA
 Emi|CO2|Energy|Demand|Transport|w/o bunkers;Emi|CO2|Energy|Demand|Transport
 Emi|CO2|Energy|Demand|Transport|International Bunkers;Emi|CO2|Energy|Demand|Transport|Bunkers
 Emi|CO2|Energy|Demand|Transport|w/ bunkers;Emi|CO2|Energy|Demand|Transport with bunkers
-Emi|CO2|Energy|Demand|Transport;Emi|CO2|Energy|Demand|Transport with bunkers
+Emi|CO2|Energy|Demand|Transport;NA
 Emi|CO2|Energy|Demand|Transport|Gases;Emi|CO2|Energy|Demand|Transport with bunkers|Gases
 Emi|CO2|Energy|Demand|Transport|Liquids;Emi|CO2|Energy|Demand|Transport with bunkers|Liquids
-FE|Transport|Pass;FE|Transport|Pass
-FE|Transport|Freight;FE|Transport|Freight

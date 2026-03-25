@@ -147,7 +147,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   }
 
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
-  baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
+  baseVarSet <- reportBaseVarSet(data = data)
 
   reporting <- baseVarSet
   outputVars <- baseVarSet
@@ -242,6 +242,8 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         setnames(REMINDvars, c("variable", "value"),
                  c("REMINDvar", "REMINDval"))
         REMINDvars <-  merge(REMINDvars, remindEDGEvarMap, by = "REMINDvar")
+        #If the edgeTransport reporting is run in post processing and edgeTransport variables are already included in the transport mif, they need to be filtered out first
+        REMINDvars <- REMINDvars[!variable %in% unique(reporting$variable)]
         #Check for consistency
         test <- merge(reporting, REMINDvars, by = intersect(names(reporting), names(REMINDvars)))
         #Exclude World from the harmonization, as the bunkers aggregation works differently there
@@ -251,10 +253,20 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         test[, deviationRelativeToREMIND := abs(REMINDval - value) / REMINDval]
         # Only report outliers that deviate more than 1% from REMIND value
         test <- test[deviationRelativeToREMIND > 0.01]
-        test[, deviationAbsolute := formatC(signif(deviationAbsolute, 6), format = "E", digits = 2)]
-        test[, deviationRelativeToREMIND := formatC(signif(deviationAbsolute, 6), format = "E", digits = 2)]
+        setnames(test, "value", "EDGEval")
+        numericCols <- c("REMINDval", "EDGEval", "deviationAbsolute", "deviationRelativeToREMIND")
+        test[, (numericCols) := lapply(.SD, function(x) sprintf("%.2E", signif(x, 6))), .SDcols = numericCols]
         utils::write.table(test, file.path("EDGE-T", "checkREMINDvsEDGETmifVariables.csv"), row.names = FALSE, sep = ";", quote = FALSE)
-        reporting <- reporting[!variable %in% unique(remindEDGEvarMap$variable)]
+        # Variables reported by edgeTRansport that should be removed in the REMIND mif to avoid confusion/duplicates
+        # 1. Remove duplicates that are reported by remind2 already + 2. variables that do not have an remind2 equivalent
+        # but follow a different naming convention (e.g. FE|Transport|Pass includes bunkers in remind2 and not in reporttransport)
+        varsToBeRemoved <- c(unique(remindEDGEvarMap$variable),
+                             "FE|Transport|Pass|Liquids",
+                             "FE|Transport|Pass",
+                             "FE|Transport|Freight",
+                             "Emi|CO2|Energy|Demand|Transport|Liquids",
+                             "Emi|CO2|Energy|Demand|Transport|Gases")
+        reporting <- reporting[!variable %in% varsToBeRemoved]
         message("Transport variables reported by reporttransport were harmonized to last REMIND iteration.")
       }
     }
