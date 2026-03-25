@@ -70,7 +70,10 @@ fleetFEdemand <- baseOutput$ext$fleetFEdemand
   # Calculate deviation:
   # Last REMIND iteration vs last EDGE-T iteration
   testEnergyIntensity[, deviationAbsolute := abs(REMINDvalue - EDGEvalue)][, variable := "Energy Intensity"][, comparison := "Deviation last iteration REMIND vs last iteration EDGE-T"]
-  testEnergyIntensity[, deviationRealtiveToEDGET := 1 - (abs(REMINDvalue - EDGEvalue)/EDGEvalue)][, variable := "Energy Intensity"][, comparison := "Deviation last iteration REMIND vs last iteration EDGE-T"]
+  testEnergyIntensity[, deviationRealtiveToEDGET := abs(REMINDvalue - EDGEvalue)/EDGEvalue][, variable := "Energy Intensity"][, comparison := "Deviation last iteration REMIND vs last iteration EDGE-T"]
+  testEnergyIntensity[, deviationAbsolute := formatC(signif(deviationAbsolute, 6), format = "E", digits = 2)]
+  testEnergyIntensity[, deviationRealtiveToEDGET := formatC(signif(deviationAbsolute, 6), format = "E", digits = 2)]
+  utils::write.table(estEnergyIntensity, file.path("EDGE-T", "trackREMINDvsEDGETparameterEnergyIntensity.csv"), row.names = FALSE, sep = ";", quote = FALSE)
   setnames(testEnergyIntensity, "all_teEs", "REMINDset")
 # ---- Energy service demand ----
 
@@ -117,19 +120,21 @@ fleetFEdemand <- baseOutput$ext$fleetFEdemand
   testES <- merge(testES, EDGEtoREMINDes, by = c("all_regi", "tall", "all_in"))
   testES <- testES[tall >= 2005 & tall <= 2100]
   testES[, deviationAbsolute := abs(SumREMINDprodEs - REMINDcesIO)][, comparison := "REMIND vm_prodEs vs REMIND vm_cesIO"]
-  testES[, deviationRealtiveToEDGET := 1- (abs(SumREMINDprodEs - REMINDcesIO) / EDGEtoREMINDes)]
+  testES[, deviationRealtiveToEDGET := abs(SumREMINDprodEs - REMINDcesIO) / EDGEtoREMINDes]
   testES2 <- copy(testES)[, deviationAbsolute := abs(REMINDcesIO - EDGEtoREMINDes)][, comparison := "Last iteration REMIND vm_cesIO vs. last iteration EDGE-T (reported back to REMIND)"]
-  testES2[, deviationRealtiveToEDGET := 1 - (abs(REMINDcesIO - EDGEtoREMINDes) / EDGEtoREMINDes)]
+  testES2[, deviationRealtiveToEDGET := abs(REMINDcesIO - EDGEtoREMINDes) / EDGEtoREMINDes]
   testES3 <- copy(testES)[, deviationAbsolute := abs(REMINDtoEDGEes - EDGEtoREMINDes)][, comparison := "Last iteration REMIND (loaded by EDGE-T) vs last iteration EDGE-T (reported back to REMIND)"]
-  testES3[, deviationRealtiveToEDGET := 1 - (abs(REMINDtoEDGEes - EDGEtoREMINDes) / EDGEtoREMINDes)]
-
+  testES3[, deviationRealtiveToEDGET := abs(REMINDtoEDGEes - EDGEtoREMINDes) / EDGEtoREMINDes]
   testES <- rbind(testES, testES2, testES3)
+  testES[, deviationAbsolute := formatC(signif(deviationAbsolute, 6), format = "E", digits = 2)]
+  testES[, deviationRealtiveToEDGET := formatC(signif(deviationAbsolute, 6), format = "E", digits = 2)]
   testES[, variable := "Energy service demand"]
+  utils::write.table(testES, file.path("EDGE-T", "trackREMINDvsEDGETparameterEnergyService.csv"), row.names = FALSE, sep = ";", quote = FALSE)
   setnames(testES, "all_in", "REMINDset")
 
   trackConvergence <- rbind(testEnergyIntensity[, c("all_regi", "tall", "REMINDset", "deviationAbsolute", "deviationRealtiveToEDGET", "comparison", "variable")],
                             testES[, c("all_regi", "tall", "REMINDset", "deviationAbsolute", "deviationRealtiveToEDGET", "comparison", "variable")])
-  trackConvergence[, deviationAbsolute := formatC(signif(deviationAbsolute, 6), format = "E", digits = 2)]
-  trackConvergence[, deviationRealtiveToEDGET := formatC(signif(deviationRealtiveToEDGET, 6), format = "E", digits = 2)]
+  # Only report outliers that deviate more than 1% from EDGE-T value
+  trackConvergence <- trackConvergence[deviationRealtiveToEDGET > 0.01]
   utils::write.table(trackConvergence, file.path("EDGE-T", "trackConvergence.csv"), row.names = FALSE, sep = ";", quote = FALSE)
 }

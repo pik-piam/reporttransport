@@ -138,7 +138,6 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     harmESdemandFV <- harmonizeREMINDvsEDGETenergyServiceDemand(ESdemandFVsalesLevel = data$ESdemandFVsalesLevel,
                                                                 fleetESdemand = data$fleetSizeAndComposition$fleetESdemand,
                                                                 helpers = data$helpers)
-    browser()
     # Replace unharmonized data
     # Interpolate missing timesteps (they will be thrown out later anyway)
     # Overwrite the full data on sales level with the harmonized data on fleet level
@@ -231,7 +230,6 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
 
     if (isHarmonized) {
       # Load shared variables of REMIND and edge-t (reported by remind2 and reporttransport)
-      browser()
       remindEDGEvarMap <- fread(system.file("commonVarsEDGETremind.csv",
                                              package = "reporttransport"), skip = 1)
       remindEDGEvarMap <- remindEDGEvarMap[!is.na(variable)]
@@ -249,8 +247,13 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         #Exclude World from the harmonization, as the bunkers aggregation works differently there
         #Exclude data after 2100 from the harmonization as edget only runs until 2100
         test <- test[period <= 2100]
-        test[, diffAbs := abs(REMINDval - value)]
-
+        test[, deviationAbsolute := abs(REMINDval - value)]
+        test[, deviationRelativeToREMIND := abs(REMINDval - value) / REMINDval]
+        # Only report outliers that deviate more than 1% from REMIND value
+        test <- test[deviationRelativeToREMIND > 0.01]
+        test[, deviationAbsolute := formatC(signif(deviationAbsolute, 6), format = "E", digits = 2)]
+        test[, deviationRelativeToREMIND := formatC(signif(deviationAbsolute, 6), format = "E", digits = 2)]
+        utils::write.table(test, file.path("EDGE-T", "checkREMINDvsEDGETmifVariables.csv"), row.names = FALSE, sep = ";", quote = FALSE)
         reporting <- reporting[!variable %in% unique(remindEDGEvarMap$variable)]
         message("Transport variables reported by reporttransport were harmonized to last REMIND iteration.")
       }
