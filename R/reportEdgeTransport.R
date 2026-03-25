@@ -135,33 +135,20 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   ## Report output variables
   #########################################################################
   if (isHarmonized) {
+    harmESdemandFV <- harmonizeREMINDvsEDGETenergyServiceDemand(ESdemandFVsalesLevel = data$ESdemandFVsalesLevel,
+                                                                fleetESdemand = data$fleetSizeAndComposition$fleetESdemand,
+                                                                helpers = data$helpers)
     browser()
-    # EDGE-T does not run after the last REMIND iteration
-    # Therefore the Energy service demand on CES node level differs between REMIND and EDGE-T.
-    # We want to harmonize ES und FE to equal the REMIND values.
-    # Consequently, we want the detailed transport variables to be reported using the ES demand on CES node level from the
-    # last REMIND iteration. We want to keep the energy intensity of REMIND, which is the energy intensity from the last EDGE-T run.
-    # Therefore, we don't want to take the fuel prices from the last REMIND iteration and keep the vehicle sales and mode shares as they are
-
-    # Read in energy service demand from last REMIND iteration
-    gdx <- file.path(".", "fulldata.gdx")
-    harmREMINDdemand <- toolLoadREMINDesDemand(gdx, data$helpers)
-
-    fleetESdemand <- rbind(data$ESdemandFVsalesLevel[!grepl("Bus.*|.*4W|.*freight_road.*", subsectorL3)],
-                           data$fleetSizeAndComposition$fleetESdemand)
-    # Rescale fleet demand to top node energy service demand
-    # Rework base reporting to receive fleet ESdemand directly
-    # Replace old fleet ESdemand
-
-
     # Replace unharmonized data
+    # Interpolate missing timesteps (they will be thrown out later anyway)
+    # Overwrite the full data on sales level with the harmonized data on fleet level
     data$ESdemandFVsalesLevel <- harmESdemandFV
-    data$fleetSizeAndComposition <- fleetSizeAndComposition
-    baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
-  } else {
-    # Base variable set that is needed to report REMIND input data and additional detailed transport data
-    baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
+    # Overwrite specifically the data that is taken for LDV 4W demand on fleet level
+    data$fleetSizeAndComposition$fleetESdemand <- harmESdemandFV[grepl("Bus.*|.*4W|.*freight_road.*", subsectorL3)]
   }
+
+  # Base variable set that is needed to report REMIND input data and additional detailed transport data
+  baseVarSet <- reportBaseVarSet(data = data, timeResReporting = timeResReporting)
 
   reporting <- baseVarSet
   outputVars <- baseVarSet
@@ -264,45 +251,9 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         test <- test[period <= 2100]
         test[, diffAbs := abs(REMINDval - value)]
 
-        factors <- tribble(
-          ~REMIND, ~EDGET,
-          'FE|Transport|Pass|Long distance|Diesel Liquids', 'FE|Transport|Bunkers|Pass',
-
-
-        )
-
-
-        #Summation check
-        allScens <-  tribble(
-          ~sum,         ~subterms,
-          'FE|Transport',        'FE|Transport|Bunkers|Freight|International Shipping',
-          'FE|Transport',        'FE|Transport|Bunkers|Pass|International Aviation',
-          'FE|Transport',        'FE|Transport|Pass|Road',
-          'FE|Transport',        'FE|Transport|Pass|Rail',
-          'FE|Transport',        'FE|Transport|Pass|Domestic Aviation',
-          'FE|Transport',        'FE|Transport|Freight|Rail',
-          'FE|Transport',        'FE|Transport|Freight|Road',
-          'FE|Transport',        'FE|Transport|Freight|Domestic Shipping',
-
-          'ES|Transport',        'ES|Transport|Bunkers|Freight|International Shipping',
-          'ES|Transport',        'ES|Transport|Bunkers|Pass|International Aviation',
-          'ES|Transport',        'ES|Transport|Pass|Road',
-          'ES|Transport',        'ES|Transport|Pass|Non-motorized',
-          'ES|Transport',        'ES|Transport|Pass|Rail',
-          'ES|Transport',        'ES|Transport|Pass|Domestic Aviation',
-          'ES|Transport',        'ES|Transport|Freight|Rail',
-          'ES|Transport',        'ES|Transport|Freight|Road',
-          'ES|Transport',        'ES|Transport|Freight|Domestic Shipping',
-
-          'Emi|CO2|Energy|Demand|Transport|w/ bunkers',  'Emi|CO2|Energy|Demand|Transport',
-          'Emi|CO2|Energy|Demand|Transport|w/ bunkers',  'Emi|CO2|Energy|Demand|Transport|Bunkers'
-        )
-
         reporting <- reporting[!variable %in% unique(remindEDGEvarMap$variable)]
         message("Transport variables reported by reporttransport were harmonized to last REMIND iteration.")
       }
-      # Store the new data after the harmonization
-      storeData(outputFolder = folderPath, data[c("ESdemandFVsalesLevel", "fleetSizeAndComposition")])
     }
 
   }
