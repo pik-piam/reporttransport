@@ -1,6 +1,6 @@
 # Stock and Sales
 
-## LDV Stock by vehicle size
+## LDV 4W Stock by vehicle size
 ```{r}
 tot <- "Stock|Transport|Pass|Road|LDV|Four Wheelers"
 items <- c("Stock|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car",
@@ -15,7 +15,7 @@ showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```
 
-## LDV Sales by vehicle size 
+## LDV 4W Sales by vehicle size
 ```{r}
 tot <- "Sales|Transport|Pass|Road|LDV|Four Wheelers"
 items <- c("Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car",
@@ -98,6 +98,66 @@ items <- c("Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|Hybrid electric",
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|Liquids",
            "Sales|Transport|Pass|Road|LDV|Four Wheelers|Large|Large Car and SUV|Gases")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+## 2W Stock by vehicle size
+```{r}
+tot <- "Stock|Transport|Pass|Road|LDV|Two Wheelers"
+items <- c("Stock|Transport|Pass|Road|LDV|Three Wheelers",
+           "Stock|Transport|Pass|Road|LDV|Two Wheelers|Motorcycle(>250cc)",
+           "Stock|Transport|Pass|Road|LDV|Two Wheelers|Motorcycle(50-250cc)",
+           "Stock|Transport|Pass|Road|LDV|Two Wheelers|Moped"
+           )
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+## 2W Sales by vehicle size
+```{r}
+tot <- "Sales|Transport|Pass|Road|LDV|Two Wheelers"
+items <- c("Sales|Transport|Pass|Road|LDV|Three Wheelers",
+           "Sales|Transport|Pass|Road|LDV|Two Wheelers|Motorcycle(>250cc)",
+           "Sales|Transport|Pass|Road|LDV|Two Wheelers|Motorcycle(50-250cc)",
+           "Sales|Transport|Pass|Road|LDV|Two Wheelers|Moped"
+           )
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+## 2W Stock by technology
+```{r}
+tot <- "Stock|Transport|Pass|Road|LDV|Two Wheelers"
+items <- c("Stock|Transport|Pass|Road|LDV|Two Wheelers|BEV",
+           "Stock|Transport|Pass|Road|LDV|Two Wheelers|Liquids")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+## 2W Sales by technology
+```{r}
+tot <- "Sales|Transport|Pass|Road|LDV|Two Wheelers"
+items <- c("Sales|Transport|Pass|Road|LDV|Two Wheelers|BEV",
+           "Sales|Transport|Pass|Road|LDV|Two Wheelers|Liquids")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+## 3W Stock by technology
+```{r}
+tot <- "Stock|Transport|Pass|Road|LDV|Three Wheelers"
+items <- c("Stock|Transport|Pass|Road|LDV|Three Wheelers|BEV",
+           "Stock|Transport|Pass|Road|LDV|Three Wheelers|Liquids")
+showAreaAndBarPlots(data, items, tot, orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+## 3W Sales by technology
+```{r}
+tot <- "Sales|Transport|Pass|Road|LDV|Three Wheelers"
+items <- c("Sales|Transport|Pass|Road|LDV|Three Wheelers|BEV",
+           "Sales|Transport|Pass|Road|LDV|Three Wheelers|Liquids")
 showAreaAndBarPlots(data, items, tot, orderVars = "user")
 showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ```

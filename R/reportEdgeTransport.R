@@ -42,7 +42,6 @@
 reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, isTransportReported = TRUE,
                                 isTransportExtendedReported = FALSE, isAnalyticsReported = FALSE,
                                 isREMINDinputReported = FALSE, isStored = TRUE, isHarmonized = FALSE, ...) {
-
   applyReportingTimeRes <- function(item, timeRes) {
     if (typeof(item) %in% c("character", "double") | "decisionTree" %in% names(item)) return(item)
     else if (is.data.table(item) & ("period" %chin% colnames(item))) item <- item[period %in% timeRes]
