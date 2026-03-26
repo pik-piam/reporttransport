@@ -230,7 +230,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
 
     if (isHarmonized) {
       # Load shared variables of REMIND and edge-t (reported by remind2 and reporttransport)
-      remindEDGEvarMap <- fread(system.file("commonVarsEDGETremind.csv",
+      remindEDGEvarMap <- fread(system.file("helpersCommonVarsEDGETremind.csv",
                                              package = "reporttransport"), skip = 1)
       remindEDGEvarMap <- remindEDGEvarMap[!is.na(variable)]
       if (nrow(remindEDGEvarMap) > 0) {
