@@ -135,8 +135,8 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   ## Report output variables
   #########################################################################
   if (isHarmonized) {
-    #The energy Service demand on sector level is read in again from the last REMIND run
-    #and the energy service demand on fleet level in edget is rescaled to match it. Everything else is kept as it is.
+    #The energy Service demand on REMIND CES leave level (pass_sm, freight_sm, pass_long, freight_long) is read in again from the last REMIND run and the energy service demand on fleet level in edget is rescaled to match it. Every other input is kept as it was before.
+    #As the reporting of FE, emissions and total cost variables depends on the ES demands, this then automatically rescales the edget-reported FE, emissions and total cost with the same ratio of (final REMIND run ES) : (final edget run ES)
     harmESdemandFV <- harmonizeREMINDvsEDGETenergyServiceDemand(ESdemandFVsalesLevel = data$ESdemandFVsalesLevel,
                                                                 fleetESdemand = data$fleetSizeAndComposition$fleetESdemand,
                                                                 helpers = data$helpers)
