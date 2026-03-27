@@ -150,7 +150,7 @@ fleetFEdemand <- baseOutput$ext$fleetFEdemand
   trackConvergence <- rbind(testEnergyIntensity[, c("all_regi", "tall", "REMINDset", "deviationAbsolute", "deviationRelativeToEDGET", "comparison", "variable")],
                             testES[, c("all_regi", "tall", "REMINDset", "deviationAbsolute", "deviationRelativeToEDGET", "comparison", "variable")])
   # Only report outliers that deviate more than 1% from EDGE-T value
-  trackConvergence <- trackConvergence[deviationRelativeToEDGET > 0.01]
+  trackConvergence <- trackConvergence[deviationRelativeToEDGET > 0.001]
 
   utils::write.table(trackConvergence, file.path("EDGE-T", "trackConvergence.csv"), row.names = FALSE, sep = ";", quote = FALSE)
 }

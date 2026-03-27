@@ -2,11 +2,11 @@
 #' REMIND reports energy service demand based on the last REMIND iteration before REMIND converged and EDGE-T based on the last EDGE-T iteration.
 #' Depending on the number of REMIND iterations (<25/25-45/>45) until convergence, the last EDGE-T run happened up to (3/5/8) iterations ago
 #' Therefore the Energy service demand on CES node level differs between REMIND and EDGE-T.
-#' We want to harmonize ES und FE to equal the REMIND values.
+#' We want to harmonize ES, FE and Emi to equal the REMIND values.
 #' Consequently, we want the detailed transport variables to be reported using the ES demand on CES node level from the
 #' last REMIND iteration. We want to keep the energy intensity of REMIND, which is the energy intensity from the last EDGE-T run.
-#' Therefore, we don't want to take the fuel prices from the last REMIND iteration and keep the vehicle sales and mode shares as they are
-#' Deviations are stored in EDGE-T/trackConvergence.csv
+#' Therefore, we don't want to take the fuel prices from the last REMIND iteration and keep the vehicle sales and mode shares/stock composition as they are
+#' Deviations are stored in EDGE-T/trackConvergence.csv (parameter) checkREMINDvsEDGETmifVariables.csv (mif variables)
 
 #' @param ESdemandFVsalesLevel Energy service demand on sales level
 #' @param fleetESdemand Energy service demand on fleet level

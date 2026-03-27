@@ -135,6 +135,8 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   ## Report output variables
   #########################################################################
   if (isHarmonized) {
+    #The energy Service demand on sector level is read in again from the last REMIND run
+    #and the energy service demand on fleet level in edget is rescaled to match it. Everything else is kept as it is.
     harmESdemandFV <- harmonizeREMINDvsEDGETenergyServiceDemand(ESdemandFVsalesLevel = data$ESdemandFVsalesLevel,
                                                                 fleetESdemand = data$fleetSizeAndComposition$fleetESdemand,
                                                                 helpers = data$helpers)
@@ -246,13 +248,17 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         REMINDvars <- REMINDvars[!variable %in% unique(reporting$variable)]
         #Check for consistency
         test <- merge(reporting, REMINDvars, by = intersect(names(reporting), names(REMINDvars)))
-        #Exclude World from the harmonization, as the bunkers aggregation works differently there
-        #Exclude data after 2100 from the harmonization as edget only runs until 2100
-        test <- test[period <= 2100]
         test[, deviationAbsolute := abs(REMINDval - value)]
         test[, deviationRelativeToREMIND := abs(REMINDval - value) / REMINDval]
-        # Only report outliers that deviate more than 1% from REMIND value
-        test <- test[deviationRelativeToREMIND > 0.01]
+        #Add relative deviation of FE|Transport (including bunkers) to the REMIND.mif as an indicator
+        FEratio <- test[REMINDvar == "FE|Transport"]
+        FEratio[, variable := "FE|Transport|a relative deviation of EDGE-T from REMIND prior to harmonization"]
+        FEratio[, c("value", "REMINDvar", "deviationAbsolute") := NULL]
+        setnames(FEratio, "deviationRelativeToREMIND", "value")
+        #Exclude data after 2100 from the harmonization as edget only runs until 2100
+        test <- test[period <= 2100]
+        # Only report outliers that deviate more than 0.1% from REMIND value
+        test <- test[deviationRelativeToREMIND > 0.001]
         setnames(test, "value", "EDGEval")
         numericCols <- c("REMINDval", "EDGEval", "deviationAbsolute", "deviationRelativeToREMIND")
         test[, (numericCols) := lapply(.SD, function(x) sprintf("%.2E", signif(x, 6))), .SDcols = numericCols]
@@ -267,6 +273,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                              "Emi|CO2|Energy|Demand|Transport|Liquids",
                              "Emi|CO2|Energy|Demand|Transport|Gases")
         reporting <- reporting[!variable %in% varsToBeRemoved]
+        reporting <- rbind(reporting, FEratio)
         message("Transport variables reported by reporttransport were harmonized to last REMIND iteration.")
       }
     }
