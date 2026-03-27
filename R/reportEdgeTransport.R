@@ -252,7 +252,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         test[, deviationRelativeToREMIND := abs(REMINDval - value) / REMINDval]
         #Add relative deviation of FE|Transport (including bunkers) to the REMIND.mif as an indicator
         FEratio <- test[REMINDvar == "FE|Transport"]
-        FEratio[, variable := "FE|Transport|a relative deviation of EDGE-T from REMIND prior to harmonization"]
+        FEratio[, variable := "FE|Transport|a - relative deviation of EDGE-T from REMIND prior to harmonization"]
         FEratio[, c("value", "REMINDvar", "deviationAbsolute") := NULL]
         setnames(FEratio, "deviationRelativeToREMIND", "value")
         #Exclude data after 2100 from the harmonization as edget only runs until 2100
