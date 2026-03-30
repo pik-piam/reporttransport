@@ -257,8 +257,8 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         setnames(FEratio, "deviationRelativeToREMIND", "value")
         #Exclude data after 2100 from the harmonization as edget only runs until 2100
         test <- test[period <= 2100]
-        # Only report outliers that deviate more than 0.1% from REMIND value
-        test <- test[deviationRelativeToREMIND > 0.001]
+        # Only report outliers that deviate more than 0.5% from REMIND value
+        test <- test[deviationRelativeToREMIND > 0.005]
         setnames(test, "value", "EDGEval")
         numericCols <- c("REMINDval", "EDGEval", "deviationAbsolute", "deviationRelativeToREMIND")
         test[, (numericCols) := lapply(.SD, function(x) sprintf("%.2E", signif(x, 6))), .SDcols = numericCols]
