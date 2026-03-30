@@ -28,7 +28,9 @@ harmonizeREMINDvsEDGETenergyServiceDemand <- function(ESdemandFVsalesLevel, flee
     setnames(regionMapping, "regionCode21", "region")
     ESdemandToHarmonize <- merge(ESdemandFVfleetLevel, regionMapping, by = "region", all = TRUE, allow.cartesian = TRUE)
     ESdemandToHarmonize[, region := NULL]
-    setnames(ESdemandToHarmonize, "regionCode12", "region")}
+    setnames(ESdemandToHarmonize, "regionCode12", "region")} else {
+    ESdemandToHarmonize <- copy(ESdemandFVfleetLevel)
+    }
   ESdemandSectorfleetLevel <- ESdemandToHarmonize[, .(value = sum(value)), by = c("region", "period", "sector")]
   harmonizationFactors <- merge(harmREMINDdemand, ESdemandSectorfleetLevel, by = intersect(names(harmREMINDdemand), names(ESdemandSectorfleetLevel)))
   harmonizationFactors[, factor := harmREMINDdemand / value][, c("unit", "variable", "value", "harmREMINDdemand") := NULL]
