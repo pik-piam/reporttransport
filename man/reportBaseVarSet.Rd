@@ -4,12 +4,10 @@
 \alias{reportBaseVarSet}
 \title{Report basic variable set needed to report REMIND input data and detailed transport data}
 \usage{
-reportBaseVarSet(data, timeResReporting)
+reportBaseVarSet(data)
 }
 \arguments{
 \item{data}{List that contains at least the model results to report the basic variable set}
-
-\item{timeResReporting}{Timesteps to be reported}
 }
 \value{
 list of intensive and extensive output variables

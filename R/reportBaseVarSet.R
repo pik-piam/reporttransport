@@ -1,14 +1,13 @@
 #'Report basic variable set needed to report REMIND input data and detailed transport data
 #'
 #' @param data List that contains at least the model results to report the basic variable set
-#' @param timeResReporting Timesteps to be reported
 #'
 #' @returns list of intensive and extensive output variables
 #' @author Johanna Hoppe
 #' @import data.table
 #' @export
 
-reportBaseVarSet <- function(data, timeResReporting) {
+reportBaseVarSet <- function(data) {
 
   subsectorL3 <- variable <- period <- NULL
 
