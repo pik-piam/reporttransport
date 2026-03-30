@@ -248,19 +248,14 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         test <- merge(reporting, REMINDvars, by = intersect(names(reporting), names(REMINDvars)))
         if (nrow(test) == 0) stop("EDGE-T/REMIND variable harmonization check failed.")
         test[, deviationAbsolute := abs(REMINDval - value)]
-        test[, deviationRelativeToREMIND := abs(REMINDval - value) / REMINDval]
-
-        #Add relative deviation of FE|Transport (including bunkers) to the REMIND.mif as an indicator
-        FEratio <- test[REMINDvar == "FE|Transport"]
-        FEratio[, variable := "FE|Transport|a - relative deviation of EDGE-T from REMIND prior to harmonization"]
-        FEratio[, c("value", "REMINDvar", "deviationAbsolute", "REMINDval") := NULL]
-        setnames(FEratio, "deviationRelativeToREMIND", "value")
+        test[, percentRelativeToREMIND := abs(REMINDval - value) / REMINDval * 100]
+        test[is.nan(percentRelativeToREMIND), percentRelativeToREMIND := 0]
         #Exclude data after 2100 from the harmonization as edget only runs until 2100
         test <- test[period <= 2100]
         # Only report outliers that deviate more than 0.5% from REMIND value
-        test <- test[deviationRelativeToREMIND > 0.005]
+        test <- test[percentRelativeToREMIND > 0.5]
         setnames(test, "value", "EDGEval")
-        numericCols <- c("REMINDval", "EDGEval", "deviationAbsolute", "deviationRelativeToREMIND")
+        numericCols <- c("REMINDval", "EDGEval", "deviationAbsolute", "percentRelativeToREMIND")
         test[, (numericCols) := lapply(.SD, function(x) sprintf("%.2E", signif(x, 6))), .SDcols = numericCols]
         utils::write.table(test, file.path("EDGE-T", "checkREMINDvsEDGETmifVariables.csv"), row.names = FALSE, sep = ";", quote = FALSE)
         # Variables reported by edgeTRansport that should be removed in the REMIND mif to avoid confusion/duplicates
@@ -275,7 +270,6 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         #exlude ES|Transport|Bunkers|Freight as it is used downstream in reportExtraEmissions in remind2
         varsToBeRemoved <- varsToBeRemoved[varsToBeRemoved!="ES|Transport|Bunkers|Freight"]
         reporting <- reporting[!variable %in% varsToBeRemoved]
-        reporting <- rbind(reporting, FEratio)
         message("Transport variables reported by reporttransport were harmonized to last REMIND iteration.")
       }
     }
