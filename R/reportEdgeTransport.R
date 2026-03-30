@@ -244,10 +244,9 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         setnames(REMINDvars, c("variable", "value"),
                  c("REMINDvar", "REMINDval"))
         REMINDvars <-  merge(REMINDvars, remindEDGEvarMap, by = "REMINDvar")
-        #If the edgeTransport reporting is run in post processing and edgeTransport variables are already included in the transport mif, they need to be filtered out first
-        REMINDvars <- REMINDvars[!variable %in% unique(reporting$variable)]
         #Check for consistency
         test <- merge(reporting, REMINDvars, by = intersect(names(reporting), names(REMINDvars)))
+        if (nrow(test) == 0) stop("EDGE-T/REMIND variable harmonization check failed.")
         test[, deviationAbsolute := abs(REMINDval - value)]
         test[, deviationRelativeToREMIND := abs(REMINDval - value) / REMINDval]
 
