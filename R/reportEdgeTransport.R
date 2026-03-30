@@ -274,7 +274,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                              "Emi|CO2|Energy|Demand|Transport|Liquids",
                              "Emi|CO2|Energy|Demand|Transport|Gases")
         #exlude ES|Transport|Bunkers|Freight as it is used downstream in reportExtraEmissions in remind2
-        varsToBeRemoved[varsToBeRemoved!="ES|Transport|Bunkers|Freight"]
+        varsToBeRemoved <- varsToBeRemoved[varsToBeRemoved!="ES|Transport|Bunkers|Freight"]
         reporting <- reporting[!variable %in% varsToBeRemoved]
         reporting <- rbind(reporting, FEratio)
         message("Transport variables reported by reporttransport were harmonized to last REMIND iteration.")
