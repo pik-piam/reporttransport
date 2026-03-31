@@ -25,6 +25,8 @@ reportToREMINDfinalEnergyShares <- function(fleetFEdemand, timeResReporting, dem
   ## remove temporary columns
   FEshares[, c("sumvalue", "maxtech") := NULL]#
   test <- FEshares[, sumvalue := sum(value), by = c("tall", "all_regi", "all_in")]
-  if (nroww(test[!sumvalue==1] > 0)) stop("Something went wrong in reportToREMINDfinalEnergyShares()")
+
+  tol <- 1e-6
+  if (nrow(test[abs(sumvalue - 1) > tol]) > 0) stop("Something went wrong in reportToREMINDfinalEnergyShares()")
   return(FEshares)
 }
