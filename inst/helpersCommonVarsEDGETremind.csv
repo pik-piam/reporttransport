@@ -98,9 +98,9 @@ FE|Transport|w/o Bunkers|Liquids|Biomass                 ;NA
 FE|Transport|w/o Bunkers|Liquids|Fossil                  ;NA
 FE|Transport|w/o Bunkers|Liquids|Hydrogen                ;NA
 SE|Input|Electricity|Transport;NA
-Emi|CO2|Energy|Demand|Transport|w/o bunkers;Emi|CO2|Energy|Demand|Transport
+Emi|CO2|w/o Bunkers|Energy|Demand|Transport;Emi|CO2|Energy|Demand|Transport
 Emi|CO2|Energy|Demand|Transport|International Bunkers;Emi|CO2|Energy|Demand|Transport|Bunkers
-Emi|CO2|Energy|Demand|Transport|w/ bunkers;Emi|CO2|Energy|Demand|Transport with bunkers
+Emi|CO2|w/ Bunkers|Energy|Demand|Transport;Emi|CO2|Energy|Demand|Transport with bunkers
 Emi|CO2|Energy|Demand|Transport;NA
 Emi|CO2|Energy|Demand|Transport|Gases;Emi|CO2|Energy|Demand|Transport with bunkers|Gases
 Emi|CO2|Energy|Demand|Transport|Liquids;Emi|CO2|Energy|Demand|Transport with bunkers|Liquids
