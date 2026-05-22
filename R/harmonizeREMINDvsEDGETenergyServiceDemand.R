@@ -8,6 +8,7 @@
 #' Therefore, we don't want to take the fuel prices from the last REMIND iteration and keep the vehicle sales and mode shares/stock composition as they are
 #' Deviations are stored in EDGE-T/trackConvergence.csv (parameter) checkREMINDvsEDGETmifVariables.csv (mif variables)
 
+#' @param gdx path to REMIND fulldata.gdx
 #' @param ESdemandFVsalesLevel Energy service demand on sales level
 #' @param fleetESdemand Energy service demand on fleet level
 #' @param helpers EDGE-T helpers that include e.g. the decision tree
@@ -15,9 +16,9 @@
 #' @author Johanna Hoppe
 #' @export
 
-harmonizeREMINDvsEDGETenergyServiceDemand <- function(ESdemandFVsalesLevel, fleetESdemand, helpers) {
+harmonizeREMINDvsEDGETenergyServiceDemand <- function(gdx, ESdemandFVsalesLevel, fleetESdemand, helpers) {
+
   # Read in energy service demand from last REMIND iteration
-  gdx <- file.path(".", "fulldata.gdx")
   harmREMINDdemand <- edgeTransport::toolLoadREMINDesDemand(gdx, helpers)
   setnames(harmREMINDdemand, "value", "harmREMINDdemand")
   ESdemandFVfleetLevel <- rbind(ESdemandFVsalesLevel[!grepl("Bus.*|.*4W|.*freight_road.*", subsectorL3)],

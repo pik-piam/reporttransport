@@ -120,6 +120,8 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     data$gdxPath <- gdxPath
   }
 
+
+
   if (length(filesToLoad) > 0) {
     filePaths <- list.files(folderPath, recursive = TRUE, full.names = TRUE)
     pathFilesToLoad <- unlist(lapply(filesToLoad, function(x) {filePaths[grepl(paste0(x, ".RDS"), filePaths)]}))
@@ -137,7 +139,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
   if (isHarmonized) {
     #The energy Service demand on REMIND CES leave level (pass_sm, freight_sm, pass_long, freight_long) is read in again from the last REMIND run and the energy service demand on fleet level in edget is rescaled to match it. Every other input is kept as it was before.
     #As the reporting of FE, emissions and total cost variables depends on the ES demands, this then automatically rescales the edget-reported FE, emissions and total cost with the same ratio of (final REMIND run ES) : (final edget run ES)
-    harmESdemandFV <- harmonizeREMINDvsEDGETenergyServiceDemand(ESdemandFVsalesLevel = data$ESdemandFVsalesLevel,
+    harmESdemandFV <- harmonizeREMINDvsEDGETenergyServiceDemand(gdx = data$gdxPath, ESdemandFVsalesLevel = data$ESdemandFVsalesLevel,
                                                                 fleetESdemand = data$fleetSizeAndComposition$fleetESdemand,
                                                                 helpers = data$helpers)
     # Replace unharmonized data
@@ -237,9 +239,10 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
       remindEDGEvarMap <- remindEDGEvarMap[!is.na(variable)]
       if (nrow(remindEDGEvarMap) > 0) {
         #Load REMIND reporting
-        mifs <- list.files(".", recursive = FALSE, full.names = TRUE)
+        mifs <- list.files(dirname(folderPath), recursive = FALSE, full.names = TRUE)
         mif <- mifs[grepl(".*withoutPlus\\.mif", mifs)]
         #Select matching variables
+
         REMINDvars <- as.data.table(read.quitte(mif))
         setnames(REMINDvars, c("variable", "value"),
                  c("REMINDvar", "REMINDval"))
@@ -257,7 +260,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         setnames(test, "value", "EDGEval")
         numericCols <- c("REMINDval", "EDGEval", "deviationAbsolute", "percentRelativeToREMIND")
         test[, (numericCols) := lapply(.SD, function(x) sprintf("%.2E", signif(x, 6))), .SDcols = numericCols]
-        utils::write.table(test, file.path("EDGE-T", "checkREMINDvsEDGETmifVariables.csv"), row.names = FALSE, sep = ";", quote = FALSE)
+        utils::write.table(test, file.path(folderPath, "checkREMINDvsEDGETmifVariables.csv"), row.names = FALSE, sep = ";", quote = FALSE)
         # Variables reported by edgeTRansport that should be removed in the REMIND mif to avoid confusion/duplicates
         # 1. Remove duplicates that are reported by remind2 already + 2. variables that do not have an remind2 equivalent
         # but follow a different naming convention (e.g. FE|Transport|Pass includes bunkers in remind2 and not in reporttransport)
