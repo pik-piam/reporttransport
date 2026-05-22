@@ -4,7 +4,10 @@
 \alias{checkConvergence}
 \title{Compare parameters in edget and REMIND and store their deviation to track model convergence}
 \usage{
-checkConvergence()
+checkConvergence(outputdir)
+}
+\arguments{
+\item{outputdir}{path to REMIND outputfolder}
 }
 \description{
 Compare parameters in edget and REMIND and store their deviation to track model convergence

@@ -1,15 +1,16 @@
 #' Compare parameters in edget and REMIND and store their deviation to track model convergence
 #'
+#' @param outputdir path to REMIND outputfolder
 #' @author Johanna Hoppe
 #' @export
 
-checkConvergence <- function() {
+checkConvergence <- function(outputdir) {
 #---------------------------------------------------
-# in a remind run the runfolder is the working dircetory
-load("config.Rdata")
+
+load(file.path(outputdir, "config.Rdata"))
 
 # ---- load data ----
-gdx <- "fulldata.gdx"
+gdx <- file.path(outputdir,"fulldata.gdx")
 mapEdgeToREMIND <- fread(system.file("extdata/helpersMappingEdgeTtoREMINDcategories.csv",
                                      package = "edgeTransport", mustWork = TRUE))
 mapEdgeToREMIND <- mapEdgeToREMIND[!is.na(all_teEs)]
@@ -21,12 +22,13 @@ timeResReporting <- c(seq(1900,1985,5),
                       2130, 2150)
 transportPolScen <- cfg$gms$cm_EDGEtr_scen
 
+data <- list()
 # Load edge-t data from runfolder
 filesToLoad <- c("hybridElecShare",
                  "helpers")
 
 if (length(filesToLoad) > 0) {
-  filePaths <- list.files("./EDGE-T", recursive = TRUE, full.names = TRUE)
+  filePaths <- list.files(file.path(outputdir, "EDGE-T"), recursive = TRUE, full.names = TRUE)
   pathFilesToLoad <- unlist(lapply(filesToLoad, function(x) {filePaths[grepl(paste0(x, ".RDS"), filePaths)]}))
   itemNames <- basename(pathFilesToLoad)
   itemNames <- sub("\\.RDS$", "", itemNames)
@@ -35,12 +37,11 @@ if (length(filesToLoad) > 0) {
   data <- c(data, addFiles)
 }
 
-baseOutput <- reportEdgeTransport("./EDGE-T",
+baseOutput <- reportEdgeTransport(file.path(outputdir, "EDGE-T"),
                                   isTransportReported = FALSE)
 
 fleetESdemand <- baseOutput$ext$fleetESdemand
 fleetFEdemand <- baseOutput$ext$fleetFEdemand
-
 
 # ---- Energy intensity ----
   # 1: pm_fe2es Energy intensity of transport nodes parameter from the last REMIND iteration -> REMIND_val
@@ -88,7 +89,7 @@ fleetFEdemand <- baseOutput$ext$fleetFEdemand
   testEnergyIntensity[, percentRelativeToEDGET := abs(REMINDvalue - EDGEvalue)/EDGEvalue][, variable := "Energy Intensity"][, comparison := "Deviation last iteration REMIND vs last iteration EDGE-T"]
   numericCols <- c("REMINDvalue", "EDGEvalue", "deviationAbsolute", "percentRelativeToEDGET")
   testEnergyIntensity[, (numericCols) := lapply(.SD, function(x) sprintf("%.2E", signif(x, 6))), .SDcols = numericCols]
-  utils::write.table(testEnergyIntensity, file.path("EDGE-T", "trackREMINDvsEDGETparameterEnergyIntensity.csv"), row.names = FALSE, sep = ";", quote = FALSE)
+  utils::write.table(testEnergyIntensity, file.path(outputdir, "EDGE-T", "trackREMINDvsEDGETparameterEnergyIntensity.csv"), row.names = FALSE, sep = ";", quote = FALSE)
   setnames(testEnergyIntensity, "all_teEs", "REMINDset")
 # ---- Energy service demand ----
 
@@ -144,7 +145,7 @@ fleetFEdemand <- baseOutput$ext$fleetFEdemand
   numericCols <- c("REMINDcesIO", "SumREMINDprodEs", "REMINDtoEDGEes", "EDGEtoREMINDes", "deviationAbsolute", "percentRelativeToEDGET")
   testES[, (numericCols) := lapply(.SD, function(x) sprintf("%.2E", signif(x, 6))), .SDcols = numericCols]
   testES[, variable := "Energy service demand"]
-  utils::write.table(testES, file.path("EDGE-T", "trackREMINDvsEDGETparameterEnergyService.csv"), row.names = FALSE, sep = ";", quote = FALSE)
+  utils::write.table(testES, file.path(outputdir, "EDGE-T", "trackREMINDvsEDGETparameterEnergyService.csv"), row.names = FALSE, sep = ";", quote = FALSE)
   setnames(testES, "all_in", "REMINDset")
 
   trackConvergence <- rbind(testEnergyIntensity[, c("all_regi", "tall", "REMINDset", "deviationAbsolute", "percentRelativeToEDGET", "comparison", "variable")],
@@ -152,5 +153,5 @@ fleetFEdemand <- baseOutput$ext$fleetFEdemand
   # Only report outliers that deviate more than 1% from EDGE-T value
   trackConvergence <- trackConvergence[percentRelativeToEDGET > 0.5]
 
-  utils::write.table(trackConvergence, file.path("EDGE-T", "trackConvergence.csv"), row.names = FALSE, sep = ";", quote = FALSE)
+  utils::write.table(trackConvergence, file.path(outputdir, "EDGE-T", "trackConvergence.csv"), row.names = FALSE, sep = ";", quote = FALSE)
 }

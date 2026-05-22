@@ -13,12 +13,15 @@ Therefore, we don't want to take the fuel prices from the last REMIND iteration 
 Deviations are stored in EDGE-T/trackConvergence.csv (parameter) checkREMINDvsEDGETmifVariables.csv (mif variables)}
 \usage{
 harmonizeREMINDvsEDGETenergyServiceDemand(
+  gdx,
   ESdemandFVsalesLevel,
   fleetESdemand,
   helpers
 )
 }
 \arguments{
+\item{gdx}{path to REMIND fulldata.gdx}
+
 \item{ESdemandFVsalesLevel}{Energy service demand on sales level}
 
 \item{fleetESdemand}{Energy service demand on fleet level}
