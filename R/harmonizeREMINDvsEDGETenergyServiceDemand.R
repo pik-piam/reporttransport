@@ -21,7 +21,7 @@ harmonizeREMINDvsEDGETenergyServiceDemand <- function(gdx, ESdemandFVsalesLevel,
   # Read in energy service demand from last REMIND iteration
   harmREMINDdemand <- edgeTransport::toolLoadREMINDesDemand(gdx, helpers)
   setnames(harmREMINDdemand, "value", "harmREMINDdemand")
-  ESdemandFVfleetLevel <- rbind(ESdemandFVsalesLevel[!grepl("Bus.*|.*4W|.*freight_road.*", subsectorL3)],
+  ESdemandFVfleetLevel <- rbind(ESdemandFVsalesLevel[!grepl("Bus.*|.*4W|.*2W|.*3W|.*freight_road.*", subsectorL3)],
                          fleetESdemand)
   #Change regional resolution to caluclate harmonizationfactors if necessary
   if (length(unique(harmREMINDdemand$region)) == 12) {
