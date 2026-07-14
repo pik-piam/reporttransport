@@ -105,7 +105,7 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ## 2W Stock by vehicle size
 ```{r}
 tot <- "Stock|Transport|Pass|Road|LDV|Two Wheelers"
-items <- c("Stock|Transport|Pass|Road|LDV|Three Wheelers",
+items <- c(
            "Stock|Transport|Pass|Road|LDV|Two Wheelers|Motorcycle(>250cc)",
            "Stock|Transport|Pass|Road|LDV|Two Wheelers|Motorcycle(50-250cc)",
            "Stock|Transport|Pass|Road|LDV|Two Wheelers|Moped"
@@ -117,7 +117,7 @@ showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
 ## 2W Sales by vehicle size
 ```{r}
 tot <- "Sales|Transport|Pass|Road|LDV|Two Wheelers"
-items <- c("Sales|Transport|Pass|Road|LDV|Three Wheelers",
+items <- c(
            "Sales|Transport|Pass|Road|LDV|Two Wheelers|Motorcycle(>250cc)",
            "Sales|Transport|Pass|Road|LDV|Two Wheelers|Motorcycle(50-250cc)",
            "Sales|Transport|Pass|Road|LDV|Two Wheelers|Moped"

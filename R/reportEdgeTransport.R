@@ -121,6 +121,8 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
 
 
 
+
+
   if (length(filesToLoad) > 0) {
     filePaths <- list.files(folderPath, recursive = TRUE, full.names = TRUE)
     pathFilesToLoad <- unlist(lapply(filesToLoad, function(x) {filePaths[grepl(paste0(x, ".RDS"), filePaths)]}))
@@ -146,7 +148,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     # Overwrite the full data on sales level with the harmonized data on fleet level
     data$ESdemandFVsalesLevel <- harmESdemandFV
     # Overwrite specifically the data that is taken for LDV 4W demand on fleet level
-    data$fleetSizeAndComposition$fleetESdemand <- harmESdemandFV[grepl("Bus.*|.*4W|.*freight_road.*", subsectorL3)]
+    data$fleetSizeAndComposition$fleetESdemand <- harmESdemandFV[grepl("Bus.*|.*4W|.*2W|.*3W|.*freight_road.*", subsectorL3)]
   }
 
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
