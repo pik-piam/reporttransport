@@ -40,7 +40,6 @@ reportFleetVariables <- function(salesData, vehiclesConstrYears, helpers) {
   # different construction years
   salesData <- merge(salesData, helpers$decisionTree,
                      by = c(intersect(names(salesData), names(helpers$decisionTree))))
-  salesDataTrackedVeh <- salesData[grepl("Bus.*|.*4W|.*freight_road.*", subsectorL3)]
   salesDataTrackedVeh <- salesData[subsectorL3 %in% unique(vehiclesConstrYears$subsectorL3)]
   #Interpolate the missing timesteps between 1990 and 2005
   salesDataTrackedVeh <- approx_dt(salesDataTrackedVeh, unique(vehiclesConstrYears$constrYear),
