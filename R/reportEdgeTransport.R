@@ -35,7 +35,6 @@
 #' @returns The function either returns the REMINDinputData if isREMINDinputReported is
 #'          enabled or the transport data in MIF format
 #' @author Johanna Hoppe
-#' @importFrom quitte write.mif
 #' @import data.table
 #' @export
 
@@ -147,7 +146,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     # Overwrite the full data on sales level with the harmonized data on fleet level
     data$ESdemandFVsalesLevel <- harmESdemandFV
     # Overwrite specifically the data that is taken for LDV 4W demand on fleet level
-    data$fleetSizeAndComposition$fleetESdemand <- harmESdemandFV[subsectorL3 %in% unique(data$fleetSizeAndComposition$fleetESdemand$subsectorL3)]
+    data$fleetSizeAndComposition$fleetESdemand <- harmESdemandFV[subsectorL3 %in% data$fleetSizeAndComposition$fleetESdemand$subsectorL3]
   }
 
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
@@ -230,7 +229,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                               model                       = data$modelName,
                               isTransportExtendedReported = isTransportExtendedReported)
 
-    if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))
+    if (isStored) quitte::write.mif(reporting, file.path(folderPath, "Transport.mif"))
 
     if (isHarmonized) {
       # Load shared variables of REMIND and edge-t (reported by remind2 and reporttransport)

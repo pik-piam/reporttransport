@@ -20,7 +20,7 @@ reportBaseVarSet <- function(data) {
   # (in the variables named fleet other modes are still included)
   # Energy service demand on fleet level deviates from the sales level
   # regarding the share that each technology gets
-  fleetESdemand <- rbind(data$ESdemandFVsalesLevel[!subsectorL3 %in% unique(data$fleetSizeAndComposition$fleetESdemand$subsectorL3)],
+  fleetESdemand <- rbind(data$ESdemandFVsalesLevel[!subsectorL3 %in% data$fleetSizeAndComposition$fleetESdemand$subsectorL3],
                          data$fleetSizeAndComposition$fleetESdemand)
   # Energy intensity and Capital costs are tied to the construction year and have to be recalculated
   # to reflect the value for each year referring to the vehicle stock
