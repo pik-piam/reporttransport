@@ -35,13 +35,13 @@
 #' @returns The function either returns the REMINDinputData if isREMINDinputReported is
 #'          enabled or the transport data in MIF format
 #' @author Johanna Hoppe
-#' @importFrom quitte write.mif
 #' @import data.table
 #' @export
 
 reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NULL, isTransportReported = TRUE,
                                 isTransportExtendedReported = FALSE, isAnalyticsReported = FALSE,
                                 isREMINDinputReported = FALSE, isStored = TRUE, isHarmonized = FALSE, ...) {
+
   applyReportingTimeRes <- function(item, timeRes) {
     if (typeof(item) %in% c("character", "double") | "decisionTree" %in% names(item)) return(item)
     else if (is.data.table(item) & ("period" %chin% colnames(item))) item <- item[period %in% timeRes]
@@ -121,8 +121,6 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
 
 
 
-
-
   if (length(filesToLoad) > 0) {
     filePaths <- list.files(folderPath, recursive = TRUE, full.names = TRUE)
     pathFilesToLoad <- unlist(lapply(filesToLoad, function(x) {filePaths[grepl(paste0(x, ".RDS"), filePaths)]}))
@@ -148,7 +146,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
     # Overwrite the full data on sales level with the harmonized data on fleet level
     data$ESdemandFVsalesLevel <- harmESdemandFV
     # Overwrite specifically the data that is taken for LDV 4W demand on fleet level
-    data$fleetSizeAndComposition$fleetESdemand <- harmESdemandFV[grepl("Bus.*|.*4W|.*2W|.*3W|.*freight_road.*", subsectorL3)]
+    data$fleetSizeAndComposition$fleetESdemand <- harmESdemandFV[subsectorL3 %in% data$fleetSizeAndComposition$fleetESdemand$subsectorL3]
   }
 
   # Base variable set that is needed to report REMIND input data and additional detailed transport data
@@ -231,7 +229,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
                               model                       = data$modelName,
                               isTransportExtendedReported = isTransportExtendedReported)
 
-    if (isStored) write.mif(reporting, file.path(folderPath, "Transport.mif"))
+    if (isStored) quitte::write.mif(reporting, file.path(folderPath, "Transport.mif"))
 
     if (isHarmonized) {
       # Load shared variables of REMIND and edge-t (reported by remind2 and reporttransport)
@@ -244,7 +242,7 @@ reportEdgeTransport <- function(folderPath = file.path(".", "EDGE-T"), data = NU
         mif <- mifs[grepl(".*withoutPlus\\.mif", mifs)]
         #Select matching variables
 
-        REMINDvars <- as.data.table(read.quitte(mif))
+        REMINDvars <- as.data.table(quitte::read.quitte(mif))
         setnames(REMINDvars, c("variable", "value"),
                  c("REMINDvar", "REMINDval"))
         REMINDvars <-  merge(REMINDvars, remindEDGEvarMap, by = "REMINDvar")
