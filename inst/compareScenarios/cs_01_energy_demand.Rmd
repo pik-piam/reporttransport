@@ -20,7 +20,7 @@ walk(items, showLinePlots, data = data)
 
 ### Total w/o bunkers
 ```{r Total w/o bunkers}
-tot <- "FE|Transport edge"
+tot <- "FE|Transport"
 items <- c(
   "FE|Transport|Electricity",
   "FE|Transport|Hydrogen",
@@ -35,7 +35,7 @@ walk(items, showLinePlots, data = data)
 
 ### Bunkers
 ```{r Bunkers}
-tot <- "FE|Transport|Bunkers"
+# tot <- "FE|Transport|Bunkers" #this tot does not exist
 items <- c(
   "FE|Transport|Bunkers|Freight|Liquids",
   "FE|Transport|Bunkers|Pass|Liquids"
