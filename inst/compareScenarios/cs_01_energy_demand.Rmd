@@ -396,6 +396,38 @@ walk(items, showLinePlots, data = data)
 
 ## Final Energy by transport modes
 
+### Transport total with bunkers
+```{r}
+tot <- "FE|Transport with bunkers"
+items <- c(
+    "FE|Transport|Bunkers|Pass|International Aviation",
+    "FE|Transport|Pass",
+    "FE|Transport|Bunkers|Freight|International Shipping",
+    "FE|Transport|Freight"
+  )
+showAreaAndBarPlots(data, items, tot,  orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
+### Transport total w/o bunkers - modes
+```{r}
+tot <- "FE|Transport"
+items <- c(
+    "FE|Transport|Pass|Domestic Aviation",
+    "FE|Transport|Pass|Rail|HSR",
+    "FE|Transport|Pass|Rail|non-HSR",
+    "FE|Transport|Pass|Road|Bus",
+    "FE|Transport|Pass|Road|LDV|Four Wheelers",
+    "FE|Transport|Pass|Road|LDV|Two Wheelers",
+    "FE|Transport|Pass|Road|LDV|Three Wheelers",
+    "FE|Transport|Freight|Domestic Shipping",
+    "FE|Transport|Freight|Rail",
+    "FE|Transport|Freight|Road"
+  )
+showAreaAndBarPlots(data, items, tot,  orderVars = "user")
+showAreaAndBarPlots(data, items, tot, fill = TRUE, orderVars = "user")
+```
+
 ### Passenger with bunkers
 ```{r}
 tot_wbunk <- "FE|Transport|Pass with bunkers"
@@ -414,7 +446,7 @@ showAreaAndBarPlots(data, items[2:7], tot_wobunk, orderVars = "user")
 showAreaAndBarPlots(data, items, tot_wbunk, fill = TRUE, orderVars = "user")
 showAreaAndBarPlots(data, items[2:7], tot_wobunk, fill = TRUE, orderVars = "user")
 showLinePlots(data, tot_wbunk)
-walk(c("FE|Transport|Pass|Aviation", items[1:5], "FE|Transport|Pass|Road|LDV", items[6:7]), showLinePlots, data = data)
+walk(c("FE|Transport|Pass|Aviation", items[1:2], "FE|Transport|Pass|Rail", items[3:5], "FE|Transport|Pass|Road|LDV", items[6:7]), showLinePlots, data = data)
 ```
 
 ### Freight
