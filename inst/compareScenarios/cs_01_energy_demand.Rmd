@@ -417,9 +417,9 @@ items <- c(
     "FE|Transport|Pass|Rail|HSR",
     "FE|Transport|Pass|Rail|non-HSR",
     "FE|Transport|Pass|Road|Bus",
-    "FE|Transport|Pass|Road|LDV|Four Wheelers",
     "FE|Transport|Pass|Road|LDV|Two Wheelers",
     "FE|Transport|Pass|Road|LDV|Three Wheelers",
+    "FE|Transport|Pass|Road|LDV|Four Wheelers",
     "FE|Transport|Freight|Domestic Shipping",
     "FE|Transport|Freight|Rail",
     "FE|Transport|Freight|Road"
