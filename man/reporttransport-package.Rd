@@ -20,6 +20,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Johanna Hoppe \email{johanna.hoppe@pik-potsdam.de}
   \item Jarusch Muessel \email{jarusch.muessel@pik-potsdam.de} (\href{https://orcid.org/0000-0002-1857-7866}{ORCID})
   \item Alex K. Hagen \email{alex.hagen@pik-potsdam.de} (\href{https://orcid.org/0000-0003-4793-8664}{ORCID})
 }
