@@ -29,13 +29,13 @@ reportEmissions <- function(dtFE, gdxPath, prefix, helpers) {
   }
 
   # Get emission factors from REMIND gdx
-  GtCtoGtCO2 <- rgdx.scalar(gdxPath, "sm_c_2_co2", ts = FALSE)                                                           # nolint: object_name_linter
-  EJ2TWa <- rgdx.scalar(gdxPath, "sm_EJ_2_TWa", ts = FALSE)                                                              # nolint: object_name_linter
-  emissionFactors <- rmndt::magpie2dt(gdx::readGDX(gdxPath, "pm_emifac", restore_zeros = FALSE))
-  setnames(emissionFactors, c("all_regi", "all_enty", "all_enty1", "all_te", "all_enty2", "tall", "value"),
+  GtCtoGtCO2 <- as.numeric(gdx2::readGDX(gdxPath, "sm_c_2_co2"))
+  EJ2TWa <- as.numeric(gdx2::readGDX(gdxPath, "sm_EJ_2_TWa"))                                                              # nolint: object_name_linter
+  emissionFactors <- rmndt::magpie2dt(gdx2::readGDX(gdxPath, "pm_emifac", restoreZeros = FALSE))
+  setnames(emissionFactors, c("all_regi_2", "all_enty_3", "all_enty_4", "all_te_5", "all_enty_6", "tall_1", "value"),
            c("region", "from", "to", "conversionTechnology", "emissionType", "period", "value"))
 
-  numberOfRegions <- length(gdx::readGDX(gdxPath, "all_regi"))
+  numberOfRegions <- length(gdx2::readGDX(gdxPath, "all_regi"))
   if (numberOfRegions == 12) {
     # store data of IND as an example of a non-aggregated region for testing
     # reorder colums for comparison

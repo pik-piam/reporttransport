@@ -115,7 +115,8 @@ items <- c(
     "ES|Transport|Pass|Road|LDV|Three Wheelers pCap",
     "ES|Transport|Pass|Non-motorized|Walk pCap",
     "ES|Transport|Pass|Non-motorized|Cycle pCap",
-    "ES|Transport|Pass|Non-motorized pCap"
+    "ES|Transport|Pass|Non-motorized pCap",
+    "Stock|Transport|Pass|Road|LDV|Four Wheelers pCap"
     )
 #showMultiLinePlots(data, items[1:6], nrowNum = 2)
 #showMultiLinePlots(data, items[7:12], nrowNum = 2)

@@ -7,7 +7,6 @@
 #'
 #' @returns Final energy for liquids and gases split into fossil|bio|hydrogen
 #' @author Johanna Hoppe
-#' @importFrom gdx readGDX
 #' @importFrom rmndt magpie2dt approx_dt
 #' @import data.table
 #' @export
@@ -121,9 +120,8 @@ reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, helpers) {
   }
 
   # for reading a variable from a gdxPath some transformation steps are necessary to get a data.table
-  # therefore readgdx from gdxdt is used
-  demFeSector <- magpie2dt(readGDX(gdxPath, "vm_demFeSector", field = "l", restore_zeros = FALSE))
-  setnames(demFeSector, c("all_regi", "all_enty", "all_enty1", "emi_sectors", "all_emiMkt", "ttot"),
+  demFeSector <- magpie2dt(gdx2::readGDX(gdxPath, "vm_demFeSector", restoreZeros = FALSE)[, , "level", drop = TRUE])
+  setnames(demFeSector, c("all_regi_2", "all_enty_3", "all_enty_4", "emi_sectors_5", "all_emiMkt_6", "ttot_1"),
            c("region", "from", "to", "emiSectors", "type", "period"))
   # Select transport sector
   demFeSector <- demFeSector[emiSectors == "trans"]
@@ -159,7 +157,7 @@ reportLiquidsAndGasesComposition <- function(dtFE, gdxPath, helpers) {
 
   REMINDsegments <- c("LDVs", "nonLDVs", "bunker")                                                                     # nolint: object_name_linter
 
-  numberOfRegions <- length(gdx::readGDX(gdxPath, "all_regi"))
+  numberOfRegions <- length(gdx2::readGDX(gdxPath, "all_regi"))
   if (numberOfRegions == 12) {
     # store data of IND as an example of a non-aggregated region for testing
     testIND <- copy(liqBioToSyn)[region == "IND"]
