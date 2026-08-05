@@ -115,8 +115,7 @@ items <- c(
     "ES|Transport|Pass|Road|LDV|Three Wheelers pCap",
     "ES|Transport|Pass|Non-motorized|Walk pCap",
     "ES|Transport|Pass|Non-motorized|Cycle pCap",
-    "ES|Transport|Pass|Non-motorized pCap",
-    "Stock|Transport|Pass|Road|LDV|Four Wheelers pCap"
+    "ES|Transport|Pass|Non-motorized pCap"
     )
 #showMultiLinePlots(data, items[1:6], nrowNum = 2)
 #showMultiLinePlots(data, items[7:12], nrowNum = 2)
@@ -128,21 +127,21 @@ showMultiLinePlots(data, items[3])
 showMultiLinePlots(data, items[4])
 showMultiLinePlots(data, items[5])
 showMultiLinePlots(data, items[6])
-showMultiLinePlots(data, items[7])
 showMultiLinePlots(data, items[8])
 showMultiLinePlots(data, items[9])
 showMultiLinePlots(data, items[10])
 showMultiLinePlots(data, items[11])
 showMultiLinePlots(data, items[12])
+showMultiLinePlots(data, items[7])
 showMultiLinePlots(data, items[13])
 showMultiLinePlots(data, items[14])
 showMultiLinePlots(data, items[15])
 showMultiLinePlots(data, items[16])
 showMultiLinePlots(data, items[17])
 
-showMultiLinePlotsByVariable(data, items[c(1:7,11)], "GDP|PPP pCap", nrowNum = 2)
-showMultiLinePlotsByVariable(data, items[c(8:15)], "GDP|PPP pCap", nrowNum = 2)
-showMultiLinePlotsByVariable(data, items[c(16,17)], "GDP|PPP pCap", nrowNum = 2)
+showMultiLinePlotsByVariable(data, items[c(1:7,11)], "GDP|PPP pCap", nrowNum = 2, mainReg = "")
+showMultiLinePlotsByVariable(data, items[c(8:15)], "GDP|PPP pCap", nrowNum = 2, mainReg = "")
+showMultiLinePlotsByVariable(data, items[c(16,17)], "GDP|PPP pCap", nrowNum = 2, mainReg = "")
 walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
 ```
 
@@ -276,7 +275,7 @@ items <- c(
       "ES|Transport|Freight|Road pCap"
     )
 showMultiLinePlots(data, items, nrowNum = 2)
-showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap", nrowNum = 2)
+showMultiLinePlotsByVariable(data, items, "GDP|PPP pCap", nrowNum = 2, mainReg = "")
 walk(items, showLinePlotsByVariable, data = data, xVar = "GDP|PPP pCap")
 ```
 
