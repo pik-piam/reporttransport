@@ -10,7 +10,6 @@
 #'
 #' @returns Emissions data for provided values in dtFE
 #' @author Johanna Hoppe
-#' @importFrom gdxrrw rgdx rgdx.scalar
 #' @import data.table
 #' @export
 

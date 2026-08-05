@@ -1,8 +1,8 @@
 Type: Package
 Package: reporttransport
 Title: Reporting package for edgeTransport
-Version: 1.5.3
-Date: 2026-07-30
+Version: 1.6.0
+Date: 2026-08-05
 Authors@R:
     c(
     person("Johanna", "Hoppe", , "johanna.hoppe@pik-potsdam.de", role = c("aut", "cre")),
@@ -19,8 +19,7 @@ License: LGPL-3
 URL: https://github.com/pik-piam/reporttransport
 Imports:
     data.table,
-    gdx,
-    gdxrrw,
+    gdx2,
     piamPlotComparison,
     quitte,
     rmndt,
