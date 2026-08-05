@@ -10,7 +10,7 @@ checkConvergence <- function(outputdir) {
 load(file.path(outputdir, "config.Rdata"))
 
 # ---- load data ----
-gdx <- file.path(outputdir,"fulldata.gdx")
+gdxPath <- file.path(outputdir,"fulldata.gdx")
 mapEdgeToREMIND <- fread(system.file("extdata/helpersMappingEdgeTtoREMINDcategories.csv",
                                      package = "edgeTransport", mustWork = TRUE))
 mapEdgeToREMIND <- mapEdgeToREMIND[!is.na(all_teEs)]
@@ -45,7 +45,7 @@ fleetFEdemand <- baseOutput$ext$fleetFEdemand
 
 # ---- Energy intensity ----
   # 1: pm_fe2es Energy intensity of transport nodes parameter from the last REMIND iteration -> REMIND_val
-  pm_fe2es <- gdx::readGDX(gdx, c("pm_fe2es"), field = "l", restore_zeros = FALSE)
+  pm_fe2es <- gdx2::readGDX(gdxPath, c("pm_fe2es"), restoreZeros = FALSE)
   pm_fe2es <- pm_fe2es[, , unique(mapEdgeToREMIND$all_teEs)]
   pm_fe2es <- rmndt::magpie2dt(pm_fe2es, regioncol = "all_regi",
                                yearcol = "tall", datacols = "all_teEs", valcol = "REMINDvalue")
@@ -104,17 +104,17 @@ fleetFEdemand <- baseOutput$ext$fleetFEdemand
   setnames(EDGEtoREMINDes, "value", "EDGEtoREMINDes")
 
   # vm_prodEs used in reportFE() for REMIND mif -> REMINDprodEs
-  vm_prodEs <- gdx::readGDX(gdx, c("v_prodEs"), field = "l", restore_zeros = FALSE)
+  vm_prodEs <- gdx2::readGDX(gdxPath, c("vm_prodEs"), restoreZeros = FALSE)[, , "level", drop = TRUE]
   vm_prodEs <- magpie2dt(vm_prodEs, regioncol = "all_regi",
                          yearcol = "tall", datacols = c("all_enty", "all_esty", "all_teEs"), valcol = "REMINDprodEs")
   vm_prodEs[, c("all_enty", "all_esty") := NULL]
   # REMIND to EDGE-T (vm_cesIO) -> REMINDcesIO
-  vm_cesIO <- gdx::readGDX(gdx, c("vm_cesIO"), field = "l", restore_zeros = FALSE)
+  vm_cesIO <- gdx2::readGDX(gdxPath, c("vm_cesIO"), restoreZeros = FALSE)[, , "level", drop = TRUE]
   vm_cesIO <- vm_cesIO[, , c("entrp_pass_sm", "entrp_pass_lo", "entrp_frgt_sm", "entrp_frgt_lo")]
   vm_cesIO <- magpie2dt(vm_cesIO, regioncol = "all_regi",
                         yearcol = "tall", datacols = "all_in", valcol = "REMINDcesIO")
   # last REMIND iteration energy service demand loaded by edget -> REMINDtoEDGEes
-  REMINDtoEDGEes <- edgeTransport::toolLoadREMINDesDemand(gdx, data$helpers)
+  REMINDtoEDGEes <- edgeTransport::toolLoadREMINDesDemand(gdxPath, data$helpers)
   map <- unique(mapEdgeToREMIND[, c("univocalName", "all_in")])
   decTree <- unique(data$helpers$decisionTree[, c("sector", "univocalName")])
   map <- merge(map, decTree, by = "univocalName", allow.cartesian = TRUE)
