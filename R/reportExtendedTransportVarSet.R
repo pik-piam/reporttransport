@@ -60,7 +60,7 @@ reportExtendedTransportVarSet <- function(data, baseVarSet, timeResReporting) {
   }
 
   # Report transport input data if available
-  inputData <- c("timeValueCosts", "annualMileage", "scenSpecLoadFactor",
+  inputData <- c("timeValueCosts", "annualMileageRaw", "scenSpecLoadFactor",
                  "loadFactorRaw", "scenSpecEnIntensity", "energyIntensityRaw")
   inputData <- inputData[inputData %in% names(data)]
 
