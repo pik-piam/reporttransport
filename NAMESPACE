@@ -27,10 +27,16 @@ export(storeData)
 export(toolReportsharesLDVtransport)
 export(transportCompareScenarios)
 import(data.table)
-importFrom(quitte,aggregate_map)
-importFrom(quitte,as.quitte)
-importFrom(rmndt,approx_dt)
-importFrom(rmndt,disaggregate_dt)
-importFrom(rmndt,magpie2dt)
-importFrom(utils,packageVersion)
-importFrom(utils,write.csv)
+importFrom(quitte,
+  aggregate_map,
+  as.quitte
+)
+importFrom(rmndt,
+  approx_dt,
+  disaggregate_dt,
+  magpie2dt
+)
+importFrom(utils,
+  packageVersion,
+  write.csv
+)
