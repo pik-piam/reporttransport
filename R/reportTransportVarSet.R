@@ -97,7 +97,8 @@ reportTransportVarSet <- function(data, baseVarSet) {
   if (!is.null(data$GDPppp)) {
     outputVarsExt <- c(outputVarsExt, list(GDPppp = gdpPPP))
   }
-  outputVarsInt <- list(fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity)
+  outputVarsInt <- list(fleetEnergyIntensity = baseVarSet$int$fleetEnergyIntensity,
+                        fleetEnergyIntensityPerES = baseVarSet$int$fleetEnergyIntensityPerES)
   if (!is.null(data$upfrontCAPEXtrackedFleet)) outputVarsInt <- c(outputVarsInt, list(upfrontCAPEXtrackedFleet = upfrontCAPEXtrackedFleet))
   outputVars <- list(ext = outputVarsExt,
                      int = outputVarsInt)
