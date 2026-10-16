@@ -1,8 +1,8 @@
 Type: Package
 Package: reporttransport
 Title: Reporting package for edgeTransport
-Version: 1.8.0
-Date: 2026-10-14
+Version: 1.9.0
+Date: 2026-10-16
 Authors@R:
     c(
     person("Johanna", "Hoppe", , "johanna.hoppe@pik-potsdam.de", role = c("aut", "cre")),
@@ -31,3 +31,4 @@ Suggests:
     edgeTransport
 Encoding: UTF-8
 Config/roxygen2/version: 8.1.0
+RoxygenNote: 7.3.2
