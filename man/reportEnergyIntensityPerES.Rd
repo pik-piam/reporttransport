@@ -14,7 +14,7 @@ reportEnergyIntensityPerES(fleetEnergyIntensity, loadFactor, helpers)
 \item{helpers}{List of helpers}
 }
 \value{
-Energy intensity per p/tkm on fleet level
+Energy intensity per service on fleet level
 }
 \description{
 Dividing the energy intensity per veh km by the

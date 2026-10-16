@@ -29,11 +29,11 @@ walk(items, showLinePlots, data = data, scales = "fixed")
 ## Truck sizes per tkm
 ```{r}
 items <- c(
-            "Energy intensity per p/tkm|Transport|Freight|Road|Light|Truck(0-3_5t)",
-            "Energy intensity per p/tkm|Transport|Freight|Road|Light|Truck(7_5t)",
-            "Energy intensity per p/tkm|Transport|Freight|Road|Heavy|Truck(18t)",
-            "Energy intensity per p/tkm|Transport|Freight|Road|Heavy|Truck(26t)",
-            "Energy intensity per p/tkm|Transport|Freight|Road|Heavy|Truck(40t)"
+            "Energy intensity per service|Transport|Freight|Road|Light|Truck(0-3_5t)",
+            "Energy intensity per service|Transport|Freight|Road|Light|Truck(7_5t)",
+            "Energy intensity per service|Transport|Freight|Road|Heavy|Truck(18t)",
+            "Energy intensity per service|Transport|Freight|Road|Heavy|Truck(26t)",
+            "Energy intensity per service|Transport|Freight|Road|Heavy|Truck(40t)"
   )
 showMultiLinePlots(data, items, scales = "fixed", nrowNum = 2)
 ```

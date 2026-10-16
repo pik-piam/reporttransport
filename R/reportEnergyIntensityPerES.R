@@ -13,7 +13,7 @@
 #' @param loadFactor Persons or tons per vehicle
 #' @param helpers List of helpers
 #'
-#' @returns Energy intensity per p/tkm on fleet level
+#' @returns Energy intensity per service on fleet level
 #' @author Jarusch Muessel
 #' @import data.table
 #' @export
@@ -38,11 +38,11 @@ reportEnergyIntensityPerES <- function(fleetEnergyIntensity, loadFactor, helpers
   # Apply the unit of the respective sector ----------------------------------------------------
   # International Aviation features its own sector and is therefore not part of filterEntries$trn_pass
   passengerModes <- c(helpers$filterEntries$trn_pass, "International Aviation")
-  energyIntensityPerES[, variable := "Energy intensity per p/tkm"]
+  energyIntensityPerES[, variable := "Energy intensity per service"]
   energyIntensityPerES[univocalName %chin% passengerModes, unit := "MJ/pkm"]
   energyIntensityPerES[!univocalName %chin% passengerModes, unit := "MJ/tkm"]
 
-  if (anyNA(energyIntensityPerES)) stop("Energy intensity per p/tkm contains NAs.
+  if (anyNA(energyIntensityPerES)) stop("Energy intensity per service contains NAs.
                                         Please check reportEnergyIntensityPerES()")
 
   return(energyIntensityPerES)

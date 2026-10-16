@@ -34,7 +34,7 @@ reportBaseVarSet <- function(data) {
   fleetFEdemand <- reportFinalEnergy(fleetEnergyIntensity = fleetData$fleetEnergyIntensity, fleetESdemand = fleetESdemand,
                                 loadFactor = data$scenSpecLoadFactor, hybridElecShare = data$hybridElecShare, helpers = data$helpers)
 
-  # Calculate the energy intensity per p/tkm-------------------------------------------------
+  # Calculate the Energy intensity per service-------------------------------------------------
   fleetEnergyIntensityPerES <- reportEnergyIntensityPerES(fleetEnergyIntensity = fleetData$fleetEnergyIntensity,
                                                           loadFactor = data$scenSpecLoadFactor,
                                                           helpers = data$helpers)

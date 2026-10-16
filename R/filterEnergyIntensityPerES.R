@@ -1,12 +1,12 @@
-#' Reduce the energy intensity per p/tkm variables to the reported subset
+#' Reduce the Energy intensity per service variables to the reported subset
 #'
-#' The energy intensity per p/tkm is calculated and aggregated for all modes but only those
+#' The Energy intensity per service is calculated and aggregated for all modes but only those
 #' variables from helpersReportingEnergyIntensityPerES.csv are added to the MIF.
 #'
 #' @param dt Aggregated MIF variables.
-#' @param varsToReport Variable name prefixes of the energy intensity per p/tkm subtrees to keep.
+#' @param varsToReport Variable name prefixes of the Energy intensity per service subtrees to keep.
 #'
-#' @returns Aggregated MIF variables without the unreported energy intensity per p/tkm variables.
+#' @returns Aggregated MIF variables without the unreported Energy intensity per service variables.
 #' @import data.table
 #' @noRd
 
@@ -14,7 +14,7 @@ filterEnergyIntensityPerES <- function(dt, varsToReport = energyIntensityPerESva
   variable <- isEnergyIntensityPerES <- isReported <- NULL
 
   dt <- copy(dt)
-  dt[, isEnergyIntensityPerES := startsWith(variable, "Energy intensity per p/tkm|")]
+  dt[, isEnergyIntensityPerES := startsWith(variable, "Energy intensity per service|")]
   dt[, isReported := startsWithAny(variable, varsToReport)]
   dt <- dt[isEnergyIntensityPerES == FALSE | isReported == TRUE]
   dt[, c("isEnergyIntensityPerES", "isReported") := NULL]
@@ -22,7 +22,7 @@ filterEnergyIntensityPerES <- function(dt, varsToReport = energyIntensityPerESva
   return(dt[])
 }
 
-#' Load the configured energy intensity per p/tkm variables
+#' Load the configured Energy intensity per service variables
 #'
 #' @returns Variable name prefixes of the reported subtrees.
 #' @import data.table

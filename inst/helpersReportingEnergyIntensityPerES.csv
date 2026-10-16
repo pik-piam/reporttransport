@@ -1,3 +1,3 @@
-*Description: This file configures which energy intensity per p/tkm variables are added to the MIF. An entry also includes all levels below it in the decision tree;
+*Description: This file configures which Energy intensity per service variables are added to the MIF. An entry also includes all levels below it in the decision tree;
 variable
-Energy intensity per p/tkm|Transport|Freight|Road
+Energy intensity per service|Transport|Freight|Road
