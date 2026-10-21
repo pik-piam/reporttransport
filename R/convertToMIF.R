@@ -159,7 +159,7 @@ convertToMIF <- function(vars, GDPMER, helpers, scenario, model, isTransportExte
   toMIFint <- aggregateVariables(varsToMIFint, helpers$reportingAggregation, weight)
   # The Energy intensity per service is aggregated for all modes to weight every level correctly,
   # but only the configured subtrees are reported
-  toMIFint <- filterEnergyIntensityPerES(toMIFint)
+  toMIFint <- dropUnreportedEnergyIntensityPerES(toMIFint)
 
   if (!is.null(noAggregationvars)) {
     toMIF <- rbind(toMIFint, toMIFext, noAggregationvars)
