@@ -34,10 +34,16 @@ reportBaseVarSet <- function(data) {
   fleetFEdemand <- reportFinalEnergy(fleetEnergyIntensity = fleetData$fleetEnergyIntensity, fleetESdemand = fleetESdemand,
                                 loadFactor = data$scenSpecLoadFactor, hybridElecShare = data$hybridElecShare, helpers = data$helpers)
 
+  # Calculate the Energy intensity per service-------------------------------------------------
+  fleetEnergyIntensityPerES <- reportEnergyIntensityPerES(fleetEnergyIntensity = fleetData$fleetEnergyIntensity,
+                                                          loadFactor = data$scenSpecLoadFactor,
+                                                          helpers = data$helpers)
+
   # Split extensive and intensive variables ---------------------------------------------------
   outputVarsExt <- list(fleetESdemand = fleetESdemand,
                         fleetFEdemand = fleetFEdemand)
   outputVarsInt <- list(fleetEnergyIntensity = fleetData$fleetEnergyIntensity,
+                        fleetEnergyIntensityPerES = fleetEnergyIntensityPerES,
                         fleetCost = fleetCost)
   outputVars <- list(ext = outputVarsExt,
                      int = outputVarsInt)
